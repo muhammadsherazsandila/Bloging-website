@@ -8,8 +8,6 @@ const app = express();
 const cors = require("cors");
 app.use(cors());
 
-const serverless = require("serverless-http");
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -20,4 +18,4 @@ app.use("/post", postsRouter);
 require("./db/mongooseConnection");
 const debug = require("debug")("app:server");
 
-module.exports.handler = serverless(app);
+module.exports = app;

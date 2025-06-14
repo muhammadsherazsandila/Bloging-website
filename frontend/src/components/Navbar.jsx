@@ -53,7 +53,7 @@ function Navbar() {
             </Link>
           ))}
         </div>
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end gap-2">
+        <div className="flex items-center gap-x-6">
           <Tooltip title="Profile" placement="left">
             <button
               className="flex items-center cursor-pointer hover:scale-105 transition duration-300"

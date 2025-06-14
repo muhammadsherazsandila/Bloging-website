@@ -46,7 +46,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "http://localhost:3000/user/signup",
+        "https://blogorabloging.vercel.app/user/signup",
         formData,
         {
           headers: {
@@ -80,7 +80,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "http://localhost:3000/user/login",
+        "https://blogorabloging.vercel.app/user/login",
         formData,
         {
           headers: {

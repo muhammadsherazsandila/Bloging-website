@@ -12,7 +12,7 @@ function AuthorPosts() {
   const [loading, setLoading] = useState(false);
   const fetchPosts = async () => {
     axios
-      .get("http://localhost:3000/user/posts", {
+      .get("https://blogorabloging.vercel.app/user/posts", {
         headers: {
           authorization: `${Cookies.get("token")}`,
         },

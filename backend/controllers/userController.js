@@ -7,6 +7,7 @@ const sharp = require("sharp");
 const { convertImageToBase64, formatDate } = require("../utils/formaters");
 const login = async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
   User.findOne({ email })
     .then(async (user) => {
       if (!user) {

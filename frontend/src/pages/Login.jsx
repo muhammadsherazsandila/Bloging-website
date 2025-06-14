@@ -54,6 +54,7 @@ function Login() {
           },
         }
       );
+      console.log(response.data);
       if (response) {
         if (response.data.status === "success") {
           setName("");
@@ -88,6 +89,7 @@ function Login() {
           },
         }
       );
+      console.log(response.data);
       if (response) {
         if (response.data.status === "success") {
           setName("");

@@ -20,5 +20,4 @@ app.use("/post", postsRouter);
 require("./db/mongooseConnection");
 const debug = require("debug")("app:server");
 
-module.exports = app;
 module.exports.handler = serverless(app);

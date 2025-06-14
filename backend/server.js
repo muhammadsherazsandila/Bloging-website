@@ -8,6 +8,8 @@ const app = express();
 const cors = require("cors");
 app.use(cors());
 
+const serverless = require("serverless-http");
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -18,6 +20,5 @@ app.use("/post", postsRouter);
 require("./db/mongooseConnection");
 const debug = require("debug")("app:server");
 
-app.listen(3000, () => {
-  debug("Server is running on port 3000");
-});
+module.exports = app;
+module.exports.handler = serverless(app);

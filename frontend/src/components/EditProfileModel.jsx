@@ -62,7 +62,7 @@ const EditProfileModal = ({ handleClose }) => {
         await uploadProfilePicture(profilePic);
       }
       const response = await axios.put(
-        "http://localhost:3000/user/update-profile",
+        "https://blogorabloging.vercel.app/user/update-profile",
         formData,
         {
           headers: {

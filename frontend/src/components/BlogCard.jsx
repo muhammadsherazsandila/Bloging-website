@@ -58,7 +58,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`http://localhost:3000/post/add-comment/${post._id}`, {
+      .post(`https://blogorabloging.vercel.app/post/add-comment/${post._id}`, {
         content: replyText,
         user: user.id,
         type: "reply",
@@ -77,7 +77,7 @@ const BlogCard = ({ post, position }) => {
 
   const handleFollow = () => {
     axios
-      .put(`http://localhost:3000/post/follow/${post._id}`, {
+      .put(`https://blogorabloging.vercel.app/post/follow/${post._id}`, {
         userId: user.id,
         followed: !followed,
       })
@@ -102,7 +102,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`http://localhost:3000/post/add-comment/${post._id}`, {
+      .post(`https://blogorabloging.vercel.app/post/add-comment/${post._id}`, {
         content: comment,
         user: user.id,
         type: "comment",
@@ -120,9 +120,12 @@ const BlogCard = ({ post, position }) => {
 
   const handleDeleteComment = (commentId) => {
     axios
-      .delete(`http://localhost:3000/post/delete-comment/${post._id}`, {
-        data: { commentId },
-      })
+      .delete(
+        `https://blogorabloging.vercel.app/post/delete-comment/${post._id}`,
+        {
+          data: { commentId },
+        }
+      )
       .then((response) => {
         if (response.status === 200) {
           setState(!state);
@@ -139,7 +142,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`http://localhost:3000/post/like/${postId}`, {
+      .post(`https://blogorabloging.vercel.app/post/like/${postId}`, {
         userId: user.id,
         liked: !liked,
       })
@@ -160,7 +163,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .put(`http://localhost:3000/post/like-comment/${post._id}`, {
+      .put(`https://blogorabloging.vercel.app/post/like-comment/${post._id}`, {
         commentId: commentId,
         userId: user.id,
         liked: commentLikes[index],
@@ -182,7 +185,7 @@ const BlogCard = ({ post, position }) => {
 
   const handleDeletePost = () => {
     axios
-      .delete(`http://localhost:3000/post/delete-post/${post._id}`)
+      .delete(`https://blogorabloging.vercel.app/post/delete-post/${post._id}`)
       .then((response) => {
         if (response.status === 200) {
           setState(!state);

@@ -22,28 +22,19 @@ function AuthorPosts() {
   useEffect(() => {
     setLoading(true);
     setPosts(author ? author.posts : []);
-    posts.length > 0 ? setLoading(false) : setLoading(false);
+    posts.length > 0 ? setLoading(false) : setLoading(true);
   }, [state, author]);
 
   return (
     <div className="flex flex-col gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-0 mb-16">
-      <h2 className="text-3xl font-bold mb-2">Your Posts</h2>
-      <button
-        onClick={() => setOpenUploadPost(true)}
-        className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-md transition"
-      >
-        <AiOutlinePlus />
-        <span>Upload Post</span>
-      </button>
+      <h2 className="text-3xl font-bold mb-2">Posts</h2>
+
       {loading ? (
         <p className="flex items-center gap-2">
           <CircularProgress />
           <span>Loading...</span>
         </p>
       ) : (
-        ""
-      )}
-      {posts.length > 0 ? (
         posts.map((post, index) => (
           <motion.div
             key={index}
@@ -55,12 +46,7 @@ function AuthorPosts() {
             <BlogCard key={index} post={post} />
           </motion.div>
         ))
-      ) : loading ? (
-        ""
-      ) : (
-        <p>No posts found</p>
       )}
-
       {/* Upload Post Modal */}
       <Modal
         open={openUploadPost}

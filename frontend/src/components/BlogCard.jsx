@@ -225,7 +225,7 @@ const BlogCard = ({ post, position }) => {
         className={`w-full max-w-3xl bg-white text-black shadow-xl rounded-2xl px-0 sm:px-4 mb-6 md:p-6 lg:p-8 xl:p-10 mt-8 md:mt-12 relative transition-all duration-300 hover:shadow-2xl ${position}`}
       >
         {/* Action buttons */}
-        {user ? (
+        {user && post ? (
           user.id === post.author.id ? (
             <div className="absolute -top-3 right-4 flex items-center gap-3 bg-white rounded-full shadow-md px-3 py-2">
               <FiEdit

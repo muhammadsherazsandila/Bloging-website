@@ -15,18 +15,16 @@ const getPost = async (req, res) => {
       posts.map(async (post) => ({
         ...post._doc,
         image: convertImageToBase64(post.image, post.mimeType),
-        author: post.author
-          ? {
-              id: post.author._id,
-              name: post.author.name,
-              profilePicture: post.author.profilePicture
-                ? convertImageToBase64(
-                    post.author.profilePicture,
-                    post.author.mimeType
-                  )
-                : "",
-            }
-          : null,
+        author: {
+          id: post.author._id,
+          name: post.author.name,
+          profilePicture: post.author.profilePicture
+            ? convertImageToBase64(
+                post.author.profilePicture,
+                post.author.mimeType
+              )
+            : "",
+        },
         comments: await Promise.all(
           post.comments.map(async (comment) => ({
             ...comment._doc,

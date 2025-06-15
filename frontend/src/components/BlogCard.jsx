@@ -297,6 +297,7 @@ const BlogCard = ({ post, position }) => {
               onClick={() =>
                 navigate(`/post/${post._id}`, { state: { postId: post._id } })
               }
+              className="text-blue-600 hover:text-blue-800 transition-colors font-semibold cursor-pointer"
             >
               Readmore
             </button>

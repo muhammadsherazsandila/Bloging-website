@@ -18,7 +18,6 @@ function AuthorPosts() {
   const { author, setAuthor } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [openUploadPost, setOpenUploadPost] = useState(false);
   useEffect(() => {
     setLoading(true);
     setPosts(author ? author.posts : []);
@@ -47,28 +46,6 @@ function AuthorPosts() {
           </motion.div>
         ))
       )}
-      {/* Upload Post Modal */}
-      <Modal
-        open={openUploadPost}
-        onClose={() => setOpenUploadPost(false)}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{ backdrop: { timeout: 300 } }}
-      >
-        <Fade in={openUploadPost}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "100%",
-            }}
-          >
-            <UploadPostModal handleClose={() => setOpenUploadPost(false)} />
-          </Box>
-        </Fade>
-      </Modal>
     </div>
   );
 }

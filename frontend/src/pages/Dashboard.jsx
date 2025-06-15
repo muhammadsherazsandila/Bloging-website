@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { AiOutlineEdit } from "react-icons/ai";
+import { AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import { FiCamera } from "react-icons/fi";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
@@ -11,6 +11,7 @@ import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditProfileModel from "../components/EditProfileModel";
+import UploadPostModal from "../components/UploadPostModal";
 import { uploadProfilePicture } from "../utils/uploadPicture";
 import axios from "axios";
 import Cookies from "js-cookie";
@@ -22,6 +23,7 @@ const Dashboard = () => {
   const { user, isLoggedIn, setIsLoggedIn, setUser } = useAuth();
 
   const [openEditProfile, setOpenEditProfile] = useState(false);
+  const [openUploadPost, setOpenUploadPost] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isPostsOpen, setIsPostsOpen] = useState(true);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
@@ -160,6 +162,14 @@ const Dashboard = () => {
                 {loading ? <CircularProgress size={20} /> : ""}
                 {loading ? "Deleting..." : "Delete Profile"}
               </button>
+
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center justify-center gap-2 w-full sm:w-auto"
+                onClick={() => setOpenUploadPost(true)}
+              >
+                <AiOutlinePlus />
+                Upload Post
+              </button>
             </div>
           </div>
 
@@ -222,6 +232,29 @@ const Dashboard = () => {
             }}
           >
             <EditProfileModel handleClose={() => setOpenEditProfile(false)} />
+          </Box>
+        </Fade>
+      </Modal>
+
+      {/* Upload Post Modal */}
+      <Modal
+        open={openUploadPost}
+        onClose={() => setOpenUploadPost(false)}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{ backdrop: { timeout: 300 } }}
+      >
+        <Fade in={openUploadPost}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+            }}
+          >
+            <UploadPostModal handleClose={() => setOpenUploadPost(false)} />
           </Box>
         </Fade>
       </Modal>

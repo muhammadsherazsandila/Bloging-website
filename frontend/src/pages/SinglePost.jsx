@@ -222,7 +222,7 @@ const SinglePost = () => {
 
   return (
     <>
-      <div className="w-full max-w-3/4 bg-white text-black shadow-xl rounded-2xl px-4 mb-16 sm:mb-6 md:p-6 lg:p-8 xl:p-10 mt-24 relative transition-all duration-300 hover:shadow-2xl mx-auto ">
+      <div className="w-full max-w-3/4 bg-white text-black shadow-xl rounded-2xl px-2 mb-16 sm:mb-6 md:p-6 lg:p-8 xl:p-10 mt-24 relative transition-all duration-300 hover:shadow-2xl mx-auto ">
         {/* Action buttons */}
         {user ? (
           user.id === post.author.id ? (

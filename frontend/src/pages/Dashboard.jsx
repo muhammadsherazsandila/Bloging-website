@@ -54,6 +54,7 @@ const Dashboard = () => {
         },
       }
     );
+    console.log(response.data);
     if (response.data.status === "success") {
       setUser(null);
       toast.success("Profile deleted successfully!", toastConfig("delete"));

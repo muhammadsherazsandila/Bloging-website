@@ -53,7 +53,7 @@ function Navbar() {
             </Link>
           ))}
         </div>
-        <div className="flex items-center gap-x-6">
+        <div className="flex flex-1 justify-end gap-2">
           <Tooltip title="Profile" placement="left">
             <button
               className="flex items-center cursor-pointer hover:scale-105 transition duration-300"
@@ -78,6 +78,8 @@ function Navbar() {
           </span>
         </div>
       </nav>
+
+      {/* // Mobile Navigation */}
 
       {
         <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 flex justify-around items-center py-2 shadow-md z-50">

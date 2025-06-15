@@ -232,7 +232,7 @@ const SinglePost = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <div className="max-w-4xl mx-auto px-4 py-8 sm:px-6 lg:px-8 mt-16">
       {/* Post Card */}
       <div className="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
         {/* Card Header */}
@@ -248,7 +248,6 @@ const SinglePost = () => {
                   alt={post.author.name}
                   className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
                 />
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-2 border-white"></div>
               </div>
               <div>
                 <p className="font-semibold text-gray-900">

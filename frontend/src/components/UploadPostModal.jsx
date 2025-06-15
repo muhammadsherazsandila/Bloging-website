@@ -9,6 +9,7 @@ import {
   IconButton,
   Box,
   Chip,
+  CircularProgress,
 } from "@mui/material";
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import CloseIcon from "@mui/icons-material/Close";
@@ -39,7 +40,7 @@ const UploadPostModal = ({
   );
   const { user } = useAuth();
   const { state, setState } = usePost();
-
+  const [isLoading, setIsLoading] = useState(false);
   function base64ToFile(base64String, filename, mimeType = `${post.mimeType}`) {
     const byteCharacters = atob(base64String);
     const byteNumbers = new Array(byteCharacters.length);
@@ -69,6 +70,15 @@ const UploadPostModal = ({
       return;
     }
 
+    if (image.size > 4000000) {
+      toast.error(
+        "Image size should be less than 4MB",
+        toastConfig("post-upload-error")
+      );
+      return;
+    }
+
+    setIsLoading(true);
     const data = new FormData();
     data.append("title", title);
     data.append("caption", caption);
@@ -87,6 +97,7 @@ const UploadPostModal = ({
           },
         }
       );
+      console.log(response.data);
 
       if (response.data.status === "success") {
         toast.success("Posted!", toastConfig("post-upload-success"));
@@ -108,10 +119,7 @@ const UploadPostModal = ({
   };
 
   return (
-    <form
-      onSubmit={handlePost}
-      className="bg-white p-5 rounded-2xl shadow-lg w-full max-w-xl mx-auto border border-gray-100 relative"
-    >
+    <form className="bg-white p-5 rounded-2xl shadow-lg w-full max-w-xl mx-auto border border-gray-100 relative">
       <IconButton
         onClick={handleClose}
         sx={{
@@ -217,8 +225,13 @@ const UploadPostModal = ({
               boxShadow: "0 6px 8px rgba(0,0,0,0.08)",
             },
           }}
+          onClick={(e) => {
+            handlePost(e);
+          }}
+          disabled={isLoading}
         >
-          Post
+          {isLoading ? <CircularProgress size={24} /> : ""}
+          {isLoading ? "Posting..." : "Post"}
         </Button>
       </Stack>
     </form>

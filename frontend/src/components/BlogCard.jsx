@@ -218,7 +218,7 @@ const BlogCard = ({ post, position }) => {
   return (
     <>
       <div
-        className={`w-full max-w-3xl bg-white text-black shadow-xl rounded-2xl p-4 md:p-6 mt-8 md:mt-12 relative transition-all duration-300 hover:shadow-2xl ${position}`}
+        className={`w-full max-w-3xl bg-white text-black shadow-xl rounded-2xl p-0 md:p-6 lg:p-8 xl:p-10 mt-8 md:mt-12 relative transition-all duration-300 hover:shadow-2xl ${position}`}
       >
         {/* Action buttons */}
         {user ? (
@@ -354,164 +354,158 @@ const BlogCard = ({ post, position }) => {
         {/* Comments section */}
         {showComments && (
           <div className="mt-6 border-t border-gray-200 pt-4 max-h-[400px] overflow-y-auto">
-            {post.comments.length === 0 ? (
-              <p className="text-gray-500 text-center py-4">
-                No comments yet. Be the first to comment!
-              </p>
-            ) : (
-              <>
-                {/* New comment form */}
-                <div className="sticky top-0 bg-white py-3 z-10">
-                  <form className="flex items-center gap-2">
-                    <input
-                      type="text"
-                      value={comment}
-                      onChange={(e) => setComment(e.target.value)}
-                      placeholder="Write a comment..."
-                      className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      required
-                    />
-                    <button
-                      type="submit"
-                      onClick={handleCommentSubmit}
-                      disabled={!comment}
-                      className={`p-3 rounded-full ${
-                        comment
-                          ? "bg-blue-600 text-white hover:bg-blue-700"
-                          : "bg-gray-200 text-gray-400"
-                      } transition-colors`}
-                    >
-                      <FaArrowRight />
-                    </button>
-                  </form>
-                </div>
+            <>
+              {/* New comment form */}
+              <div className="sticky top-0 bg-white py-3 z-10">
+                <form className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Write a comment..."
+                    className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    onClick={handleCommentSubmit}
+                    disabled={!comment}
+                    className={`p-3 rounded-full ${
+                      comment
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "bg-gray-200 text-gray-400"
+                    } transition-colors`}
+                  >
+                    <FaArrowRight />
+                  </button>
+                </form>
+              </div>
 
-                {/* Comments list */}
-                <div className="space-y-4 mt-2">
-                  {post.comments.map((comment, i) => (
-                    <div key={i} className="p-4 rounded-xl bg-gray-50">
-                      <div className="flex justify-between items-start">
-                        <div className="flex items-start gap-3">
-                          <img
-                            src={
-                              comment.user.profilePicture ||
-                              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                            }
-                            alt={comment.user.name}
-                            className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
-                          />
-                          <div>
-                            <p className="font-semibold text-gray-900">
-                              {comment.user.name}
-                            </p>
-                            <p className="text-gray-600 text-sm">
-                              {comment.createdAt}{" "}
-                              {comment.updatedAt &&
-                                `· Updated ${comment.updatedAt}`}
-                            </p>
-                            <p className="text-gray-700 mt-2">
-                              {comment.content}
-                            </p>
-                          </div>
+              {/* Comments list */}
+              <div className="space-y-4 mt-2">
+                {post.comments.map((comment, i) => (
+                  <div key={i} className="p-4 rounded-xl bg-gray-50">
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-start gap-3">
+                        <img
+                          src={
+                            comment.user.profilePicture ||
+                            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                          }
+                          alt={comment.user.name}
+                          className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                        />
+                        <div>
+                          <p className="font-semibold text-gray-900">
+                            {comment.user.name}
+                          </p>
+                          <p className="text-gray-600 text-sm">
+                            {comment.createdAt}{" "}
+                            {comment.updatedAt &&
+                              `· Updated ${comment.updatedAt}`}
+                          </p>
+                          <p className="text-gray-700 mt-2">
+                            {comment.content}
+                          </p>
                         </div>
-
-                        {user?.id === comment.user.id && (
-                          <button
-                            onClick={() => handleDeleteComment(comment._id)}
-                            className="text-gray-400 hover:text-red-600 transition-colors"
-                            title="Delete comment"
-                          >
-                            <MdDelete className="text-lg" />
-                          </button>
-                        )}
                       </div>
 
-                      {/* Comment action buttons */}
-                      <div className="flex items-center gap-4 mt-3 ml-12 text-sm text-gray-600">
+                      {user?.id === comment.user.id && (
                         <button
-                          onClick={() => handleCommentLikes(i, comment._id)}
-                          className="flex items-center gap-1 hover:text-red-600 transition-colors"
-                          aria-label="Like comment"
+                          onClick={() => handleDeleteComment(comment._id)}
+                          className="text-gray-400 hover:text-red-600 transition-colors"
+                          title="Delete comment"
                         >
-                          {commentLikes[i] ? (
-                            <FaHeart className="text-red-600" />
-                          ) : (
-                            <FaRegHeart />
-                          )}
-                          <span>{comment.likes.length}</span>
+                          <MdDelete className="text-lg" />
                         </button>
-
-                        <button
-                          onClick={() => toggleReplyForm(i)}
-                          className="flex items-center gap-1 hover:text-blue-600 transition-colors"
-                          aria-label="Reply to comment"
-                        >
-                          <FaReply />
-                          <span>Reply</span>
-                        </button>
-                      </div>
-
-                      {/* Reply form */}
-                      {replyFormOpen[i] && (
-                        <form className="mt-3 ml-12 flex items-center gap-2">
-                          <input
-                            type="text"
-                            name="reply"
-                            value={replyText}
-                            onChange={(e) => setReplyText(e.target.value)}
-                            placeholder="Write a reply..."
-                            className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            required
-                          />
-                          <button
-                            type="submit"
-                            onClick={(e) => handleReplySubmit(i, e)}
-                            className={`p-3 rounded-full ${
-                              replyText
-                                ? "bg-blue-600 text-white hover:bg-blue-700"
-                                : "bg-gray-200 text-gray-400"
-                            } transition-colors`}
-                          >
-                            <FaArrowRight />
-                          </button>
-                        </form>
-                      )}
-
-                      {/* Replies */}
-                      {comment.replies.length > 0 && (
-                        <div className="mt-4 ml-8 border-l-2 border-gray-200 pl-4 space-y-4">
-                          {comment.replies.map((reply, j) => (
-                            <div key={j} className="pt-3">
-                              <div className="flex items-start gap-3">
-                                <img
-                                  src={
-                                    reply.user.profilePicture ||
-                                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                                  }
-                                  alt={reply.user.name}
-                                  className="w-8 h-8 rounded-full object-cover border-2 border-white"
-                                />
-                                <div>
-                                  <p className="font-semibold text-gray-900">
-                                    {reply.user.name}
-                                  </p>
-                                  <p className="text-gray-600 text-sm">
-                                    {reply.createdAt}
-                                  </p>
-                                  <p className="text-gray-700 mt-1">
-                                    {reply.content}
-                                  </p>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
                       )}
                     </div>
-                  ))}
-                </div>
-              </>
-            )}
+
+                    {/* Comment action buttons */}
+                    <div className="flex items-center gap-4 mt-3 ml-12 text-sm text-gray-600">
+                      <button
+                        onClick={() => handleCommentLikes(i, comment._id)}
+                        className="flex items-center gap-1 hover:text-red-600 transition-colors"
+                        aria-label="Like comment"
+                      >
+                        {commentLikes[i] ? (
+                          <FaHeart className="text-red-600" />
+                        ) : (
+                          <FaRegHeart />
+                        )}
+                        <span>{comment.likes.length}</span>
+                      </button>
+
+                      <button
+                        onClick={() => toggleReplyForm(i)}
+                        className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                        aria-label="Reply to comment"
+                      >
+                        <FaReply />
+                        <span>Reply</span>
+                      </button>
+                    </div>
+
+                    {/* Reply form */}
+                    {replyFormOpen[i] && (
+                      <form className="mt-3 ml-12 flex items-center gap-2">
+                        <input
+                          type="text"
+                          name="reply"
+                          value={replyText}
+                          onChange={(e) => setReplyText(e.target.value)}
+                          placeholder="Write a reply..."
+                          className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          required
+                        />
+                        <button
+                          type="submit"
+                          onClick={(e) => handleReplySubmit(i, e)}
+                          className={`p-3 rounded-full ${
+                            replyText
+                              ? "bg-blue-600 text-white hover:bg-blue-700"
+                              : "bg-gray-200 text-gray-400"
+                          } transition-colors`}
+                        >
+                          <FaArrowRight />
+                        </button>
+                      </form>
+                    )}
+
+                    {/* Replies */}
+                    {comment.replies.length > 0 && (
+                      <div className="mt-4 ml-8 border-l-2 border-gray-200 pl-4 space-y-4">
+                        {comment.replies.map((reply, j) => (
+                          <div key={j} className="pt-3">
+                            <div className="flex items-start gap-3">
+                              <img
+                                src={
+                                  reply.user.profilePicture ||
+                                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                                }
+                                alt={reply.user.name}
+                                className="w-8 h-8 rounded-full object-cover border-2 border-white"
+                              />
+                              <div>
+                                <p className="font-semibold text-gray-900">
+                                  {reply.user.name}
+                                </p>
+                                <p className="text-gray-600 text-sm">
+                                  {reply.createdAt}
+                                </p>
+                                <p className="text-gray-700 mt-1">
+                                  {reply.content}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </>
           </div>
         )}
       </div>

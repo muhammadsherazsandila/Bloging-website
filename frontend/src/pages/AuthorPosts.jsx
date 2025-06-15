@@ -31,7 +31,7 @@ function AuthorPosts() {
   }, [state]);
 
   return (
-    <div className="flex flex-col gap-6 items-center p-4">
+    <div className="flex flex-col gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-0">
       <h2 className="text-3xl font-bold mb-2">Your Posts</h2>
       {loading ? (
         <p className="flex items-center gap-2">

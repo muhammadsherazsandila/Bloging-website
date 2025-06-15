@@ -15,7 +15,7 @@ function All() {
   }, [state]);
 
   return (
-    <div className="mx-auto px-12 sm:px-18 lg:px-24 py-12 mt-16">
+    <div className="mx-auto px-2 md:px-12 sm:px-18 lg:px-24 py-12 mt-16">
       <h2 className="text-3xl font-bold mb-6">Our Blog Posts</h2>
       {loading ? (
         <p className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center gap-2">

@@ -136,15 +136,8 @@ const updateUser = (req, res) => {
 };
 
 const deleteUser = (req, res) => {
-  const userId = req.params.id;
-  User.findByIdAndDelete(userId)
-    .then((deletedUser) => {
-      if (!deletedUser) {
-        return res.status(200).json({
-          message: "User not found",
-          status: "error",
-        });
-      }
+  User.findByIdAndDelete(verifyToken(req.headers.authorization).id)
+    .then(() => {
       res.status(200).json({
         message: "User deleted successfully",
         status: "success",

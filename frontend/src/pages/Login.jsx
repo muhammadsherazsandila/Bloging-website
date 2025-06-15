@@ -7,10 +7,13 @@ import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { toastConfig } from "../utils/toastConfig";
 import { usePost } from "../contexts/PostContext";
+import { CircularProgress } from "@mui/material";
+
 function Login() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const { isLoggedIn, setIsLoggedIn, user, setUser } = useAuth();
@@ -40,6 +43,24 @@ function Login() {
   };
 
   const signup = async () => {
+    if (!name || !email || !password) {
+      toast.error("Please fill all the fields", toastConfig("Signup-Msg-1"));
+      return;
+    }
+    if (!name) {
+      toast.error("Please enter name", toastConfig("Signup-Msg-1"));
+      return;
+    }
+    if (!email) {
+      toast.error("Please enter email", toastConfig("Signup-Msg-1"));
+      return;
+    }
+    if (!password) {
+      toast.error("Please enter password", toastConfig("Signup-Msg-1"));
+      return;
+    }
+    setLoading(true);
+
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
@@ -76,6 +97,24 @@ function Login() {
   };
 
   const Login = async () => {
+    if (!email && !password) {
+      toast.error(
+        "Please enter email and password",
+        toastConfig("Login-Msg-1")
+      );
+      return;
+    }
+    if (!email) {
+      toast.error("Please enter email", toastConfig("Login-Msg-1"));
+      return;
+    }
+    if (!password) {
+      toast.error("Please enter password", toastConfig("Login-Msg-1"));
+      return;
+    }
+
+    setLoading(true);
+
     const formData = new FormData();
     formData.append("email", email);
     formData.append("password", password);
@@ -89,7 +128,6 @@ function Login() {
           },
         }
       );
-      console.log(response.data);
       if (response) {
         if (response.data.status === "success") {
           setName("");
@@ -184,7 +222,8 @@ function Login() {
                   }}
                   className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Sign in
+                  {loading && <CircularProgress size={20} />}
+                  {loading ? "Signing in..." : "Sign in"}
                 </button>
               </div>
             </form>
@@ -274,7 +313,8 @@ function Login() {
                   }}
                   className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Signup
+                  {loading && <CircularProgress size={20} />}
+                  {loading ? "Signing up..." : "Sign up"}
                 </button>
               </div>
             </form>

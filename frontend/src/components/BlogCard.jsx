@@ -76,6 +76,10 @@ const BlogCard = ({ post, position }) => {
   };
 
   const handleFollow = () => {
+    if (!user) {
+      toast.error("Please login to follow", toastConfig("follow-error"));
+      return;
+    }
     axios
       .put(`https://blogorabloging.vercel.app/post/follow/${post._id}`, {
         userId: user.id,
@@ -218,7 +222,7 @@ const BlogCard = ({ post, position }) => {
   return (
     <>
       <div
-        className={`w-full max-w-3xl bg-white text-black shadow-xl rounded-2xl p-0 md:p-6 lg:p-8 xl:p-10 mt-8 md:mt-12 relative transition-all duration-300 hover:shadow-2xl ${position}`}
+        className={`w-full max-w-3xl bg-white text-black shadow-xl rounded-2xl px-0 sm:px-4 mb-6 md:p-6 lg:p-8 xl:p-10 mt-8 md:mt-12 relative transition-all duration-300 hover:shadow-2xl ${position}`}
       >
         {/* Action buttons */}
         {user ? (
@@ -238,7 +242,7 @@ const BlogCard = ({ post, position }) => {
           ) : (
             <button
               onClick={handleFollow}
-              className="absolute top-4 right-4 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+              className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
             >
               <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
               <span>{followed ? "Following" : "Follow"}</span>
@@ -247,7 +251,7 @@ const BlogCard = ({ post, position }) => {
         ) : (
           <button
             onClick={handleFollow}
-            className="absolute top-4 right-4 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+            className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
           >
             <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
             <span>{followed ? "Following" : "Follow"}</span>
@@ -271,8 +275,12 @@ const BlogCard = ({ post, position }) => {
                 <p className="font-semibold text-gray-900">
                   {post.author.name}
                 </p>
-                <p className="text-gray-600 text-sm">
-                  {post.createdAt} · Updated {post.updatedAt}
+                <p className="text-gray-600 text-sm flex flex-col gap-1 sm:flex-row lg:flex-row xl:flex-row">
+                  <span>{post.createdAt}</span>
+                  <span>
+                    <span className="font-semibold mr-1">Updated</span>
+                    {post.updatedAt}
+                  </span>
                 </p>
               </div>
             </div>

@@ -26,6 +26,7 @@ userRouter.put(
 );
 userRouter.get("/posts", getAllPosts);
 userRouter.post("/forgot-password", forgetPassword);
+userRouter.get("/delete-profile", deleteUser);
 
 module.exports = {
   userRouter,

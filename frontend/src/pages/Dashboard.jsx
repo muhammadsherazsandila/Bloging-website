@@ -1,9 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
 import { FiCamera } from "react-icons/fi";
-import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
-import Cookie from "js-cookie";
 import { toast } from "react-toastify";
 import { toastConfig } from "../utils/toastConfig";
 
@@ -11,10 +9,14 @@ import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
+import DeleteIcon from "@mui/icons-material/Delete";
 import UploadPostModal from "../components/UploadPostModal";
 import EditProfileModel from "../components/EditProfileModel";
 import { uploadProfilePicture } from "../utils/uploadPicture";
 import { Outlet, useNavigate } from "react-router-dom";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { CircularProgress } from "@mui/material";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -22,6 +24,7 @@ const Dashboard = () => {
 
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openUploadPost, setOpenUploadPost] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const fileInputRef = useRef(null);
 
@@ -39,6 +42,26 @@ const Dashboard = () => {
     } else {
       toast.error(response.error, toastConfig("upload-profile-pic-error"));
     }
+  };
+
+  const deleteProfile = async () => {
+    setLoading(true);
+    const response = await axios.delete(
+      "https://blogorabloging.vercel.app/user/delete-profile",
+      {
+        headers: {
+          Authorization: `${Cookies.get("token")}`,
+        },
+      }
+    );
+    if (response.data.status === "success") {
+      setUser(null);
+      toast.success("Profile deleted successfully!", toastConfig("delete"));
+      navigate("/login");
+    } else {
+      toast.error(response.data.message, toastConfig("delete-profile-error"));
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -107,10 +130,11 @@ const Dashboard = () => {
               </button>
               <button
                 className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center justify-center gap-2 w-full sm:w-auto"
-                onClick={() => setOpenUploadPost(true)}
+                onClick={deleteProfile}
               >
-                <AiOutlinePlus />
-                Add Post
+                <DeleteIcon />
+                {loading ? <CircularProgress size={20} /> : ""}
+                {loading ? "Deleting..." : "Delete Profile"}
               </button>
             </div>
           </div>

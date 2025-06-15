@@ -61,7 +61,7 @@ function Navbar() {
               className="flex items-center cursor-pointer hover:scale-105 transition duration-300"
               onClick={() => navigate("/dashboard")}
             >
-              <img
+              <imgs
                 src={
                   isLoggedIn && user.profilePicture
                     ? user.profilePicture

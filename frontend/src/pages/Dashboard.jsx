@@ -50,7 +50,7 @@ const Dashboard = () => {
   const deleteProfile = async () => {
     setLoading(true);
     const response = await axios.delete(
-      "https://blogorabloging.vercel.app//user/delete-profile",
+      "https://blogorabloging.vercel.app/user/delete-profile",
       {
         headers: {
           Authorization: `${Cookies.get("token")}`,
@@ -80,7 +80,7 @@ const Dashboard = () => {
   const fetchPosts = async () => {
     axios
       .get(
-        `https://blogorabloging.vercel.app//user/posts/${Cookies.get("token")}`
+        `https://blogorabloging.vercel.app/user/posts/${Cookies.get("token")}`
       )
       .then((response) => {
         if (response.data.status === "success") {

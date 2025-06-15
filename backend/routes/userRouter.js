@@ -1,6 +1,5 @@
-const express = require("express");
-const userRouter = express.Router();
-const {
+import express from "express";
+import {
   login,
   signup,
   updateUser,
@@ -10,8 +9,10 @@ const {
   forgetPassword,
   dashboard,
   getAllPosts,
-} = require("../controllers/userController");
-const upload = require("../utils/upload");
+} from "../controllers/userController.js";
+import upload from "../utils/upload.js";
+
+const userRouter = express.Router();
 
 userRouter.get("/dashboard", dashboard);
 userRouter.post("/login", upload.none(), login);
@@ -28,6 +29,4 @@ userRouter.get("/posts", getAllPosts);
 userRouter.post("/forgot-password", forgetPassword);
 userRouter.delete("/delete-profile", deleteUser);
 
-module.exports = {
-  userRouter,
-};
+export { userRouter };

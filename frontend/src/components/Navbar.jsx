@@ -6,6 +6,8 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../contexts/AuthContext";
 import Cookie from "js-cookie";
 import { Tooltip } from "@mui/material";
+import { IoMdHome } from "react-icons/io";
+import { MdAccountCircle } from "react-icons/md";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -87,20 +89,7 @@ function Navbar() {
             onClick={() => navigate("/")}
             className="flex flex-col items-center text-gray-700 hover:text-blue-500"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M3 12l2-2m0 0l7-7 7 7m-9 14V9m0 13h4m4-13l2 2M5 10v10a1 1 0 001 1h3m10-11v10a1 1 0 01-1 1h-3"
-              />
-            </svg>
+            <IoMdHome className="h-6 w-6" />
             <span className="text-xs">Home</span>
           </button>
 
@@ -150,20 +139,7 @@ function Navbar() {
             onClick={() => navigate("/dashboard")}
             className="flex flex-col items-center text-gray-700 hover:text-blue-500"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5.121 17.804A1.992 1.992 0 004 19.25v.75A2 2 0 006 22h12a2 2 0 002-2v-.75c0-.563-.232-1.102-.646-1.496l-1.864-1.734M12 12a4 4 0 100-8 4 4 0 000 8z"
-              />
-            </svg>
+            <MdAccountCircle className="h-6 w-6" />
             <span className="text-xs">Profile</span>
           </button>
         </div>

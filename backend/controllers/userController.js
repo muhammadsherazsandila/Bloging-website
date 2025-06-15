@@ -1,158 +1,150 @@
-const User = require("../models/userModel");
-const Post = require("../models/postModel");
-const bcrypt = require("bcrypt");
-const { generateToken, verifyToken } = require("../utils/token");
-const { sendEmail } = require("../utils/resetPass");
-const sharp = require("sharp");
-const { convertImageToBase64, formatDate } = require("../utils/formaters");
-const login = async (req, res) => {
+import User from "../models/userModel.js";
+import Post from "../models/postModel.js";
+import bcrypt from "bcrypt";
+import { generateToken, verifyToken } from "../utils/token.js";
+import { sendEmail } from "../utils/resetPass.js";
+import sharp from "sharp";
+import { convertImageToBase64, formatDate } from "../utils/formaters.js";
+
+export const login = async (req, res) => {
   const { email, password } = req.body;
   console.log(email, password);
-  User.findOne({ email })
-    .then(async (user) => {
-      if (!user) {
-        return res.status(200).json({
-          message: "User not found",
-          status: "error",
-        });
-      }
-      // Compare the provided password with the stored hashed password
-      const isPasswordValid = bcrypt.compareSync(password, user.password);
-      if (!isPasswordValid) {
-        return res.status(200).json({
-          message: "Invalid password",
-          status: "error",
-        });
-      }
-      let pngBuffer = null;
-      if (user.profilePicture) {
-        pngBuffer = await sharp(user.profilePicture).png().toBuffer();
-      }
-
-      const updatedUser = {
-        name: user.name,
-        profilePicture: pngBuffer?.toString("base64"), // send as base64 string for frontend use
-        followers: user.followers.length,
-        following: user.following.length,
-        bio: user.bio || "", // Include bio if it exists
-      };
-      res.status(200).json({
-        message: "Login successful",
-        status: "success",
-        user: updatedUser,
-        token: generateToken(user), // Assuming generateToken is a function that generates a JWT token
-      });
-    })
-    .catch((error) => {
-      res.status(200).json({
-        message: "Error logging in",
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({
+        message: "User not found",
         status: "error",
-        error: error.message,
       });
+    }
+    const isPasswordValid = bcrypt.compareSync(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(200).json({
+        message: "Invalid password",
+        status: "error",
+      });
+    }
+    let pngBuffer = null;
+    if (user.profilePicture) {
+      pngBuffer = await sharp(user.profilePicture).png().toBuffer();
+    }
+    const updatedUser = {
+      name: user.name,
+      profilePicture: pngBuffer?.toString("base64"),
+      followers: user.followers.length,
+      following: user.following.length,
+      bio: user.bio || "",
+    };
+    res.status(200).json({
+      message: "Login successful",
+      status: "success",
+      user: updatedUser,
+      token: generateToken(user),
     });
+  } catch (error) {
+    res.status(200).json({
+      message: "Error logging in",
+      status: "error",
+      error: error.message,
+    });
+  }
 };
 
-const signup = (req, res) => {
+export const signup = async (req, res) => {
   if (!req.body) {
     return res.status(200).json({
       message: "having no body",
     });
   }
   const { name, email, password } = req.body;
-  const pass = bcrypt.hashSync(password, 10); // Hash the password
+  const pass = bcrypt.hashSync(password, 10);
   const newUser = new User({ name, email, password: pass });
-  // Save the new user to the database
-  newUser
-    .save()
-    .then(async (user) => {
-      let pngBuffer = null;
-      if (user.profilePicture) {
-        pngBuffer = await sharp(user.profilePicture).png().toBuffer();
-      }
-
-      const updatedUser = {
-        name: user.name,
-        profilePicture: pngBuffer?.toString("base64"), // send as base64 string for frontend use
-        followers: user.followers.length,
-        following: user.following.length,
-        bio: user.bio || "", // Include bio if it exists
-      };
-      // Generate a token for the user
-      res.status(200).json({
-        message: "User created successfully",
-        status: "success",
-        user: updatedUser,
-        token: generateToken(user), // Assuming generateToken is a function that generates a JWT token
-      });
-    })
-    .catch((error) => {
-      res.status(200).json({
-        message: "User Already Exist!",
-        status: "error",
-        error: error.message,
-      });
+  try {
+    const user = await newUser.save();
+    let pngBuffer = null;
+    if (user.profilePicture) {
+      pngBuffer = await sharp(user.profilePicture).png().toBuffer();
+    }
+    const updatedUser = {
+      name: user.name,
+      profilePicture: pngBuffer?.toString("base64"),
+      followers: user.followers.length,
+      following: user.following.length,
+      bio: user.bio || "",
+    };
+    res.status(200).json({
+      message: "User created successfully",
+      status: "success",
+      user: updatedUser,
+      token: generateToken(user),
     });
+  } catch (error) {
+    res.status(200).json({
+      message: "User Already Exist!",
+      status: "error",
+      error: error.message,
+    });
+  }
 };
 
-const updateUser = (req, res) => {
-  User.findByIdAndUpdate(verifyToken(req.headers.authorization).id, req.body, {
-    new: true,
-  })
-    .then(async (user) => {
-      if (!user) {
-        return res.status(200).json({
-          message: "User not found!",
-          status: "error",
-        });
-      }
-      let pngBuffer = null;
-      if (user.profilePicture) {
-        pngBuffer = await sharp(user.profilePicture).png().toBuffer();
-      }
-
-      const updatedUser = {
-        name: user.name,
-        profilePicture: pngBuffer?.toString("base64"), // send as base64 string for frontend use
-        followers: user.followers.length,
-        following: user.following.length,
-        bio: user.bio || "", // Include bio if it exists
-      };
-      if (req.body.password) {
-        updatedUser.password = req.body.password;
-      }
-      res.status(200).json({
-        message: "User updated successfully",
-        status: "success",
-        user: updatedUser,
-      });
-    })
-    .catch((error) => {
-      res.status(200).json({
-        message: "Error updating user",
+export const updateUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      verifyToken(req.headers.authorization).id,
+      req.body,
+      { new: true }
+    );
+    if (!user) {
+      return res.status(200).json({
+        message: "User not found!",
         status: "error",
-        error: error.message,
       });
+    }
+    let pngBuffer = null;
+    if (user.profilePicture) {
+      pngBuffer = await sharp(user.profilePicture).png().toBuffer();
+    }
+    const updatedUser = {
+      name: user.name,
+      profilePicture: pngBuffer?.toString("base64"),
+      followers: user.followers.length,
+      following: user.following.length,
+      bio: user.bio || "",
+    };
+    if (req.body.password) {
+      updatedUser.password = req.body.password;
+    }
+    res.status(200).json({
+      message: "User updated successfully",
+      status: "success",
+      user: updatedUser,
     });
+  } catch (error) {
+    res.status(200).json({
+      message: "Error updating user",
+      status: "error",
+      error: error.message,
+    });
+  }
 };
 
-const deleteUser = (req, res) => {
-  User.findByIdAndDelete(verifyToken(req.headers.authorization).id)
-    .then(() => {
-      res.status(200).json({
-        message: "User deleted successfully",
-        status: "success",
-      });
-    })
-    .catch((error) => {
-      res.status(200).json({
-        message: "Error deleting user",
-        status: "error",
-        error: error.message,
-      });
+export const deleteUser = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(verifyToken(req.headers.authorization).id);
+    res.status(200).json({
+      message: "User deleted successfully",
+      status: "success",
     });
+  } catch (error) {
+    res.status(200).json({
+      message: "Error deleting user",
+      status: "error",
+      error: error.message,
+    });
+  }
 };
 
-const uploadProfilePicture = async (req, res) => {
+export const uploadProfilePicture = async (req, res) => {
   if (req.body) {
     const token = verifyToken(req.headers.authorization);
     const user = await User.findOne({ _id: token.id });
@@ -167,10 +159,10 @@ const uploadProfilePicture = async (req, res) => {
 
     const updatedUser = {
       name: user.name,
-      profilePicture: convertImageToBase64(user.profilePicture, user.mimeType), // send as base64 string for frontend use
+      profilePicture: convertImageToBase64(user.profilePicture, user.mimeType),
       followers: user.followers.length,
       following: user.following.length,
-      bio: user.bio || "", // Include bio if it exists
+      bio: user.bio || "",
     };
     return res.json({
       message: "uploaded",
@@ -184,65 +176,61 @@ const uploadProfilePicture = async (req, res) => {
   }
 };
 
-const follow = (req, res) => {
+export const follow = async (req, res) => {
   const userId = req.params.id;
   const followerId = req.body.followerId;
-
-  User.findByIdAndUpdate(
-    userId,
-    { $addToSet: { followers: followerId } },
-    { new: true }
-  )
-    .then((updatedUser) => {
-      if (!updatedUser) {
-        return res.status(200).json({
-          message: "User not found",
-          status: "error",
-        });
-      }
-      res.status(200).json({
-        message: "User followed successfully",
-        status: "success",
-        data: updatedUser,
-      });
-    })
-    .catch((error) => {
-      res.status(200).json({
-        message: "Error following user",
+  try {
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $addToSet: { followers: followerId } },
+      { new: true }
+    );
+    if (!updatedUser) {
+      return res.status(200).json({
+        message: "User not found",
         status: "error",
-        error: error.message,
       });
+    }
+    res.status(200).json({
+      message: "User followed successfully",
+      status: "success",
+      data: updatedUser,
     });
+  } catch (error) {
+    res.status(200).json({
+      message: "Error following user",
+      status: "error",
+      error: error.message,
+    });
+  }
 };
 
-const forgetPassword = (req, res) => {
+export const forgetPassword = async (req, res) => {
   const { email } = req.body;
-  User.findOne({ email })
-    .then((user) => {
-      if (!user) {
-        return res.status(200).json({
-          message: "User not found",
-          status: "error",
-        });
-      }
-      // Generate a password reset token and send it to the user's email
-      const token = Math.floor(Math.random() * 1000000); // Simple token generation, replace with a more secure method
-      sendEmail(user.email, token);
-      res.status(200).json({
-        message: "Password reset email sent",
-        status: "success",
-      });
-    })
-    .catch((error) => {
-      res.status(200).json({
-        message: "Error sending password reset email",
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({
+        message: "User not found",
         status: "error",
-        error: error.message,
       });
+    }
+    const token = Math.floor(Math.random() * 1000000);
+    sendEmail(user.email, token);
+    res.status(200).json({
+      message: "Password reset email sent",
+      status: "success",
     });
+  } catch (error) {
+    res.status(200).json({
+      message: "Error sending password reset email",
+      status: "error",
+      error: error.message,
+    });
+  }
 };
 
-const dashboard = async (req, res) => {
+export const dashboard = async (req, res) => {
   try {
     const token = verifyToken(req.headers.authorization);
     if (!token || !token.id) {
@@ -251,7 +239,6 @@ const dashboard = async (req, res) => {
         status: "error",
       });
     }
-
     const user = await User.findById(token.id);
     if (!user) {
       return res.status(200).json({
@@ -259,20 +246,18 @@ const dashboard = async (req, res) => {
         status: "error",
       });
     }
-
     const updatedUser = {
       id: user._id,
       name: user.name,
       profilePicture: user.profilePicture
         ? convertImageToBase64(user.profilePicture, user.mimeType)
-        : "", // send as base64 string for frontend use
+        : "",
       followers: user.followers,
       following: user.following,
-      bio: user.bio || "", // Include bio if it exists
+      bio: user.bio || "",
       about: user.about,
       friends: await getFriends(user._id),
     };
-
     res.json({
       user: updatedUser,
       status: "success",
@@ -286,7 +271,7 @@ const dashboard = async (req, res) => {
   }
 };
 
-const getAllPosts = async (req, res) => {
+export const getAllPosts = async (req, res) => {
   try {
     const token = verifyToken(req.headers.authorization);
     if (!token || !token.id) {
@@ -296,7 +281,7 @@ const getAllPosts = async (req, res) => {
       });
     }
     const posts = await Post.find({ author: token.id })
-      .sort({ createdAt: -1 }) // Sort posts by createdAt field in descending order
+      .sort({ createdAt: -1 })
       .populate("author")
       .populate("comments.user", "name profilePicture mimeType")
       .populate("comments.replies.user", "name profilePicture mimeType");
@@ -370,7 +355,7 @@ const getAllPosts = async (req, res) => {
   }
 };
 
-const getFriends = async (userId) => {
+export const getFriends = async (userId) => {
   try {
     const user = await User.findById(userId);
     const friends = await Promise.all(
@@ -390,16 +375,4 @@ const getFriends = async (userId) => {
   } catch (error) {
     console.error("Error fetching friends:", error);
   }
-};
-
-module.exports = {
-  login,
-  signup,
-  updateUser,
-  deleteUser,
-  uploadProfilePicture,
-  follow,
-  forgetPassword,
-  dashboard,
-  getAllPosts,
 };

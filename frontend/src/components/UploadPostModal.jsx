@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 import CloseIcon from "@mui/icons-material/Close";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { useAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import { uploadProfilePicture } from "../utils/uploadPicture";
@@ -156,19 +158,7 @@ const UploadPostModal = ({
             }}
           />
 
-          <TextField
-            fullWidth
-            placeholder="Share your thoughts..."
-            variant="outlined"
-            multiline
-            rows={3}
-            value={caption}
-            onChange={(e) => setCaption(e.target.value)}
-            sx={{
-              "& .MuiInputBase-root": { borderRadius: "12px" },
-              "& .MuiOutlinedInput-input": { padding: "12px 14px" },
-            }}
-          />
+          <ReactQuill value={caption} onChange={setCaption} />
         </Stack>
       </Stack>
 

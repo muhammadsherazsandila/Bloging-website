@@ -1,9 +1,7 @@
-const express = require("express");
-const { homePage } = require("../controllers/mainController");
+import express from "express";
+import { homePage } from "../controllers/mainController.js";
 const mainRouter = express.Router();
 
 mainRouter.get("/", homePage);
 
-module.exports = {
-  mainRouter,
-};
+export { mainRouter };

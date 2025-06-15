@@ -1,4 +1,1 @@
-const sendEmail = (email, token) => {};
-module.exports = {
-  sendEmail,
-};
+export const sendEmail = (email, token) => {};

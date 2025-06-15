@@ -1,7 +1,6 @@
-const express = require("express");
-const upload = require("../utils/upload");
-const postsRouter = express.Router();
-const {
+import express from "express";
+import upload from "../utils/upload.js";
+import {
   getPost,
   createPost,
   updatePost,
@@ -11,8 +10,10 @@ const {
   likeComment,
   follow,
   like,
-} = require("../controllers/postsController");
-const { uploadProfilePicture } = require("../controllers/userController");
+} from "../controllers/postsController.js";
+import { uploadProfilePicture } from "../controllers/userController.js";
+
+const postsRouter = express.Router();
 
 postsRouter.get("/", getPost);
 postsRouter.post("/upload-post", upload.single("image"), createPost);
@@ -24,6 +25,4 @@ postsRouter.put("/like-comment/:id", likeComment);
 postsRouter.put("/follow/:id", follow);
 postsRouter.post("/like/:id", like);
 
-module.exports = {
-  postsRouter,
-};
+export { postsRouter };

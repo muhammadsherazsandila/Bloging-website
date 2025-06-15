@@ -1,10 +1,10 @@
-const User = require("../models/userModel");
-const Post = require("../models/postModel");
-const { verifyToken } = require("../utils/token");
-const sharp = require("sharp"); // Assuming you are using sharp for image processing
-const { convertImageToBase64, formatDate } = require("../utils/formaters");
+import User from "../models/userModel.js";
+import Post from "../models/postModel.js";
+import { verifyToken } from "../utils/token.js";
+import sharp from "sharp"; // Assuming you are using sharp for image processing
+import { convertImageToBase64, formatDate } from "../utils/formaters.js";
 
-const getPost = async (req, res) => {
+export const getPost = async (req, res) => {
   try {
     const posts = await Post.find()
       .populate("author", "name profilePicture mimeType")
@@ -79,10 +79,10 @@ const getPost = async (req, res) => {
   }
 };
 
-const createPost = async (req, res) => {
+export const createPost = async (req, res) => {
   const { id, title, caption } = req.body;
   const author = verifyToken(req.headers.authorization).id;
-  const hashTags = caption.match(/#\w+/g) || []; // Extract hashtags from caption
+  const hashTags = caption.match(/#\w+/g) || [];
   const tags = hashTags.map((tag) => tag.slice(1));
   if (id !== "") {
     const post = await Post.findById(id);
@@ -105,7 +105,7 @@ const createPost = async (req, res) => {
     caption: caption,
     author: author,
     tags: tags,
-    image: req.file.buffer, // Assuming image is uploaded as a file
+    image: req.file.buffer,
     mimeType: req.file.mimetype,
   });
 
@@ -131,7 +131,7 @@ const createPost = async (req, res) => {
       };
       const updatedPost = {
         ...createdPost._doc,
-        image: convertImageToBase64(createdPost.image, createdPost.mimeType), // Convert image to base64 string
+        image: convertImageToBase64(createdPost.image, createdPost.mimeType),
         author: authorDetails,
       };
       res.json({
@@ -150,7 +150,7 @@ const createPost = async (req, res) => {
     });
 };
 
-const updatePost = (req, res) => {
+export const updatePost = (req, res) => {
   const PostId = req.params.id;
   const updatedData = req.body;
   Post.findByIdAndUpdate(PostId, updatedData, { new: true })
@@ -176,7 +176,7 @@ const updatePost = (req, res) => {
     });
 };
 
-const deletePost = (req, res) => {
+export const deletePost = (req, res) => {
   const PostId = req.params.id;
   Post.findByIdAndDelete(PostId)
     .then((deletedPost) => {
@@ -200,12 +200,11 @@ const deletePost = (req, res) => {
     });
 };
 
-const addComment = (req, res) => {
+export const addComment = (req, res) => {
   const PostId = req.params.id;
   const { user, content, type } = req.body;
   console.log(req.body);
 
-  // Validate required fields
   if (!user || !content || !type) {
     return res.status(200).json({
       message: "Missing required fields",
@@ -214,7 +213,6 @@ const addComment = (req, res) => {
   }
 
   let commentId;
-  // For replies, validate commentId exists
   if (type === "reply") {
     commentId = req.body.commentId;
     if (!commentId) {
@@ -228,14 +226,12 @@ const addComment = (req, res) => {
   let updateQuery;
 
   if (type === "reply") {
-    // For replies, we need to find the specific comment and push to its replies array
     updateQuery = {
       $push: {
         "comments.$[comment].replies": { user, content },
       },
     };
   } else {
-    // For top-level comments
     updateQuery = {
       $push: { comments: { user, content } },
     };
@@ -270,7 +266,7 @@ const addComment = (req, res) => {
     });
 };
 
-const deleteComment = (req, res) => {
+export const deleteComment = (req, res) => {
   const PostId = req.params.id;
   const { commentId } = req.body;
 
@@ -300,7 +296,7 @@ const deleteComment = (req, res) => {
     });
 };
 
-const likeComment = (req, res) => {
+export const likeComment = (req, res) => {
   const PostId = req.params.id;
   const { commentId } = req.body;
   const userId = req.body.userId;
@@ -337,7 +333,7 @@ const likeComment = (req, res) => {
     });
 };
 
-const like = (req, res) => {
+export const like = (req, res) => {
   const PostId = req.params.id;
   const userId = req.body.userId;
   const liked = req.body.liked;
@@ -371,10 +367,10 @@ const like = (req, res) => {
     });
 };
 
-const follow = async (req, res) => {
+export const follow = async (req, res) => {
   const PostId = req.params.id;
-  const userId = req.body.userId; // user who is following
-  const followed = req.body.followed; // true = follow, false = unfollow
+  const userId = req.body.userId;
+  const followed = req.body.followed;
 
   try {
     const post = await Post.findById(PostId).populate("author");
@@ -419,16 +415,5 @@ const follow = async (req, res) => {
   }
 };
 
-module.exports = {
-  getPost,
-  createPost,
-  updatePost,
-  deletePost,
-  addComment,
-  deleteComment,
-  likeComment,
-  follow,
-  like,
-  convertImageToBase64,
-  formatDate,
-};
+// Optionally export helpers if needed elsewhere
+export { convertImageToBase64, formatDate };

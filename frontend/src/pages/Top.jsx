@@ -12,6 +12,7 @@ function All() {
 
   useEffect(() => {
     setLoading(true);
+    console.log(posts);
   }, [state]);
 
   return (

@@ -25,9 +25,8 @@ import { usePost } from "../contexts/PostContext";
 
 const UploadPostModal = ({
   handleClose,
-  post = { _id: "", title: "", caption: "", image: "", mimeType: "" },
+  post = { _id: "", caption: "", image: "", mimeType: "" },
 }) => {
-  const [title, setTitle] = useState(post.title !== "" ? post.title : "");
   const [caption, setCaption] = useState(
     post.caption !== "" ? post.caption : ""
   );
@@ -59,10 +58,6 @@ const UploadPostModal = ({
   const handlePost = async (e) => {
     e.preventDefault();
 
-    if (!title) {
-      toast.error("Please enter a title", toastConfig("post-upload-error"));
-      return;
-    }
     if (!caption) {
       toast.error("Please enter a caption", toastConfig("post-upload-error"));
       return;
@@ -82,7 +77,6 @@ const UploadPostModal = ({
 
     setIsLoading(true);
     const data = new FormData();
-    data.append("title", title);
     data.append("caption", caption);
     data.append("image", image);
     data.append("id", post._id);
@@ -144,20 +138,6 @@ const UploadPostModal = ({
         <Avatar sx={{ width: 48, height: 48 }} src={user.profilePicture} />
 
         <Stack spacing={2} sx={{ flex: 1 }}>
-          <TextField
-            fullWidth
-            label="Title"
-            placeholder="Post title"
-            variant="outlined"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            inputProps={{ maxLength: 80 }}
-            sx={{
-              "& .MuiInputBase-root": { borderRadius: "12px" },
-              "& .MuiOutlinedInput-input": { padding: "12px 14px" },
-            }}
-          />
-
           <ReactQuill value={caption} onChange={setCaption} />
         </Stack>
       </Stack>

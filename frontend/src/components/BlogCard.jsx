@@ -286,23 +286,11 @@ const BlogCard = ({ post, position }) => {
               </div>
             </div>
 
-            {/* Title */}
-            <h2 className="font-bold text-gray-900 text-2xl md:text-3xl mb-3">
-              {post.title}
-            </h2>
-
             {/* Caption */}
-            <p className="text-gray-700 text-lg mb-4">
-              {post.caption.length > 250
-                ? `${post.caption.slice(0, 250)}...`
-                : post.caption}{" "}
-              <span
-                onClick={handleNavigateToPost}
-                className="text-blue-600 cursor-pointer hover:underline font-medium"
-              >
-                read more
-              </span>
-            </p>
+            <p
+              className="text-gray-700 text-lg mb-4"
+              dangerouslySetInnerHTML={{ __html: post.caption }}
+            />
           </div>
 
           {/* Right: image */}

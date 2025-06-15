@@ -80,14 +80,13 @@ export const getPost = async (req, res) => {
 };
 
 export const createPost = async (req, res) => {
-  const { id, title, caption } = req.body;
+  const { id, caption } = req.body;
   const author = verifyToken(req.headers.authorization).id;
   const hashTags = caption.match(/#\w+/g) || [];
   const tags = hashTags.map((tag) => tag.slice(1));
   if (id !== "") {
     const post = await Post.findById(id);
     if (post) {
-      post.title = title;
       post.caption = caption;
       post.tags = tags;
       post.image = req.file.buffer;
@@ -101,7 +100,6 @@ export const createPost = async (req, res) => {
   }
 
   const newPost = new Post({
-    title: title,
     caption: caption,
     author: author,
     tags: tags,

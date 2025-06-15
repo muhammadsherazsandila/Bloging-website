@@ -15,5 +15,5 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api", mainRouter);
 app.use("/user", userRouter);
 app.use("/post", postsRouter);
-
+app.listen(5000, () => console.log("Server is running on port 5000"));
 module.exports = app;

@@ -3,7 +3,6 @@ const Post = require("../models/postModel");
 const { verifyToken } = require("../utils/token");
 const sharp = require("sharp"); // Assuming you are using sharp for image processing
 const { convertImageToBase64, formatDate } = require("../utils/formaters");
-const { default: mongoose } = require("mongoose");
 
 const getPost = async (req, res) => {
   try {
@@ -125,10 +124,12 @@ const createPost = async (req, res) => {
       authorDetails = {
         id: authorDetails._id,
         name: authorDetails.name,
-        profilePicture: convertImageToBase64(
-          authorDetails.profilePicture,
-          authorDetails.mimeType
-        ),
+        profilePicture: authorDetails.profilePicture
+          ? convertImageToBase64(
+              authorDetails.profilePicture,
+              authorDetails.mimeType
+            )
+          : "",
       };
       const updatedPost = {
         ...createdPost._doc,

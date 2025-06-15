@@ -108,9 +108,11 @@ const UploadPostModal = ({
         setImage(null);
       } else {
         toast.error("Error while posting!", toastConfig("post-upload-error"));
+        setIsLoading(false);
       }
     } catch (error) {
       toast.error("Error while upload post!", toastConfig("post-upload-error"));
+      setIsLoading(false);
     }
   };
 

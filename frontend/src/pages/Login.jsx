@@ -87,12 +87,15 @@ function Login() {
           setState(!state);
         } else {
           toast.error(response.data.message, toastConfig("Signup-Msg-1"));
+          setLoading(false);
         }
       } else {
         toast.error("Server Error", toastConfig("Signup-Msg-1"));
+        setLoading(false);
       }
     } catch (error) {
       toast.error("Server Error", toastConfig("Signup-Msg-1"));
+      setLoading(false);
     }
   };
 
@@ -139,12 +142,15 @@ function Login() {
           setState(!state);
         } else {
           toast.error(response.data.message, toastConfig("Login-Msg-1"));
+          setLoading(false);
         }
       } else {
         toast.error("Server Error", toastConfig("Login-Msg-2"));
+        setLoading(false);
       }
     } catch (error) {
       toast.error("Server Error", toastConfig("Login-Msg-3"));
+      setLoading(false);
     }
   };
 

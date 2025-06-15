@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { AiOutlineEdit, AiOutlinePlus } from "react-icons/ai";
+import { AiOutlineEdit } from "react-icons/ai";
 import { FiCamera } from "react-icons/fi";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
@@ -10,7 +10,6 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
-import UploadPostModal from "../components/UploadPostModal";
 import EditProfileModel from "../components/EditProfileModel";
 import { uploadProfilePicture } from "../utils/uploadPicture";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -20,10 +19,9 @@ import { CircularProgress } from "@mui/material";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, isLoggedIn, setUser } = useAuth();
+  const { user, isLoggedIn, setIsLoggedIn, setUser } = useAuth();
 
   const [openEditProfile, setOpenEditProfile] = useState(false);
-  const [openUploadPost, setOpenUploadPost] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const fileInputRef = useRef(null);
@@ -57,6 +55,8 @@ const Dashboard = () => {
     console.log(response.data);
     if (response.data.status === "success") {
       setUser(null);
+      setIsLoggedIn(false);
+      Cookies.remove("token");
       toast.success("Profile deleted successfully!", toastConfig("delete"));
       navigate("/login");
     } else {
@@ -187,29 +187,6 @@ const Dashboard = () => {
             }}
           >
             <EditProfileModel handleClose={() => setOpenEditProfile(false)} />
-          </Box>
-        </Fade>
-      </Modal>
-
-      {/* Upload Post Modal */}
-      <Modal
-        open={openUploadPost}
-        onClose={() => setOpenUploadPost(false)}
-        closeAfterTransition
-        slots={{ backdrop: Backdrop }}
-        slotProps={{ backdrop: { timeout: 300 } }}
-      >
-        <Fade in={openUploadPost}>
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "100%",
-            }}
-          >
-            <UploadPostModal handleClose={() => setOpenUploadPost(false)} />
           </Box>
         </Fade>
       </Modal>

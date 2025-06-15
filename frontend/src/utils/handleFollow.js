@@ -15,7 +15,7 @@ export const handleFollow = (
     return;
   }
   axios
-    .put(`https://blogorablogs.vercel.app/post/follow/${postId}`, {
+    .put(`https://blogorabloging.vercel.app//post/follow/${postId}`, {
       userId: user.id,
       followed: !followed,
     })

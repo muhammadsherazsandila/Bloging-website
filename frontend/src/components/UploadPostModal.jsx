@@ -84,7 +84,7 @@ const UploadPostModal = ({
     console.log(post);
     try {
       const response = await axios.post(
-        "https://blogorablogs.vercel.app/post/upload-post",
+        "https://blogorabloging.vercel.app//post/upload-post",
         data,
         {
           headers: {

@@ -9,7 +9,7 @@ export const loadUser = async (setUser, setIsLoggedIn) => {
     const token = Cookie.get("token");
     if (token) {
       const response = await fetch(
-        "https://blogorablogs.vercel.app/user/dashboard",
+        "https://blogorabloging.vercel.app//user/dashboard",
         {
           method: "GET",
           headers: {

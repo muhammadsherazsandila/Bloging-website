@@ -13,6 +13,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
     "debug": "^4.4.1",
     "dotenv": "^16.5.0",
     "env": "^0.0.2",

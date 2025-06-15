@@ -217,6 +217,7 @@ const BlogCard = ({ post, position }) => {
 
   useEffect(() => {
     initiateData();
+    console.log(post);
   }, []);
 
   return (

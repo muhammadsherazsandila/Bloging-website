@@ -4,14 +4,9 @@ export const convertImageToBase64 = (buffer, mimeType) => {
   return dataUri;
 };
 
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 export const formatDate = (date) => {
-  if (!(date instanceof Date)) return null;
-  return date.toLocaleString("en-GB", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
-  });
+  return dayjs(date).fromNow();
 };

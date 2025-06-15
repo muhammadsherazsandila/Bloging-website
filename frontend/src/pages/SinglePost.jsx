@@ -26,6 +26,7 @@ const SinglePost = () => {
   const { posts, state, setState } = usePost();
   const location = useLocation();
   const postId = location.state?.postId;
+  console.log(postId);
   const post = posts.find((post) => post._id.toString() === postId.toString());
   const { user } = useAuth();
 
@@ -58,7 +59,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .post(`https://blogorabloging.vercel.app/post/add-comment/${post._id}`, {
+      .post(`https://blogorablogs.vercel.app/post/add-comment/${post._id}`, {
         content: replyText,
         user: user.id,
         type: "reply",
@@ -81,7 +82,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .put(`https://blogorabloging.vercel.app/post/follow/${post._id}`, {
+      .put(`https://blogorablogs.vercel.app/post/follow/${post._id}`, {
         userId: user.id,
         followed: !followed,
       })
@@ -106,7 +107,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .post(`https://blogorabloging.vercel.app/post/add-comment/${post._id}`, {
+      .post(`https://blogorablogs.vercel.app/post/add-comment/${post._id}`, {
         content: comment,
         user: user.id,
         type: "comment",
@@ -125,7 +126,7 @@ const SinglePost = () => {
   const handleDeleteComment = (commentId) => {
     axios
       .delete(
-        `https://blogorabloging.vercel.app/post/delete-comment/${post._id}`,
+        `https://blogorablogs.vercel.app/post/delete-comment/${post._id}`,
         {
           data: { commentId },
         }
@@ -146,7 +147,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .post(`https://blogorabloging.vercel.app/post/like/${postId}`, {
+      .post(`https://blogorablogs.vercel.app/post/like/${postId}`, {
         userId: user.id,
         liked: !liked,
       })
@@ -167,7 +168,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .put(`https://blogorabloging.vercel.app/post/like-comment/${post._id}`, {
+      .put(`https://blogorablogs.vercel.app/post/like-comment/${post._id}`, {
         commentId: commentId,
         userId: user.id,
         liked: commentLikes[index],
@@ -189,7 +190,7 @@ const SinglePost = () => {
 
   const handleDeletePost = () => {
     axios
-      .delete(`https://blogorabloging.vercel.app/post/delete-post/${post._id}`)
+      .delete(`https://blogorablogs.vercel.app/post/delete-post/${post._id}`)
       .then((response) => {
         if (response.status === 200) {
           setState(!state);
@@ -221,9 +222,7 @@ const SinglePost = () => {
 
   return (
     <>
-      <div
-        className={`w-full max-w-3xl bg-white text-black shadow-xl rounded-2xl px-4 mb-6 md:p-6 lg:p-8 xl:p-10 mt-24 relative transition-all duration-300 hover:shadow-2xl`}
-      >
+      <div className="w-full max-w-3/4 bg-white text-black shadow-xl rounded-2xl px-4 mb-16 sm:mb-6 md:p-6 lg:p-8 xl:p-10 mt-24 relative transition-all duration-300 hover:shadow-2xl mx-auto ">
         {/* Action buttons */}
         {user ? (
           user.id === post.author.id ? (
@@ -259,9 +258,9 @@ const SinglePost = () => {
         )}
 
         {/* Top section */}
-        <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
+        <div className="w-full flex flex-col justify-between items-center gap-4 mb-4">
           {/* Left: author info */}
-          <div className="flex-1">
+          <div className="flex-1 w-full">
             <div className="flex items-center gap-3 mb-4">
               <img
                 src={
@@ -285,17 +284,15 @@ const SinglePost = () => {
               </div>
             </div>
 
-            {/* Title */}
-            <h2 className="font-bold text-gray-900 text-2xl md:text-3xl mb-3">
-              {post.title}
-            </h2>
-
             {/* Caption */}
-            <p className="text-gray-700 text-lg mb-4">{post.caption}</p>
+            <p
+              className="text-gray-700 text-lg mb-4 w-full"
+              dangerouslySetInnerHTML={{ __html: post.caption }}
+            />
           </div>
 
           {/* Right: image */}
-          <div className="w-full md:w-48 lg:w-56 h-48 md:h-56 flex-shrink-0 rounded-xl overflow-hidden shadow-lg">
+          <div className="w-full h-full flex-shrink-0 rounded-xl overflow-hidden shadow-lg">
             <img
               src={post.image}
               alt={post.title}

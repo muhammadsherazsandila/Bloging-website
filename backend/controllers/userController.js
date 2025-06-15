@@ -273,21 +273,38 @@ export const dashboard = async (req, res) => {
 
 export const getAllPosts = async (req, res) => {
   try {
-    const token = verifyToken(req.headers.authorization);
-    if (!token || !token.id) {
+    let id = "";
+    if (req.params.id.length > 24) {
+      id = verifyToken(req.params.id).id;
+    } else {
+      id = req.params.id;
+    }
+    const user = await User.findById(id).populate({
+      path: "posts",
+      populate: [
+        {
+          path: "author",
+          select: "name profilePicture mimeType",
+        },
+        {
+          path: "comments.user",
+          select: "name profilePicture mimeType",
+        },
+        {
+          path: "comments.replies.user",
+          select: "name profilePicture mimeType",
+        },
+      ],
+    });
+
+    if (!user) {
       return res.status(200).json({
-        message: "Unauthorized",
+        message: "User not found",
         status: "error",
       });
     }
-    const posts = await Post.find({ author: token.id })
-      .sort({ createdAt: -1 })
-      .populate("author")
-      .populate("comments.user", "name profilePicture mimeType")
-      .populate("comments.replies.user", "name profilePicture mimeType");
-
-    const updatedPosts = await Promise.all(
-      posts.map(async (post) => ({
+    const formattedPosts = await Promise.all(
+      user.posts.map(async (post) => ({
         ...post._doc,
         image: convertImageToBase64(post.image, post.mimeType),
         author: {
@@ -342,10 +359,32 @@ export const getAllPosts = async (req, res) => {
         updatedAt: formatDate(post.updatedAt),
       }))
     );
-    res.status(200).json({
-      posts: updatedPosts,
-      status: "success",
-    });
+
+    const updatedUser = {
+      id: user._id,
+      name: user.name,
+      profilePicture: user.profilePicture
+        ? convertImageToBase64(user.profilePicture, user.mimeType)
+        : "",
+      followers: user.followers,
+      following: user.following,
+      bio: user.bio || "",
+      about: user.about,
+      friends: await getFriends(user._id),
+      posts: formattedPosts,
+    };
+
+    if (updatedUser) {
+      res.json({
+        user: updatedUser,
+        status: "success",
+      });
+    } else {
+      res.status(200).json({
+        message: "User not found",
+        status: "error",
+      });
+    }
   } catch (error) {
     console.error("Error fetching posts:", error);
     res.status(200).json({
@@ -364,10 +403,9 @@ export const getFriends = async (userId) => {
         return {
           id: friend._id,
           name: friend.name,
-          profilePicture: await convertImageToBase64(
-            friend.profilePicture,
-            friend.mimeType
-          ),
+          profilePicture: friend.profilePicture
+            ? convertImageToBase64(friend.profilePicture, friend.mimeType)
+            : "",
         };
       })
     );

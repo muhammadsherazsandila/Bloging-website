@@ -12,33 +12,21 @@ import Box from "@mui/material/Box";
 import UploadPostModal from "../components/UploadPostModal";
 import { motion } from "framer-motion";
 import { scale } from "../utils/animation";
+import { useAuth } from "../contexts/AuthContext";
 function AuthorPosts() {
   const { state } = usePost();
+  const { author, setAuthor } = useAuth();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [openUploadPost, setOpenUploadPost] = useState(false);
-  const fetchPosts = async () => {
-    axios
-      .get("https://blogorabloging.vercel.app/user/posts", {
-        headers: {
-          authorization: `${Cookies.get("token")}`,
-        },
-      })
-      .then((response) => {
-        if (response.data.status === "success") {
-          setPosts(response.data.posts);
-          setLoading(false);
-          console.log(response.data.posts);
-        }
-      });
-  };
   useEffect(() => {
-    fetchPosts();
     setLoading(true);
-  }, [state]);
+    setPosts(author ? author.posts : []);
+    posts.length > 0 ? setLoading(false) : setLoading(false);
+  }, [state, author]);
 
   return (
-    <div className="flex flex-col gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-0">
+    <div className="flex flex-col gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-0 mb-16">
       <h2 className="text-3xl font-bold mb-2">Your Posts</h2>
       <button
         onClick={() => setOpenUploadPost(true)}

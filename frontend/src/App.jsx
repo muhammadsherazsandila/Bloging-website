@@ -18,6 +18,7 @@ import AuthorPosts from "./pages/AuthorPosts";
 import Friends from "./pages/Friends";
 import About from "./pages/About";
 import SinglePost from "./pages/SinglePost";
+import AuthorProfile from "./components/AuthorProfile";
 
 function App() {
   return (
@@ -53,12 +54,14 @@ const AppRoutes = () => {
         <Route
           path="/dashboard"
           element={isLoggedIn ? <Dashboard /> : <Login />}
-        >
+        />
+
+        <Route path="/post/:id" element={<SinglePost />} />
+        <Route path="/author-profile/:id" element={<AuthorProfile />}>
           <Route path="" element={<AuthorPosts />} />
           <Route path="friends" element={<Friends />} />
           <Route path="about" element={<About />} />
         </Route>
-        <Route path="/post/:id" element={<SinglePost />} />
       </Routes>
     </>
   );

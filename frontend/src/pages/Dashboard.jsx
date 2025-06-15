@@ -12,17 +12,22 @@ import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditProfileModel from "../components/EditProfileModel";
 import { uploadProfilePicture } from "../utils/uploadPicture";
-import { Outlet, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { CircularProgress } from "@mui/material";
+import { usePost } from "../contexts/PostContext";
+import BlogCard from "../components/BlogCard";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const { user, isLoggedIn, setIsLoggedIn, setUser } = useAuth();
 
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isPostsOpen, setIsPostsOpen] = useState(true);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isFriendsOpen, setIsFriendsOpen] = useState(false);
+  const { state } = usePost();
+  const [posts, setPosts] = useState([]);
 
   const fileInputRef = useRef(null);
 
@@ -45,7 +50,7 @@ const Dashboard = () => {
   const deleteProfile = async () => {
     setLoading(true);
     const response = await axios.delete(
-      "https://blogorabloging.vercel.app/user/delete-profile",
+      "https://blogorablogs.vercel.app/user/delete-profile",
       {
         headers: {
           Authorization: `${Cookies.get("token")}`,
@@ -71,6 +76,22 @@ const Dashboard = () => {
       toast.success(`Welcome ${user.name}`, toastConfig(toastId));
     }
   }, []);
+
+  const fetchPosts = async () => {
+    axios
+      .get(`https://blogorablogs.vercel.app/user/posts/${Cookies.get("token")}`)
+      .then((response) => {
+        if (response.data.status === "success") {
+          setPosts(response.data.user.posts);
+          setLoading(false);
+          console.log(response.data.user.posts);
+        }
+      });
+  };
+  useEffect(() => {
+    fetchPosts();
+    setLoading(true);
+  }, [state]);
 
   return (
     <div className="px-4">
@@ -145,19 +166,31 @@ const Dashboard = () => {
             <div className="flex gap-6 text-gray-700 font-medium whitespace-nowrap">
               <button
                 className="hover:text-blue-600 focus:outline-none"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => {
+                  setIsPostsOpen(true);
+                  setIsAboutOpen(false);
+                  setIsFriendsOpen(false);
+                }}
               >
                 Posts
               </button>
               <button
                 className="hover:text-blue-600 focus:outline-none"
-                onClick={() => navigate("/dashboard/about")}
+                onClick={() => {
+                  setIsPostsOpen(false);
+                  setIsAboutOpen(true);
+                  setIsFriendsOpen(false);
+                }}
               >
                 About
               </button>
               <button
                 className="hover:text-blue-600 focus:outline-none"
-                onClick={() => navigate("/dashboard/friends")}
+                onClick={() => {
+                  setIsPostsOpen(false);
+                  setIsAboutOpen(false);
+                  setIsFriendsOpen(true);
+                }}
               >
                 Friends
               </button>
@@ -191,7 +224,63 @@ const Dashboard = () => {
         </Fade>
       </Modal>
 
-      <Outlet />
+      {isPostsOpen && (
+        <div className="flex flex-col gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-2">
+          {posts.map((post, index) => (
+            <BlogCard key={index} post={post} />
+          ))}
+        </div>
+      )}
+
+      {isAboutOpen && (
+        <div className="w-4xl bg-white rounded-lg shadow-md mx-auto overflow-y-auto mt-16 p-7 max-h-96">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">About</h2>
+          <p>{user.about}</p>
+        </div>
+      )}
+
+      {isFriendsOpen && (
+        <div className="w-4xl bg-white rounded-lg shadow-md mx-auto overflow-y-auto mt-16 p-7 max-h-96">
+          <h2 className="text-2xl font-semibold text-gray-800 mb-4">Friends</h2>
+          <ul className="space-y-3">
+            {user.friends ? (
+              user.friends.length > 0 ? (
+                user.friends.map((friend) => (
+                  <li
+                    key={friend.id}
+                    className="flex items-center justify-between bg-gray-100 hover:bg-gray-200 p-2 rounded-md transition"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Avatar src={friend.profilePicture} alt={friend.name} />
+                      <span className="text-sm font-medium text-gray-700">
+                        {friend.name}
+                      </span>
+                    </div>
+                    <Tooltip title="Follow">
+                      <span>
+                        <IconButton color="primary" size="small">
+                          <PersonAddIcon fontSize="small" />
+                        </IconButton>
+                        <span
+                          className={`ml-2 cursor-pointer font-semibold ${
+                            followed ? "text-green-500" : ""
+                          }`}
+                        >
+                          {followed ? "Following" : "Follow"}
+                        </span>
+                      </span>
+                    </Tooltip>
+                  </li>
+                ))
+              ) : (
+                <span> No friends found.</span>
+              )
+            ) : (
+              <p>loading...</p>
+            )}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

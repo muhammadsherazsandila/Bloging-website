@@ -6,6 +6,7 @@ import {
   FaShareAlt,
   FaReply,
   FaUserPlus,
+  FaCcApplePay,
 } from "react-icons/fa";
 import { FaArrowRight } from "react-icons/fa6";
 import { MdDelete } from "react-icons/md";
@@ -58,7 +59,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`https://blogorabloging.vercel.app/post/add-comment/${post._id}`, {
+      .post(`https://blogorablogs.vercel.app/post/add-comment/${post._id}`, {
         content: replyText,
         user: user.id,
         type: "reply",
@@ -81,7 +82,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .put(`https://blogorabloging.vercel.app/post/follow/${post._id}`, {
+      .put(`https://blogorablogs.vercel.app/post/follow/${post._id}`, {
         userId: user.id,
         followed: !followed,
       })
@@ -106,7 +107,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`https://blogorabloging.vercel.app/post/add-comment/${post._id}`, {
+      .post(`https://blogorablogs.vercel.app/post/add-comment/${post._id}`, {
         content: comment,
         user: user.id,
         type: "comment",
@@ -125,7 +126,7 @@ const BlogCard = ({ post, position }) => {
   const handleDeleteComment = (commentId) => {
     axios
       .delete(
-        `https://blogorabloging.vercel.app/post/delete-comment/${post._id}`,
+        `https://blogorablogs.vercel.app/post/delete-comment/${post._id}`,
         {
           data: { commentId },
         }
@@ -146,7 +147,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`https://blogorabloging.vercel.app/post/like/${postId}`, {
+      .post(`https://blogorablogs.vercel.app/post/like/${postId}`, {
         userId: user.id,
         liked: !liked,
       })
@@ -167,7 +168,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .put(`https://blogorabloging.vercel.app/post/like-comment/${post._id}`, {
+      .put(`https://blogorablogs.vercel.app/post/like-comment/${post._id}`, {
         commentId: commentId,
         userId: user.id,
         liked: commentLikes[index],
@@ -189,7 +190,7 @@ const BlogCard = ({ post, position }) => {
 
   const handleDeletePost = () => {
     axios
-      .delete(`https://blogorabloging.vercel.app/post/delete-post/${post._id}`)
+      .delete(`https://blogorablogs.vercel.app/post/delete-post/${post._id}`)
       .then((response) => {
         if (response.status === 200) {
           setState(!state);
@@ -243,7 +244,7 @@ const BlogCard = ({ post, position }) => {
           ) : (
             <button
               onClick={handleFollow}
-              className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+              className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
             >
               <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
               <span>{followed ? "Following" : "Follow"}</span>
@@ -252,7 +253,7 @@ const BlogCard = ({ post, position }) => {
         ) : (
           <button
             onClick={handleFollow}
-            className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+            className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
           >
             <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
             <span>{followed ? "Following" : "Follow"}</span>
@@ -270,7 +271,8 @@ const BlogCard = ({ post, position }) => {
                   "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
                 }
                 alt={post.author.name}
-                className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+                className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md cursor-pointer"
+                onClick={() => navigate(`/author-profile/${post.author.id}`)}
               />
               <div>
                 <p className="font-semibold text-gray-900">
@@ -288,16 +290,23 @@ const BlogCard = ({ post, position }) => {
 
             {/* Caption */}
             <p
-              className="text-gray-700 text-lg mb-4"
+              className="text-gray-700 text-lg mb-4 max-h-48 overflow-hidden"
               dangerouslySetInnerHTML={{ __html: post.caption }}
             />
+            <button
+              onClick={() =>
+                navigate(`/post/${post._id}`, { state: { postId: post._id } })
+              }
+            >
+              Readmore
+            </button>
           </div>
 
           {/* Right: image */}
-          <div className="w-full md:w-48 lg:w-56 h-48 md:h-56 flex-shrink-0 rounded-xl overflow-hidden shadow-lg">
+          <div className="w-full md:w-48 lg:w-56 h-48 md:h-56 flex-shrink-0 rounded-xl overflow-hidden shadow-lg sm:mt-6">
             <img
               src={post.image}
-              alt={post.title}
+              alt={post.caption.slice(0, 5)}
               className="object-cover w-full h-full"
               loading="lazy"
             />

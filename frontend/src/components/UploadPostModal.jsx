@@ -84,7 +84,7 @@ const UploadPostModal = ({
     console.log(post);
     try {
       const response = await axios.post(
-        "https://blogorabloging.vercel.app/post/upload-post",
+        "https://blogorablogs.vercel.app/post/upload-post",
         data,
         {
           headers: {
@@ -137,8 +137,17 @@ const UploadPostModal = ({
       <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ mt: 3 }}>
         <Avatar sx={{ width: 48, height: 48 }} src={user.profilePicture} />
 
-        <Stack spacing={2} sx={{ flex: 1 }}>
-          <ReactQuill value={caption} onChange={setCaption} />
+        <Stack direction="column" spacing={1}>
+          <ReactQuill
+            value={caption}
+            onChange={setCaption}
+            style={{
+              height: "200px",
+              width: "100%",
+              paddingLeft: "10px",
+              marginBottom: "30px",
+            }}
+          />
         </Stack>
       </Stack>
 

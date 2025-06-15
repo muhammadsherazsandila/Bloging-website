@@ -137,7 +137,9 @@ export const createPost = async (req, res) => {
         status: "success",
         post: updatedPost,
       });
-      User.findByIdAndUpdate(author, { $push: { posts: createdPost._id } });
+      await User.findByIdAndUpdate(author, {
+        $push: { posts: createdPost._id },
+      });
     })
     .catch((error) => {
       res.json({

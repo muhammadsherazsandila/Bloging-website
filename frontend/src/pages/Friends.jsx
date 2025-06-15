@@ -7,7 +7,7 @@ import { useAuth } from "../contexts/AuthContext";
 
 const Friends = () => {
   const { state, setState } = usePost();
-  const { user } = useAuth();
+  const { author } = useAuth();
 
   const [followed, setFollowed] = useState(false);
 
@@ -15,9 +15,9 @@ const Friends = () => {
     <div className="w-4xl bg-white rounded-lg shadow-md mx-auto overflow-y-auto mt-16 p-7 max-h-96">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Friends</h2>
       <ul className="space-y-3">
-        {user.friends ? (
-          user.friends.length > 0 ? (
-            user.friends.map((friend) => (
+        {author.friends ? (
+          author.friends.length > 0 ? (
+            author.friends.map((friend) => (
               <li
                 key={friend.id}
                 className="flex items-center justify-between bg-gray-100 hover:bg-gray-200 p-2 rounded-md transition"
@@ -35,10 +35,14 @@ const Friends = () => {
                     </IconButton>
                     <span
                       className={`ml-2 cursor-pointer font-semibold ${
-                        followed ? "text-green-500" : ""
+                        author.followers.includes(friend.id)
+                          ? "text-green-500"
+                          : "text-gray-600"
                       }`}
                     >
-                      {followed ? "Following" : "Follow"}
+                      {author.followers.includes(friend.id)
+                        ? "Following"
+                        : "Follow"}
                     </span>
                   </span>
                 </Tooltip>

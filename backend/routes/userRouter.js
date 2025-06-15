@@ -25,7 +25,7 @@ userRouter.put(
   upload.single("profilePicture"),
   uploadProfilePicture
 );
-userRouter.get("/posts", getAllPosts);
+userRouter.get("/posts/:id", getAllPosts);
 userRouter.post("/forgot-password", forgetPassword);
 userRouter.delete("/delete-profile", deleteUser);
 

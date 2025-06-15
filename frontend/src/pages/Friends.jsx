@@ -28,24 +28,6 @@ const Friends = () => {
                     {friend.name}
                   </span>
                 </div>
-                <Tooltip title="Follow">
-                  <span>
-                    <IconButton color="primary" size="small">
-                      <PersonAddIcon fontSize="small" />
-                    </IconButton>
-                    <span
-                      className={`ml-2 cursor-pointer font-semibold ${
-                        author.followers.includes(friend.id)
-                          ? "text-green-500"
-                          : "text-gray-600"
-                      }`}
-                    >
-                      {author.followers.includes(friend.id)
-                        ? "Following"
-                        : "Follow"}
-                    </span>
-                  </span>
-                </Tooltip>
               </li>
             ))
           ) : (

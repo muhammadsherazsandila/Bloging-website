@@ -12,7 +12,7 @@ function HomePosts() {
     setLoading(true);
     console.log(posts);
     const sortedPosts = [...posts].sort(
-      (a, b) => a.createdAt.slice(0, 1) - b.createdAt.slice(0, 1)
+      (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
     );
     console.log(sortedPosts);
     setLatestPosts(

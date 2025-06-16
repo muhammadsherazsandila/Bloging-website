@@ -87,11 +87,9 @@ const Dashboard = () => {
       .get(`https://blogora.up.railway.app/user/posts/${Cookies.get("token")}`)
       .then((response) => {
         if (response.data.status === "success") {
-          const sortedPosts = response.data.user.posts.sort((a, b) => {
-            const dateA = a.createdAt;
-            const dateB = b.createdAt;
-            return dateB - dateA;
-          });
+          const sortedPosts = [...response.data.user.posts].sort(
+            (a, b) => new Date(a.createdDate) - new Date(b.createdDate)
+          );
           setPosts(sortedPosts);
           setLoading(false);
           console.log(response.data.user.posts);

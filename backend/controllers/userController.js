@@ -368,13 +368,13 @@ export const getAllPosts = async (req, res) => {
                   : null,
                 createdAt: formatDate(reply.createdAt),
                 updatedAt: formatDate(reply.updatedAt),
-                createdDate: post.createdAt,
               }))
             ),
           }))
         ),
         createdAt: formatDate(post.createdAt),
         updatedAt: formatDate(post.updatedAt),
+        createdDate: post.createdAt,
       }))
     );
 

@@ -19,7 +19,7 @@ function HomePosts() {
       sortedPosts.slice(0, sortedPosts.length > 5 ? 5 : sortedPosts.length)
     );
     latestPosts.length > 0 ? setLoading(false) : setLoading(true);
-  }, []);
+  }, [posts]);
 
   return (
     <div className="flex flex-col gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-2 mb-16">

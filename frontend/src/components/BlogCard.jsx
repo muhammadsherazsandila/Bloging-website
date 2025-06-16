@@ -59,7 +59,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`https://blogorabloging.vercel.app/post/add-comment/${post._id}`, {
+      .post(`https://blogora.up.railway.app/post/add-comment/${post._id}`, {
         content: replyText,
         user: user.id,
         type: "reply",
@@ -82,7 +82,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .put(`https://blogorabloging.vercel.app/post/follow/${post._id}`, {
+      .put(`https://blogora.up.railway.app/post/follow/${post._id}`, {
         userId: user.id,
         followed: !followed,
       })
@@ -107,7 +107,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`https://blogorabloging.vercel.app/post/add-comment/${post._id}`, {
+      .post(`https://blogora.up.railway.app/post/add-comment/${post._id}`, {
         content: comment,
         user: user.id,
         type: "comment",
@@ -126,7 +126,7 @@ const BlogCard = ({ post, position }) => {
   const handleDeleteComment = (commentId) => {
     axios
       .delete(
-        `https://blogorabloging.vercel.app/post/delete-comment/${post._id}`,
+        `https://blogora.up.railway.app/post/delete-comment/${post._id}`,
         {
           data: { commentId },
         }
@@ -147,7 +147,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`https://blogorabloging.vercel.app/post/like/${postId}`, {
+      .post(`https://blogora.up.railway.app/post/like/${postId}`, {
         userId: user.id,
         liked: !liked,
       })
@@ -168,7 +168,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .put(`https://blogorabloging.vercel.app/post/like-comment/${post._id}`, {
+      .put(`https://blogora.up.railway.app/post/like-comment/${post._id}`, {
         commentId: commentId,
         userId: user.id,
         liked: commentLikes[index],
@@ -190,7 +190,7 @@ const BlogCard = ({ post, position }) => {
 
   const handleDeletePost = () => {
     axios
-      .delete(`https://blogorabloging.vercel.app/post/delete-post/${post._id}`)
+      .delete(`https://blogora.up.railway.app/post/delete-post/${post._id}`)
       .then((response) => {
         if (response.status === 200) {
           setState(!state);

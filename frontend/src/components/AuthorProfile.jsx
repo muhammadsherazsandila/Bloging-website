@@ -10,7 +10,7 @@ const AuthorProfile = () => {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`https://blogorabloging.vercel.app/user/posts/${authorId}`)
+      .get(`https://blogora.up.railway.app/user/posts/${authorId}`)
       .then((response) => {
         console.log(response.data);
         if (response.data.status === "success") {

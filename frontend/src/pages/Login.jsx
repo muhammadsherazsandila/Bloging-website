@@ -67,7 +67,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "https://blogorabloging.vercel.app/user/signup",
+        "https://blogora.up.railway.app/user/signup",
         formData,
         {
           headers: {
@@ -123,7 +123,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "https://blogorabloging.vercel.app/user/login",
+        "https://blogora.up.railway.app/user/login",
         formData,
         {
           headers: {

@@ -147,7 +147,19 @@ function Navbar() {
             onClick={() => navigate("/dashboard")}
             className="flex flex-col items-center text-gray-700 hover:text-blue-500"
           >
-            <MdAccountCircle className="h-6 w-6" />
+            {isLoggedIn && user.profilePicture ? (
+              user.profilePicture ? (
+                <img
+                  src={user.profilePicture}
+                  alt="profile"
+                  className="w-6 h-6 rounded-full border border-gray-300 hover:border-blue-500 transition duration-300 hover:animate-spin "
+                />
+              ) : (
+                <MdAccountCircle className="h-6 w-6" />
+              )
+            ) : (
+              <MdAccountCircle className="h-6 w-6" />
+            )}
             <span className="text-xs">Profile</span>
           </button>
         </div>

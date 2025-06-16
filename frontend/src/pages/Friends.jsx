@@ -23,7 +23,7 @@ const Friends = () => {
                 className="flex items-center justify-between bg-gray-100 hover:bg-gray-200 p-2 rounded-md transition"
               >
                 <div className="flex items-center space-x-3">
-                  <Avatar src={friend.profilePicture} alt={friend.name} />
+                  <img src={friend.profilePicture} alt={friend.name} />
                   <span className="text-sm font-medium text-gray-700">
                     {friend.name}
                   </span>

@@ -22,7 +22,7 @@ import { CircularProgress } from "@mui/material";
 import { usePost } from "../contexts/PostContext";
 import BlogCard from "../components/BlogCard";
 import { useNavigate } from "react-router-dom";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Dashboard = () => {
   const { user, isLoggedIn, setIsLoggedIn, setUser } = useAuth();
@@ -291,10 +291,10 @@ const Dashboard = () => {
               width: "100%",
             }}
           >
-            <div className="flex justify-center items-center">
-              <Box sx={{ position: "relative" }}>
+            <div className="flex justify-center items-center ">
+              <span className="relative">
                 <IconButton
-                  onClick={handleClose}
+                  onClick={() => setOpenProfilePicture(false)}
                   sx={{
                     position: "absolute",
                     top: 0,
@@ -306,13 +306,13 @@ const Dashboard = () => {
                     transition: "all 0.3s ease",
                   }}
                 >
-                  <ClockIcon fontSize="small" />
+                  <CloseIcon fontSize="small" />
                 </IconButton>
-              </Box>
-              <Avatar
-                src={user.profilePicture}
-                sx={{ width: 250, height: 250 }}
-              />
+                <Avatar
+                  src={user.profilePicture}
+                  sx={{ width: 250, height: 250 }}
+                />
+              </span>
             </div>
           </Box>
         </Fade>

@@ -9,6 +9,7 @@ import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
+import { MdOpenWith } from "react-icons/md";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -27,6 +28,7 @@ const Dashboard = () => {
 
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openUploadPost, setOpenUploadPost] = useState(false);
+  const [openProfilePicture, setOpenProfilePicture] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isPostsOpen, setIsPostsOpen] = useState(true);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
@@ -112,6 +114,10 @@ const Dashboard = () => {
               className="relative w-24 h-24 group cursor-pointer"
               onClick={openFile}
             >
+              <MdOpenWith
+                className="absolute top-0 right-0 text-black bg-white rounded-full h-6 w-6 cursor-pointer hover:bg-gray-200 hover:scale-110 transition-all duration-200"
+                onClick={() => setOpenProfilePicture(true)}
+              />
               <img
                 src={
                   isLoggedIn && user.profilePicture
@@ -259,6 +265,32 @@ const Dashboard = () => {
             }}
           >
             <UploadPostModal handleClose={() => setOpenUploadPost(false)} />
+          </Box>
+        </Fade>
+      </Modal>
+
+      {/* Open Profile Picture Modal */}
+      <Modal
+        open={openProfilePicture}
+        onClose={() => setOpenProfilePicture(false)}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{ backdrop: { timeout: 300 } }}
+      >
+        <Fade in={openProfilePicture}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+            }}
+          >
+            <Avatar
+              src={user.profilePicture}
+              sx={{ width: 150, height: 150 }}
+            />
           </Box>
         </Fade>
       </Modal>

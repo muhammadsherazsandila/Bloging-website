@@ -228,7 +228,7 @@ function Login() {
                   }}
                   className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  {loading && <CircularProgress size={20} />}
+                  {loading && <CircularProgress size={20} color="inherit" />}
                   {loading ? "Signing in..." : "Sign in"}
                 </button>
               </div>

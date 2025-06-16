@@ -311,7 +311,10 @@ const Dashboard = () => {
                 <span> No friends found.</span>
               )
             ) : (
-              <p>loading...</p>
+              <span className="flex items-center gap-2">
+                <CircularProgress />
+                <span>Loading...</span>
+              </span>
             )}
           </ul>
         </div>

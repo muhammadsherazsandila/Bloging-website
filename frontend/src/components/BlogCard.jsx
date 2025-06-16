@@ -69,6 +69,7 @@ const BlogCard = ({ post, position }) => {
         if (response.status === 200) {
           setState(!state);
           setReplyText("");
+          toast.success("Reply added!", toastConfig("reply-success"));
         }
       })
       .catch((error) => {
@@ -116,6 +117,7 @@ const BlogCard = ({ post, position }) => {
         if (response.status === 200) {
           setState(!state);
           setComment("");
+          toast.success("Comment added!", toastConfig("comment-success"));
         }
       })
       .catch((error) => {
@@ -134,6 +136,10 @@ const BlogCard = ({ post, position }) => {
       .then((response) => {
         if (response.status === 200) {
           setState(!state);
+          toast.success(
+            "Comment deleted!",
+            toastConfig("comment-delete-success")
+          );
         }
       })
       .catch((error) => {
@@ -183,6 +189,10 @@ const BlogCard = ({ post, position }) => {
           setCommentLikes((prev) => {
             const updated = [...prev];
             updated[index] = !updated[index];
+            toast.success(
+              updated[index] ? "Liked!" : "Unliked!",
+              toastConfig("like-success")
+            );
             return updated;
           });
         }

@@ -88,7 +88,7 @@ const Dashboard = () => {
       .then((response) => {
         if (response.data.status === "success") {
           const sortedPosts = [...response.data.user.posts].sort(
-            (a, b) => new Date(a.createdDate) - new Date(b.createdDate)
+            (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
           );
           setPosts(sortedPosts);
           setLoading(false);

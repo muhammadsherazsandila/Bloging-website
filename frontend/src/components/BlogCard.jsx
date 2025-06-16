@@ -91,6 +91,10 @@ const BlogCard = ({ post, position }) => {
         if (response.data.status === "success") {
           setFollowed(!followed);
           setState(!state);
+          toast.success(
+            followed ? "Unfollowed!" : "Followed!",
+            toastConfig("follow-success")
+          );
         } else {
           toast.error(response.data.message, toastConfig("follow-error"));
         }

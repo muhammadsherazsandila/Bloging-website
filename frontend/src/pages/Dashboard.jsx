@@ -266,7 +266,7 @@ const Dashboard = () => {
       )}
 
       {isAboutOpen && (
-        <div className="w-4xl bg-white rounded-lg shadow-md mx-auto overflow-y-auto mt-16 p-7 max-h-96">
+        <div className="w-11/12 mb-16 bg-white rounded-lg shadow-md mx-auto overflow-y-auto mt-16 p-7 max-h-96">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">About</h2>
           <p>{user.about}</p>
         </div>

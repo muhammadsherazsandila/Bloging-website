@@ -22,6 +22,7 @@ import { CircularProgress } from "@mui/material";
 import { usePost } from "../contexts/PostContext";
 import BlogCard from "../components/BlogCard";
 import { useNavigate } from "react-router-dom";
+import { ClockIcon } from "@heroicons/react/24/outline";
 
 const Dashboard = () => {
   const { user, isLoggedIn, setIsLoggedIn, setUser } = useAuth();
@@ -110,33 +111,36 @@ const Dashboard = () => {
           {/* Top Section */}
           <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6">
             {/* Profile Picture */}
-            <div
-              className="relative w-24 h-24 group cursor-pointer"
-              onClick={openFile}
-            >
+
+            <div className="relative w-24 h-24 group cursor-pointer">
               <MdOpenWith
-                className="absolute top-0 right-0 text-black bg-white rounded-full h-6 w-6 cursor-pointer hover:bg-gray-200 hover:scale-110 transition-all duration-200"
+                className="absolute top-0 right-0 text-black bg-white rounded-full h-6 w-6 cursor-pointer hover:bg-gray-200 hover:scale-110 transition-all duration-200 z-10"
                 onClick={() => setOpenProfilePicture(true)}
               />
-              <img
-                src={
-                  isLoggedIn && user.profilePicture
-                    ? user.profilePicture
-                    : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                }
-                alt="Profile"
-                className="w-full h-full rounded-full object-cover border-2 border-gray-300"
-              />
-              <div className="absolute inset-0 bg-transparent hover:bg-black hover:opacity-50 text-white rounded-full flex items-center justify-center">
-                <FiCamera className="text-xl" />
+              <div
+                className="relative w-24 h-24 group cursor-pointer"
+                onClick={openFile}
+              >
+                <img
+                  src={
+                    isLoggedIn && user.profilePicture
+                      ? user.profilePicture
+                      : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                  }
+                  alt="Profile"
+                  className="w-full h-full rounded-full object-cover border-2 border-gray-300"
+                />
+                <div className="absolute inset-0 bg-transparent hover:bg-black hover:opacity-50 text-white rounded-full flex items-center justify-center">
+                  <FiCamera className="text-xl" />
+                </div>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  name="profilePicture"
+                />
               </div>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-                name="profilePicture"
-              />
             </div>
 
             {/* Name & Info */}
@@ -287,10 +291,29 @@ const Dashboard = () => {
               width: "100%",
             }}
           >
-            <Avatar
-              src={user.profilePicture}
-              sx={{ width: 150, height: 150 }}
-            />
+            <div className="flex justify-center items-center">
+              <Box sx={{ position: "relative" }}>
+                <IconButton
+                  onClick={handleClose}
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    bgcolor: "black",
+                    color: "white",
+                    "&:hover": { bgcolor: "black" },
+                    ":hover": { rotate: "180deg", scale: "1.1" },
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  <ClockIcon fontSize="small" />
+                </IconButton>
+              </Box>
+              <Avatar
+                src={user.profilePicture}
+                sx={{ width: 250, height: 250 }}
+              />
+            </div>
           </Box>
         </Fade>
       </Modal>

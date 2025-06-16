@@ -21,6 +21,7 @@ import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
 import UploadPostModal from "../components/UploadPostModal";
 import Backdrop from "@mui/material/Backdrop";
+import { CircularProgress } from "@mui/material";
 
 const SinglePost = () => {
   const { state, setState } = usePost();
@@ -258,296 +259,302 @@ const SinglePost = () => {
     }
   }, [post]);
 
-  if (!post) {
-    return <div className="text-center py-8">Loading post...</div>;
-  }
-
   return (
     <>
-      <div className="w-full px-4 sm:max-w-3/4 bg-white text-black shadow-xl rounded-2xl mb-16 sm:mb-6 md:p-6 lg:p-8 xl:p-10 mt-24 relative transition-all duration-300 hover:shadow-2xl mx-auto ">
-        {/* Action buttons */}
-        {user && user.id === post.author.id ? (
-          <div className="absolute -top-3 right-4 flex items-center gap-3 bg-white rounded-full shadow-md px-3 py-2">
-            <FiEdit
-              className="cursor-pointer text-xl text-blue-600 hover:text-blue-800 transition-colors"
-              onClick={handleOpenUploadPost}
-              title="Edit post"
-            />
-            <MdDelete
-              className="cursor-pointer text-xl text-red-600 hover:text-red-800 transition-colors"
-              onClick={handleDeletePost}
-              title="Delete post"
-            />
-          </div>
-        ) : (
-          <button
-            onClick={handleFollow}
-            className="absolute top-4 right-4 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
-          >
-            <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
-            <span>{followed ? "Following" : "Follow"}</span>
-          </button>
-        )}
-
-        {/* Top section */}
-        <div className="w-full flex flex-col justify-between items-center gap-4 mb-4">
-          {/* Left: author info */}
-          <div className="flex-1 w-full">
-            <div className="flex items-center gap-3 mb-4">
-              <img
-                src={
-                  post.author.profilePicture ||
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
-                }
-                alt={post.author.name}
-                className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+      {post ? (
+        <div className="w-full px-4 sm:max-w-3/4 bg-white text-black shadow-xl rounded-2xl mb-16 sm:mb-6 md:p-6 lg:p-8 xl:p-10 mt-24 relative transition-all duration-300 hover:shadow-2xl mx-auto ">
+          {/* Action buttons */}
+          {user && user.id === post.author.id ? (
+            <div className="absolute -top-3 right-4 flex items-center gap-3 bg-white rounded-full shadow-md px-3 py-2">
+              <FiEdit
+                className="cursor-pointer text-xl text-blue-600 hover:text-blue-800 transition-colors"
+                onClick={handleOpenUploadPost}
+                title="Edit post"
               />
-              <div>
-                <p className="font-semibold text-gray-900">
-                  {post.author.name}
-                </p>
-                <p className="text-gray-600 text-sm flex flex-col items-start gap-1 sm:flex-row lg:flex-row xl:flex-row">
-                  <span>{post.createdAt}</span>
-                  {post.updatedAt && (
-                    <span>
-                      <span className="font-semibold">Updated</span>{" "}
-                      {post.updatedAt}
-                    </span>
+              <MdDelete
+                className="cursor-pointer text-xl text-red-600 hover:text-red-800 transition-colors"
+                onClick={handleDeletePost}
+                title="Delete post"
+              />
+            </div>
+          ) : (
+            <button
+              onClick={handleFollow}
+              className="absolute top-4 right-4 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
+            >
+              <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
+              <span>{followed ? "Following" : "Follow"}</span>
+            </button>
+          )}
+
+          {/* Top section */}
+          <div className="w-full flex flex-col justify-between items-center gap-4 mb-4">
+            {/* Left: author info */}
+            <div className="flex-1 w-full">
+              <div className="flex items-center gap-3 mb-4">
+                <img
+                  src={
+                    post.author.profilePicture ||
+                    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  }
+                  alt={post.author.name}
+                  className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+                />
+                <div>
+                  <p className="font-semibold text-gray-900">
+                    {post.author.name}
+                  </p>
+                  <p className="text-gray-600 text-sm flex flex-col items-start gap-1 sm:flex-row lg:flex-row xl:flex-row">
+                    <span>{post.createdAt}</span>
+                    {post.updatedAt && (
+                      <span>
+                        <span className="font-semibold">Updated</span>{" "}
+                        {post.updatedAt}
+                      </span>
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              {/* Caption */}
+              <p
+                className="text-gray-700 text-lg mb-4 w-full"
+                dangerouslySetInnerHTML={{ __html: post.caption }}
+              />
+            </div>
+
+            {/* Right: image */}
+            <div className="w-full h-full flex-shrink-0 rounded-xl overflow-hidden shadow-lg">
+              <img
+                src={post.image}
+                alt={post.title}
+                className="object-cover w-full h-full"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          {/* Bottom icons and counts */}
+          <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+            <div className="flex items-center gap-4 md:gap-6">
+              {/* Like button */}
+              <button
+                onClick={() => handlePostLikes(post._id)}
+                className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors group"
+                aria-label="Like post"
+              >
+                <div className="p-2 rounded-full group-hover:bg-red-50 transition-colors">
+                  {liked ? (
+                    <FaHeart className="text-red-600" />
+                  ) : (
+                    <FaRegHeart className="group-hover:text-red-600" />
                   )}
-                </p>
-              </div>
+                </div>
+                <span className="font-medium">{post.likes.length}</span>
+              </button>
+
+              {/* Comment toggle */}
+              <button
+                onClick={() => setShowComments(!showComments)}
+                className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors group"
+                aria-label="Show comments"
+              >
+                <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+                  <FaComment className="group-hover:text-blue-600" />
+                </div>
+                <span className="font-medium">{post.comments.length}</span>
+              </button>
             </div>
 
-            {/* Caption */}
-            <p
-              className="text-gray-700 text-lg mb-4 w-full"
-              dangerouslySetInnerHTML={{ __html: post.caption }}
-            />
-          </div>
-
-          {/* Right: image */}
-          <div className="w-full h-full flex-shrink-0 rounded-xl overflow-hidden shadow-lg">
-            <img
-              src={post.image}
-              alt={post.title}
-              className="object-cover w-full h-full"
-              loading="lazy"
-            />
-          </div>
-        </div>
-
-        {/* Bottom icons and counts */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
-          <div className="flex items-center gap-4 md:gap-6">
-            {/* Like button */}
+            {/* Share */}
             <button
-              onClick={() => handlePostLikes(post._id)}
-              className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors group"
-              aria-label="Like post"
+              className="text-gray-600 hover:text-green-600 transition-colors group"
+              aria-label="Share post"
+              onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                toast.success(
+                  "Link copied to clipboard",
+                  toastConfig("share-success")
+                );
+              }}
             >
-              <div className="p-2 rounded-full group-hover:bg-red-50 transition-colors">
-                {liked ? (
-                  <FaHeart className="text-red-600" />
-                ) : (
-                  <FaRegHeart className="group-hover:text-red-600" />
-                )}
+              <div className="p-2 rounded-full group-hover:bg-green-50 transition-colors">
+                <FaShareAlt className="group-hover:text-green-600" />
               </div>
-              <span className="font-medium">{post.likes.length}</span>
-            </button>
-
-            {/* Comment toggle */}
-            <button
-              onClick={() => setShowComments(!showComments)}
-              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors group"
-              aria-label="Show comments"
-            >
-              <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
-                <FaComment className="group-hover:text-blue-600" />
-              </div>
-              <span className="font-medium">{post.comments.length}</span>
             </button>
           </div>
 
-          {/* Share */}
-          <button
-            className="text-gray-600 hover:text-green-600 transition-colors group"
-            aria-label="Share post"
-            onClick={() => {
-              navigator.clipboard.writeText(window.location.href);
-              toast.success(
-                "Link copied to clipboard",
-                toastConfig("share-success")
-              );
-            }}
-          >
-            <div className="p-2 rounded-full group-hover:bg-green-50 transition-colors">
-              <FaShareAlt className="group-hover:text-green-600" />
-            </div>
-          </button>
-        </div>
+          {/* Comments section */}
+          {showComments && (
+            <div className="mt-6 border-t border-gray-200 pt-4 max-h-[400px] overflow-y-auto">
+              <>
+                {/* New comment form */}
+                <div className="sticky top-0 bg-white py-3 z-10">
+                  <form className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Write a comment..."
+                      className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                    <button
+                      type="submit"
+                      onClick={handleCommentSubmit}
+                      disabled={!comment}
+                      className={`p-3 rounded-full ${
+                        comment
+                          ? "bg-blue-600 text-white hover:bg-blue-700"
+                          : "bg-gray-200 text-gray-400"
+                      } transition-colors`}
+                    >
+                      <FaArrowRight />
+                    </button>
+                  </form>
+                </div>
 
-        {/* Comments section */}
-        {showComments && (
-          <div className="mt-6 border-t border-gray-200 pt-4 max-h-[400px] overflow-y-auto">
-            <>
-              {/* New comment form */}
-              <div className="sticky top-0 bg-white py-3 z-10">
-                <form className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                    placeholder="Write a comment..."
-                    className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    required
-                  />
-                  <button
-                    type="submit"
-                    onClick={handleCommentSubmit}
-                    disabled={!comment}
-                    className={`p-3 rounded-full ${
-                      comment
-                        ? "bg-blue-600 text-white hover:bg-blue-700"
-                        : "bg-gray-200 text-gray-400"
-                    } transition-colors`}
-                  >
-                    <FaArrowRight />
-                  </button>
-                </form>
-              </div>
-
-              {/* Comments list */}
-              <div className="space-y-4 mt-2">
-                {post.comments.map((comment, i) => (
-                  <div key={comment._id} className="p-4 rounded-xl bg-gray-50">
-                    <div className="flex justify-between items-start">
-                      <div className="flex items-start gap-3">
-                        <img
-                          src={
-                            comment.user.profilePicture ||
-                            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                          }
-                          alt={comment.user.name}
-                          className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
-                        />
-                        <div>
-                          <p className="font-semibold text-gray-900">
-                            {comment.user.name}
-                          </p>
-                          <p className="text-gray-600 text-sm">
-                            {comment.createdAt}{" "}
-                            {comment.updatedAt &&
-                              `· Updated ${comment.updatedAt}`}
-                          </p>
-                          <p className="text-gray-700 mt-2">
-                            {comment.content}
-                          </p>
+                {/* Comments list */}
+                <div className="space-y-4 mt-2">
+                  {post.comments.map((comment, i) => (
+                    <div
+                      key={comment._id}
+                      className="p-4 rounded-xl bg-gray-50"
+                    >
+                      <div className="flex justify-between items-start">
+                        <div className="flex items-start gap-3">
+                          <img
+                            src={
+                              comment.user.profilePicture ||
+                              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                            }
+                            alt={comment.user.name}
+                            className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm"
+                          />
+                          <div>
+                            <p className="font-semibold text-gray-900">
+                              {comment.user.name}
+                            </p>
+                            <p className="text-gray-600 text-sm">
+                              {comment.createdAt}{" "}
+                              {comment.updatedAt &&
+                                `· Updated ${comment.updatedAt}`}
+                            </p>
+                            <p className="text-gray-700 mt-2">
+                              {comment.content}
+                            </p>
+                          </div>
                         </div>
+
+                        {user?.id === comment.user.id && (
+                          <button
+                            onClick={() => handleDeleteComment(comment._id)}
+                            className="text-gray-400 hover:text-red-600 transition-colors"
+                            title="Delete comment"
+                          >
+                            <MdDelete className="text-lg" />
+                          </button>
+                        )}
                       </div>
 
-                      {user?.id === comment.user.id && (
+                      {/* Comment action buttons */}
+                      <div className="flex items-center gap-4 mt-3 ml-12 text-sm text-gray-600">
                         <button
-                          onClick={() => handleDeleteComment(comment._id)}
-                          className="text-gray-400 hover:text-red-600 transition-colors"
-                          title="Delete comment"
+                          onClick={() => handleCommentLikes(i, comment._id)}
+                          className="flex items-center gap-1 hover:text-red-600 transition-colors"
+                          aria-label="Like comment"
                         >
-                          <MdDelete className="text-lg" />
+                          {commentLikes[i] ? (
+                            <FaHeart className="text-red-600" />
+                          ) : (
+                            <FaRegHeart />
+                          )}
+                          <span>{comment.likes.length}</span>
                         </button>
+
+                        <button
+                          onClick={() => toggleReplyForm(i)}
+                          className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                          aria-label="Reply to comment"
+                        >
+                          <FaReply />
+                          <span>Reply</span>
+                        </button>
+                      </div>
+
+                      {/* Reply form */}
+                      {replyFormOpen[i] && (
+                        <form className="mt-3 ml-12 flex items-center gap-2">
+                          <input
+                            type="text"
+                            name="reply"
+                            value={replyTexts[i] || ""}
+                            onChange={(e) => {
+                              const newTexts = [...replyTexts];
+                              newTexts[i] = e.target.value;
+                              setReplyTexts(newTexts);
+                            }}
+                            placeholder="Write a reply..."
+                            className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                          />
+                          <button
+                            type="submit"
+                            onClick={(e) => handleReplySubmit(i, e)}
+                            className={`p-3 rounded-full ${
+                              replyTexts[i]
+                                ? "bg-blue-600 text-white hover:bg-blue-700"
+                                : "bg-gray-200 text-gray-400"
+                            } transition-colors`}
+                          >
+                            <FaArrowRight />
+                          </button>
+                        </form>
                       )}
-                    </div>
 
-                    {/* Comment action buttons */}
-                    <div className="flex items-center gap-4 mt-3 ml-12 text-sm text-gray-600">
-                      <button
-                        onClick={() => handleCommentLikes(i, comment._id)}
-                        className="flex items-center gap-1 hover:text-red-600 transition-colors"
-                        aria-label="Like comment"
-                      >
-                        {commentLikes[i] ? (
-                          <FaHeart className="text-red-600" />
-                        ) : (
-                          <FaRegHeart />
-                        )}
-                        <span>{comment.likes.length}</span>
-                      </button>
-
-                      <button
-                        onClick={() => toggleReplyForm(i)}
-                        className="flex items-center gap-1 hover:text-blue-600 transition-colors"
-                        aria-label="Reply to comment"
-                      >
-                        <FaReply />
-                        <span>Reply</span>
-                      </button>
-                    </div>
-
-                    {/* Reply form */}
-                    {replyFormOpen[i] && (
-                      <form className="mt-3 ml-12 flex items-center gap-2">
-                        <input
-                          type="text"
-                          name="reply"
-                          value={replyTexts[i] || ""}
-                          onChange={(e) => {
-                            const newTexts = [...replyTexts];
-                            newTexts[i] = e.target.value;
-                            setReplyTexts(newTexts);
-                          }}
-                          placeholder="Write a reply..."
-                          className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          required
-                        />
-                        <button
-                          type="submit"
-                          onClick={(e) => handleReplySubmit(i, e)}
-                          className={`p-3 rounded-full ${
-                            replyTexts[i]
-                              ? "bg-blue-600 text-white hover:bg-blue-700"
-                              : "bg-gray-200 text-gray-400"
-                          } transition-colors`}
-                        >
-                          <FaArrowRight />
-                        </button>
-                      </form>
-                    )}
-
-                    {/* Replies */}
-                    {comment.replies.length > 0 && (
-                      <div className="mt-4 ml-8 border-l-2 border-gray-200 pl-4 space-y-4">
-                        {comment.replies.map((reply) => (
-                          <div key={reply._id} className="pt-3">
-                            <div className="flex items-start gap-3">
-                              <img
-                                src={
-                                  reply.user.profilePicture ||
-                                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
-                                }
-                                alt={reply.user.name}
-                                className="w-8 h-8 rounded-full object-cover border-2 border-white"
-                              />
-                              <div>
-                                <p className="font-semibold text-gray-900">
-                                  {reply.user.name}
-                                </p>
-                                <p className="text-gray-600 text-sm">
-                                  {reply.createdAt}
-                                </p>
-                                <p className="text-gray-700 mt-1">
-                                  {reply.content}
-                                </p>
+                      {/* Replies */}
+                      {comment.replies.length > 0 && (
+                        <div className="mt-4 ml-8 border-l-2 border-gray-200 pl-4 space-y-4">
+                          {comment.replies.map((reply) => (
+                            <div key={reply._id} className="pt-3">
+                              <div className="flex items-start gap-3">
+                                <img
+                                  src={
+                                    reply.user.profilePicture ||
+                                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                                  }
+                                  alt={reply.user.name}
+                                  className="w-8 h-8 rounded-full object-cover border-2 border-white"
+                                />
+                                <div>
+                                  <p className="font-semibold text-gray-900">
+                                    {reply.user.name}
+                                  </p>
+                                  <p className="text-gray-600 text-sm">
+                                    {reply.createdAt}
+                                  </p>
+                                  <p className="text-gray-700 mt-1">
+                                    {reply.content}
+                                  </p>
+                                </div>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </>
-          </div>
-        )}
-      </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-24 flex items-center justify-center">
+          <CircularProgress />
+          <span className="ml-2">Loading...</span>
+        </div>
+      )}
 
       {/* Edit Post Modal */}
       <Modal

@@ -249,7 +249,7 @@ const BlogCard = ({ post, position }) => {
           user.id === post.author.id ? (
             <div className="absolute -top-3 right-4 flex items-center gap-3 bg-white rounded-full shadow-md px-3 py-2">
               <FiEdit
-                className="cursor-pointer text-xl text-blue-600 hover:text-blue-800 transition-colors"
+                className="cursor-pointer text-xl text-blue-900 hover:text-blue-900 transition-colors"
                 onClick={handleOpenUploadPost}
                 title="Edit post"
               />
@@ -262,18 +262,18 @@ const BlogCard = ({ post, position }) => {
           ) : (
             <button
               onClick={handleFollow}
-              className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
+              className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-900 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
             >
-              <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
+              <FaUserPlus className={followed ? "text-blue-900" : ""} />{" "}
               <span>{followed ? "Following" : "Follow"}</span>
             </button>
           )
         ) : (
           <button
             onClick={handleFollow}
-            className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
+            className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-900 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
           >
-            <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
+            <FaUserPlus className={followed ? "text-blue-900" : ""} />{" "}
             <span>{followed ? "Following" : "Follow"}</span>
           </button>
         )}
@@ -315,7 +315,7 @@ const BlogCard = ({ post, position }) => {
               onClick={() =>
                 navigate(`/post/${post._id}`, { state: { postId: post._id } })
               }
-              className="text-blue-600 hover:text-blue-800 transition-colors font-semibold cursor-pointer"
+              className="text-blue-900 hover:text-blue-900 transition-colors font-semibold cursor-pointer"
             >
               Readmore
             </button>
@@ -354,11 +354,11 @@ const BlogCard = ({ post, position }) => {
             {/* Comment toggle */}
             <button
               onClick={() => setShowComments(!showComments)}
-              className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors group"
+              className="flex items-center gap-2 text-gray-600 hover:text-blue-900 transition-colors group"
               aria-label="Show comments"
             >
               <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
-                <FaComment className="group-hover:text-blue-600" />
+                <FaComment className="group-hover:text-blue-900" />
               </div>
               <span className="font-medium">{post.comments.length}</span>
             </button>
@@ -391,7 +391,7 @@ const BlogCard = ({ post, position }) => {
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     placeholder="Write a comment..."
-                    className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                     required
                   />
                   <button
@@ -400,7 +400,7 @@ const BlogCard = ({ post, position }) => {
                     disabled={!comment}
                     className={`p-3 rounded-full ${
                       comment
-                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        ? "bg-blue-900 text-white hover:bg-blue-900"
                         : "bg-gray-200 text-gray-400"
                     } transition-colors`}
                   >
@@ -466,7 +466,7 @@ const BlogCard = ({ post, position }) => {
 
                       <button
                         onClick={() => toggleReplyForm(i)}
-                        className="flex items-center gap-1 hover:text-blue-600 transition-colors"
+                        className="flex items-center gap-1 hover:text-blue-900 transition-colors"
                         aria-label="Reply to comment"
                       >
                         <FaReply />
@@ -483,7 +483,7 @@ const BlogCard = ({ post, position }) => {
                           value={replyText}
                           onChange={(e) => setReplyText(e.target.value)}
                           placeholder="Write a reply..."
-                          className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                           required
                         />
                         <button
@@ -491,7 +491,7 @@ const BlogCard = ({ post, position }) => {
                           onClick={(e) => handleReplySubmit(i, e)}
                           className={`p-3 rounded-full ${
                             replyText
-                              ? "bg-blue-600 text-white hover:bg-blue-700"
+                              ? "bg-blue-900 text-white hover:bg-blue-900"
                               : "bg-gray-200 text-gray-400"
                           } transition-colors`}
                         >

@@ -184,7 +184,7 @@ function Login() {
                     onChange={handleOnChange}
                     required
                     autoComplete="email"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
                   />
                 </div>
               </div>
@@ -200,7 +200,7 @@ function Login() {
                   <div className="text-sm">
                     <a
                       href="#"
-                      className="font-semibold text-indigo-600 hover:text-indigo-500"
+                      className="font-semibold text-blue-900 hover:text-blue-900"
                     >
                       Forgot password?
                     </a>
@@ -215,7 +215,7 @@ function Login() {
                     onChange={handleOnChange}
                     required
                     autoComplete="current-password"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
                   />
                 </div>
               </div>
@@ -226,7 +226,7 @@ function Login() {
                     e.preventDefault();
                     Login();
                   }}
-                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="flex w-full justify-center rounded-md bg-blue-900 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-900"
                 >
                   {loading && <CircularProgress size={20} color="inherit" />}
                   {loading ? "Signing in..." : "Sign in"}
@@ -238,7 +238,7 @@ function Login() {
               <button
                 onClick={() => handleModeChange("signup")}
                 type="button"
-                className="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                className="font-semibold text-blue-900 hover:text-blue-900 cursor-pointer"
               >
                 Signup
               </button>
@@ -263,7 +263,7 @@ function Login() {
                     onChange={handleOnChange}
                     required
                     autoComplete="name"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
                   />
                 </div>
               </div>
@@ -283,7 +283,7 @@ function Login() {
                     onChange={handleOnChange}
                     required
                     autoComplete="email"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
                   />
                 </div>
               </div>
@@ -306,7 +306,7 @@ function Login() {
                     onChange={handleOnChange}
                     required
                     autoComplete="current-password"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
                   />
                 </div>
               </div>
@@ -317,7 +317,7 @@ function Login() {
                     e.preventDefault();
                     signup();
                   }}
-                  className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="flex w-full justify-center rounded-md bg-blue-900 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-900"
                 >
                   {loading && <CircularProgress size={20} />}
                   {loading ? "Signing up..." : "Sign up"}
@@ -329,7 +329,7 @@ function Login() {
               <button
                 onClick={() => handleModeChange("login")}
                 type="button"
-                className="font-semibold text-indigo-600 hover:text-indigo-500 cursor-pointer"
+                className="font-semibold text-blue-900 hover:text-blue-900 cursor-pointer"
               >
                 Login
               </button>

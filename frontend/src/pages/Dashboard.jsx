@@ -162,7 +162,7 @@ const Dashboard = () => {
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center justify-center gap-2 w-full sm:w-auto"
+                className="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center justify-center gap-2 w-full sm:w-auto"
                 onClick={() => setOpenEditProfile(true)}
               >
                 <AiOutlineEdit />
@@ -178,7 +178,7 @@ const Dashboard = () => {
               </button>
 
               <button
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center justify-center gap-2 w-full sm:w-auto"
+                className="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center justify-center gap-2 w-full sm:w-auto"
                 onClick={() => setOpenUploadPost(true)}
               >
                 <AiOutlinePlus />

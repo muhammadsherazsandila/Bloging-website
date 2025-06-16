@@ -191,7 +191,7 @@ const UploadPostModal = ({
         </IconButton>
 
         <Button
-          className=" bg-blue-500"
+          className=" bg-blue-900"
           type="submit"
           variant="contained"
           sx={{

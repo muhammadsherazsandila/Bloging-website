@@ -6,11 +6,17 @@ import { useAuth } from "../contexts/AuthContext";
 import { FaUserPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { toastConfig } from "../utils/toastConfig";
+import Backdrop from "@mui/material/Backdrop";
+import Modal from "@mui/material/Modal";
+import Fade from "@mui/material/Fade";
+import Box from "@mui/material/Box";
+import { MdOpenWith } from "react-icons/md";
 
 const AuthorProfile = () => {
   const authorId = useParams().id;
   const { author, setAuthor, isLoggedIn, user } = useAuth();
   const [followed, setFollowed] = useState(false);
+  const [openProfilePicture, setOpenProfilePicture] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     axios
@@ -68,6 +74,10 @@ const AuthorProfile = () => {
             </button>
             {/* Profile Picture */}
             <div className="relative w-24 h-24 group cursor-pointer">
+              <MdOpenWith
+                className="absolute top-0 right-0 text-black bg-white rounded-full h-6 w-6 cursor-pointer hover:bg-gray-200 hover:scale-110 transition-all duration-200 z-10"
+                onClick={() => setOpenProfilePicture(true)}
+              />
               <img
                 src={
                   author.profilePicture
@@ -124,6 +134,51 @@ const AuthorProfile = () => {
         <p>Loading...</p>
       )}
       <Outlet />
+
+      {/* Open Profile Picture Modal */}
+      <Modal
+        open={openProfilePicture}
+        onClose={() => setOpenProfilePicture(false)}
+        closeAfterTransition
+        slots={{ backdrop: Backdrop }}
+        slotProps={{ backdrop: { timeout: 300 } }}
+      >
+        <Fade in={openProfilePicture}>
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+            }}
+          >
+            <div className="flex justify-center items-center ">
+              <span className="relative">
+                <IconButton
+                  onClick={() => setOpenProfilePicture(false)}
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    right: 0,
+                    bgcolor: "black",
+                    color: "white",
+                    "&:hover": { bgcolor: "black" },
+                    ":hover": { rotate: "180deg", scale: "1.1" },
+                    transition: "all 0.3s ease",
+                  }}
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+                <Avatar
+                  src={user.profilePicture}
+                  sx={{ width: 250, height: 250 }}
+                />
+              </span>
+            </div>
+          </Box>
+        </Fade>
+      </Modal>
     </div>
   );
 };

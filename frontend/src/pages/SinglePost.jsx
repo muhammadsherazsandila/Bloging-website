@@ -396,7 +396,7 @@ const SinglePost = () => {
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                       placeholder="Write a comment..."
-                      className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                       required
                     />
                     <button
@@ -495,7 +495,7 @@ const SinglePost = () => {
                               setReplyTexts(newTexts);
                             }}
                             placeholder="Write a reply..."
-                            className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                             required
                           />
                           <button

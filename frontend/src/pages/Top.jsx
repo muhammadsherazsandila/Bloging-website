@@ -33,7 +33,7 @@ function All() {
           className="flex flex-col relative"
           variants={scale()}
           initial="initial"
-          whileInView="animate"
+          animate="animate"
         >
           <BlogCard
             key={index}

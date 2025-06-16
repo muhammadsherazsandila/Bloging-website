@@ -57,7 +57,7 @@ function Navbar() {
             <Link
               to={item.href}
               key={item.name}
-              className="text-sm/6 font-semibold text-gray-900"
+              className="text-sm/6 font-semibold text-gray-900 hover:text-blue-900 transition duration-300 hover:scale-105"
             >
               {item.name}
             </Link>
@@ -76,12 +76,12 @@ function Navbar() {
                     : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                 }
                 alt="profile"
-                className="w-8 h-8 rounded-full border border-gray-300 hover:border-blue-500 transition duration-300 hover:animate-spin "
+                className="w-8 h-8 rounded-full border border-gray-300 hover:border-blue-900 transition duration-300 hover:animate-spin "
               />
             </button>
           </Tooltip>
           <span
-            className="text-sm/6 font-semibold text-gray-900 cursor-pointer flex items-center hover:scale-105 transition duration-300 hover:text-blue-500"
+            className="text-sm/6 font-semibold text-gray-900 cursor-pointer flex items-center hover:scale-105 transition duration-300 hover:text-blue-900"
             onClick={handleLoginLogout}
           >
             {isLoggedIn ? "Logout" : "Login"}
@@ -95,7 +95,7 @@ function Navbar() {
         <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 flex justify-around items-center py-2 shadow-md z-50">
           <button
             onClick={() => navigate("/")}
-            className="flex flex-col items-center text-gray-700 hover:text-blue-500"
+            className="flex flex-col items-center text-gray-700 hover:text-blue-900"
           >
             <IoMdHome className="h-6 w-6" />
             <span className="text-xs">Home</span>
@@ -103,7 +103,7 @@ function Navbar() {
 
           <button
             onClick={() => navigate("/top")}
-            className="flex flex-col items-center text-gray-700 hover:text-blue-500"
+            className="flex flex-col items-center text-gray-700 hover:text-blue-900"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -124,7 +124,7 @@ function Navbar() {
 
           <button
             onClick={() => navigate("/create")}
-            className="flex flex-col items-center text-gray-700 hover:text-blue-500"
+            className="flex flex-col items-center text-gray-700 hover:text-blue-900"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -145,14 +145,14 @@ function Navbar() {
 
           <button
             onClick={() => navigate("/dashboard")}
-            className="flex flex-col items-center text-gray-700 hover:text-blue-500"
+            className="flex flex-col items-center text-gray-700 hover:text-blue-900"
           >
             {isLoggedIn && user.profilePicture ? (
               user.profilePicture ? (
                 <img
                   src={user.profilePicture}
                   alt="profile"
-                  className="w-6 h-6 rounded-full border border-gray-300 hover:border-blue-500 transition duration-300 hover:animate-spin "
+                  className="w-6 h-6 rounded-full border border-gray-300 hover:border-blue-900 transition duration-300 hover:animate-spin "
                 />
               ) : (
                 <MdAccountCircle className="h-6 w-6" />

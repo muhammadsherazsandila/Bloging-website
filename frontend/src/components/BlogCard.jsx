@@ -116,13 +116,14 @@ const BlogCard = ({ post, position }) => {
       .then((response) => {
         if (response.status === 200) {
           setState(!state);
-          setComment("");
           toast.success("Comment added!", toastConfig("comment-success"));
         }
       })
       .catch((error) => {
         console.error("Error adding comment:", error);
       });
+
+    setComment("");
   };
 
   const handleDeleteComment = (commentId) => {
@@ -363,7 +364,10 @@ const BlogCard = ({ post, position }) => {
           <button
             className="text-gray-600 hover:text-green-600 transition-colors group"
             aria-label="Share post"
-            onClick={() => navigator.clipboard.writeText(window.location.href)}
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              toast.success("Copied to clipboard", toastConfig("copy-success"));
+            }}
           >
             <div className="p-2 rounded-full group-hover:bg-green-50 transition-colors">
               <FaShareAlt className="group-hover:text-green-600" />

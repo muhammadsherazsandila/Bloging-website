@@ -416,5 +416,90 @@ export const follow = async (req, res) => {
   }
 };
 
+export const getSinglePost = async (req, res) => {
+  const PostId = req.params.id;
+  try {
+    const post = await Post.findById(PostId)
+      .populate("author")
+      .populate(
+        "comments.user comments.user.profilePicture comments.user.mimeType"
+      )
+      .populate(
+        "comments.replies.user comments.replies.user.profilePicture comments.replies.user.mimeType"
+      );
+    if (!post) {
+      return res
+        .status(404)
+        .json({ message: "Post not found", status: "error" });
+    }
+    const updatePost = {
+      ...post._doc,
+      image: convertImageToBase64(post.image, post.mimeType),
+      author: {
+        id: post.author._id,
+        name: post.author.name,
+        profilePicture: post.author.profilePicture
+          ? convertImageToBase64(
+              post.author.profilePicture,
+              post.author.mimeType
+            )
+          : "",
+      },
+      comments: await Promise.all(
+        post.comments.map(async (comment) => ({
+          ...comment._doc,
+          user: comment.user
+            ? {
+                id: comment.user._id,
+                name: comment.user.name,
+                profilePicture: comment.user.profilePicture
+                  ? convertImageToBase64(
+                      comment.user.profilePicture,
+                      comment.user.mimeType
+                    )
+                  : "",
+              }
+            : null,
+          createdAt: formatDate(comment.createdAt),
+          updatedAt: formatDate(comment.updatedAt),
+          replies: await Promise.all(
+            comment.replies.map(async (reply) => ({
+              ...reply._doc,
+              user: reply.user
+                ? {
+                    id: reply.user._id,
+                    name: reply.user.name,
+                    profilePicture: reply.user.profilePicture
+                      ? convertImageToBase64(
+                          reply.user.profilePicture,
+                          reply.user.mimeType
+                        )
+                      : "",
+                  }
+                : null,
+              createdAt: formatDate(reply.createdAt),
+              updatedAt: formatDate(reply.updatedAt),
+            }))
+          ),
+        }))
+      ),
+      createdAt: formatDate(post.createdAt),
+      updatedAt: formatDate(post.updatedAt),
+    };
+    res.status(200).json({
+      message: "Post retrieved successfully",
+      status: "success",
+      post: updatePost,
+    });
+  } catch (error) {
+    console.log("Error getting post:", error.message);
+    res.status(500).json({
+      message: "Error getting post",
+      status: "error",
+      error: error.message,
+    });
+  }
+};
+
 // Optionally export helpers if needed elsewhere
 export { convertImageToBase64, formatDate };

@@ -15,7 +15,7 @@ import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "react-toastify";
 import { toastConfig } from "../utils/toastConfig";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
@@ -23,25 +23,39 @@ import UploadPostModal from "../components/UploadPostModal";
 import Backdrop from "@mui/material/Backdrop";
 
 const SinglePost = () => {
-  const { posts, state, setState } = usePost();
-  const location = useLocation();
-  const postId = location.state?.postId;
-  console.log(postId);
-  const post = posts.find((post) => post._id.toString() === postId.toString());
+  const { state, setState } = usePost();
+  const postId = useParams().id;
+  const [post, setPost] = useState(null);
   const { user } = useAuth();
-
   const navigate = useNavigate();
+
+  const getPost = () => {
+    axios
+      .get(`https://blogora.up.railway.app/post/get-post/${postId}`)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status === "success") {
+          setPost(response.data.post);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  useEffect(() => {
+    if (postId) {
+      getPost();
+    }
+  }, [postId, state]);
 
   const [liked, setLiked] = useState(false);
   const [comment, setComment] = useState("");
   const [showComments, setShowComments] = useState(false);
-  const [commentLikes, setCommentLikes] = useState(
-    post.comments.map(() => false)
-  );
+  const [commentLikes, setCommentLikes] = useState([]);
   const [followed, setFollowed] = useState(false);
-  const [replyFormOpen, setReplyFormOpen] = useState(
-    post.comments.map(() => false)
-  );
+  const [replyFormOpen, setReplyFormOpen] = useState([]);
+  const [replyTexts, setReplyTexts] = useState([]);
 
   const toggleReplyForm = (index) => {
     setReplyFormOpen((prev) => {
@@ -51,9 +65,9 @@ const SinglePost = () => {
     });
   };
 
-  const [replyText, setReplyText] = useState("");
   const handleReplySubmit = (index, e) => {
     e.preventDefault();
+    const replyText = replyTexts[index];
     if (!replyText || !user) {
       toast.error("Please login to reply", toastConfig("reply-error"));
       return;
@@ -68,7 +82,10 @@ const SinglePost = () => {
       .then((response) => {
         if (response.status === 200) {
           setState(!state);
-          setReplyText("");
+          const newTexts = [...replyTexts];
+          newTexts[index] = "";
+          setReplyTexts(newTexts);
+          toast.success("Reply added!", toastConfig("reply-success"));
         }
       })
       .catch((error) => {
@@ -90,6 +107,10 @@ const SinglePost = () => {
         if (response.data.status === "success") {
           setFollowed(!followed);
           setState(!state);
+          toast.success(
+            followed ? "Unfollowed!" : "Followed!",
+            toastConfig("follow-success")
+          );
         } else {
           toast.error(response.data.message, toastConfig("follow-error"));
         }
@@ -103,7 +124,6 @@ const SinglePost = () => {
     e.preventDefault();
     if (!comment || !user) {
       toast.error("Please login to comment", toastConfig("comment-error"));
-      setComment("");
       return;
     }
     axios
@@ -116,6 +136,7 @@ const SinglePost = () => {
         if (response.status === 200) {
           setState(!state);
           setComment("");
+          toast.success("Comment added!", toastConfig("comment-success"));
         }
       })
       .catch((error) => {
@@ -134,6 +155,10 @@ const SinglePost = () => {
       .then((response) => {
         if (response.status === 200) {
           setState(!state);
+          toast.success(
+            "Comment deleted!",
+            toastConfig("comment-delete-success")
+          );
         }
       })
       .catch((error) => {
@@ -155,6 +180,10 @@ const SinglePost = () => {
         if (response.status === 200) {
           setState(!state);
           setLiked(!liked);
+          toast.success(
+            liked ? "Unliked!" : "Liked!",
+            toastConfig("like-success")
+          );
         }
       })
       .catch((error) => {
@@ -179,6 +208,10 @@ const SinglePost = () => {
           setCommentLikes((prev) => {
             const updated = [...prev];
             updated[index] = !updated[index];
+            toast.success(
+              updated[index] ? "Liked!" : "Unliked!",
+              toastConfig("like-success")
+            );
             return updated;
           });
         }
@@ -195,6 +228,7 @@ const SinglePost = () => {
         if (response.status === 200) {
           setState(!state);
           toast.success("Post deleted!", toastConfig("post-delete-success"));
+          navigate("/");
         }
       })
       .catch((error) => {
@@ -207,46 +241,44 @@ const SinglePost = () => {
   const handleCloseUploadPost = () => setOpenUploadPost(false);
 
   const initiateData = () => {
-    setLiked(post.likes.includes(user?.id) ? true : false);
-    setFollowed(user?.following?.includes(post.author.id) ? true : false);
-    setCommentLikes(
-      post.comments.map((comment) =>
-        comment.likes.includes(user?.id) ? true : false
-      )
-    );
+    if (post && user) {
+      setLiked(post.likes.includes(user.id));
+      setFollowed(user.following?.includes(post.author.id));
+      setCommentLikes(
+        post.comments.map((comment) => comment.likes.includes(user.id))
+      );
+      setReplyFormOpen(post.comments.map(() => false));
+      setReplyTexts(post.comments.map(() => ""));
+    }
   };
 
   useEffect(() => {
-    initiateData();
-  }, []);
+    if (post) {
+      initiateData();
+    }
+  }, [post]);
+
+  if (!post) {
+    return <div className="text-center py-8">Loading post...</div>;
+  }
 
   return (
     <>
       <div className="w-full px-4 sm:max-w-3/4 bg-white text-black shadow-xl rounded-2xl mb-16 sm:mb-6 md:p-6 lg:p-8 xl:p-10 mt-24 relative transition-all duration-300 hover:shadow-2xl mx-auto ">
         {/* Action buttons */}
-        {user ? (
-          user.id === post.author.id ? (
-            <div className="absolute -top-3 right-4 flex items-center gap-3 bg-white rounded-full shadow-md px-3 py-2">
-              <FiEdit
-                className="cursor-pointer text-xl text-blue-600 hover:text-blue-800 transition-colors"
-                onClick={handleOpenUploadPost}
-                title="Edit post"
-              />
-              <MdDelete
-                className="cursor-pointer text-xl text-red-600 hover:text-red-800 transition-colors"
-                onClick={handleDeletePost}
-                title="Delete post"
-              />
-            </div>
-          ) : (
-            <button
-              onClick={handleFollow}
-              className="absolute top-4 right-4 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm"
-            >
-              <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
-              <span>{followed ? "Following" : "Follow"}</span>
-            </button>
-          )
+        {user && user.id === post.author.id ? (
+          <div className="absolute -top-3 right-4 flex items-center gap-3 bg-white rounded-full shadow-md px-3 py-2">
+            <FiEdit
+              className="cursor-pointer text-xl text-blue-600 hover:text-blue-800 transition-colors"
+              onClick={handleOpenUploadPost}
+              title="Edit post"
+            />
+            <MdDelete
+              className="cursor-pointer text-xl text-red-600 hover:text-red-800 transition-colors"
+              onClick={handleDeletePost}
+              title="Delete post"
+            />
+          </div>
         ) : (
           <button
             onClick={handleFollow}
@@ -276,10 +308,12 @@ const SinglePost = () => {
                 </p>
                 <p className="text-gray-600 text-sm flex flex-col items-start gap-1 sm:flex-row lg:flex-row xl:flex-row">
                   <span>{post.createdAt}</span>
-                  <span>
-                    <span className="font-semibold">Updated</span>{" "}
-                    {post.updatedAt}
-                  </span>
+                  {post.updatedAt && (
+                    <span>
+                      <span className="font-semibold">Updated</span>{" "}
+                      {post.updatedAt}
+                    </span>
+                  )}
                 </p>
               </div>
             </div>
@@ -338,7 +372,13 @@ const SinglePost = () => {
           <button
             className="text-gray-600 hover:text-green-600 transition-colors group"
             aria-label="Share post"
-            onClick={() => navigator.clipboard.writeText(window.location.href)}
+            onClick={() => {
+              navigator.clipboard.writeText(window.location.href);
+              toast.success(
+                "Link copied to clipboard",
+                toastConfig("share-success")
+              );
+            }}
           >
             <div className="p-2 rounded-full group-hover:bg-green-50 transition-colors">
               <FaShareAlt className="group-hover:text-green-600" />
@@ -379,7 +419,7 @@ const SinglePost = () => {
               {/* Comments list */}
               <div className="space-y-4 mt-2">
                 {post.comments.map((comment, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-gray-50">
+                  <div key={comment._id} className="p-4 rounded-xl bg-gray-50">
                     <div className="flex justify-between items-start">
                       <div className="flex items-start gap-3">
                         <img
@@ -447,8 +487,12 @@ const SinglePost = () => {
                         <input
                           type="text"
                           name="reply"
-                          value={replyText}
-                          onChange={(e) => setReplyText(e.target.value)}
+                          value={replyTexts[i] || ""}
+                          onChange={(e) => {
+                            const newTexts = [...replyTexts];
+                            newTexts[i] = e.target.value;
+                            setReplyTexts(newTexts);
+                          }}
                           placeholder="Write a reply..."
                           className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                           required
@@ -457,7 +501,7 @@ const SinglePost = () => {
                           type="submit"
                           onClick={(e) => handleReplySubmit(i, e)}
                           className={`p-3 rounded-full ${
-                            replyText
+                            replyTexts[i]
                               ? "bg-blue-600 text-white hover:bg-blue-700"
                               : "bg-gray-200 text-gray-400"
                           } transition-colors`}
@@ -470,8 +514,8 @@ const SinglePost = () => {
                     {/* Replies */}
                     {comment.replies.length > 0 && (
                       <div className="mt-4 ml-8 border-l-2 border-gray-200 pl-4 space-y-4">
-                        {comment.replies.map((reply, j) => (
-                          <div key={j} className="pt-3">
+                        {comment.replies.map((reply) => (
+                          <div key={reply._id} className="pt-3">
                             <div className="flex items-start gap-3">
                               <img
                                 src={

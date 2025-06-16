@@ -177,24 +177,41 @@ export const uploadProfilePicture = async (req, res) => {
 };
 
 export const follow = async (req, res) => {
-  const userId = req.params.id;
-  const followerId = req.body.followerId;
+  const authorId = req.params.id;
+  const { userId, followed } = req.body;
+
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { $addToSet: { followers: followerId } },
-      { new: true }
-    );
-    if (!updatedUser) {
+    const author = await User.findById(authorId);
+    if (!author) {
       return res.status(200).json({
-        message: "User not found",
+        message: "Author not found",
         status: "error",
       });
     }
+
+    const update = followed
+      ? { $addToSet: { followers: userId } }
+      : { $pull: { followers: userId } };
+
+    await User.findByIdAndUpdate(authorId, update);
+
+    const follower = await User.findById(userId);
+    if (!follower) {
+      return res.status(200).json({
+        message: "Follower not found",
+        status: "error",
+      });
+    }
+
+    const following = followed
+      ? { $addToSet: { following: authorId } }
+      : { $pull: { following: authorId } };
+
+    await User.findByIdAndUpdate(userId, following);
+
     res.status(200).json({
       message: "User followed successfully",
       status: "success",
-      data: updatedUser,
     });
   } catch (error) {
     res.status(200).json({

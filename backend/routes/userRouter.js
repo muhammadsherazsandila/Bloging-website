@@ -19,7 +19,7 @@ userRouter.post("/login", upload.none(), login);
 userRouter.post("/signup", upload.none(), signup);
 userRouter.put("/update-profile", upload.none(), updateUser);
 userRouter.delete("/", deleteUser);
-userRouter.put("/:id/follow", follow);
+userRouter.put("/follow/:id", follow);
 userRouter.put(
   "/upload-profile-picture",
   upload.single("profilePicture"),

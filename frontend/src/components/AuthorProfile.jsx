@@ -3,10 +3,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
+import { FaUserPlus } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 const AuthorProfile = () => {
   const authorId = useParams().id;
   const { author, setAuthor } = useAuth();
+  const [followed, setFollowed] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     axios
@@ -17,12 +20,41 @@ const AuthorProfile = () => {
           setAuthor(response.data.user);
         }
       });
-  }, []);
+  }, [authorId]);
+
+  const handleFollow = () => {
+    if (!author) {
+      navigate("/login");
+      return;
+    }
+    axios
+      .put(`https://blogora.up.railway.app/user/follow/${authorId}`, {
+        userId: author.id,
+        followed: !followed,
+      })
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status === "success") {
+          setFollowed(!followed);
+          toast.success(response.data.message, toastConfig("follow-success"));
+        } else {
+          toast.error(response.data.message, toastConfig("follow-error"));
+        }
+      });
+  };
+
   return (
     <div className="px-4">
       {author ? (
         <div className="max-w-4xl mx-auto p-4 border rounded-xl shadow-md bg-white mt-32">
           <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6">
+            <button
+              onClick={handleFollow}
+              className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
+            >
+              <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
+              <span>{followed ? "Following" : "Follow"}</span>
+            </button>
             {/* Profile Picture */}
             <div className="relative w-24 h-24 group cursor-pointer">
               <img

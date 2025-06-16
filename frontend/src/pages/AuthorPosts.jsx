@@ -20,9 +20,13 @@ function AuthorPosts() {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
-    setPosts(author ? author.posts : []);
+    console.log(author);
+    setPosts(author !== null ? author.posts : []);
+  }, [author]);
+
+  useEffect(() => {
     posts.length > 0 ? setLoading(false) : setLoading(true);
-  }, [state, author]);
+  }, [posts]);
 
   return (
     <div className="flex flex-col gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-0 mb-16">

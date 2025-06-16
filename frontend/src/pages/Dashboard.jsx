@@ -9,6 +9,8 @@ import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
+import { Avatar, IconButton, Tooltip } from "@mui/material";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditProfileModel from "../components/EditProfileModel";
 import UploadPostModal from "../components/UploadPostModal";
@@ -18,6 +20,7 @@ import Cookies from "js-cookie";
 import { CircularProgress } from "@mui/material";
 import { usePost } from "../contexts/PostContext";
 import BlogCard from "../components/BlogCard";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const { user, isLoggedIn, setIsLoggedIn, setUser } = useAuth();
@@ -32,7 +35,7 @@ const Dashboard = () => {
   const [posts, setPosts] = useState([]);
 
   const fileInputRef = useRef(null);
-
+  const navigate = useNavigate();
   const openFile = () => fileInputRef.current.click();
 
   const handleFileChange = async (e) => {
@@ -273,7 +276,7 @@ const Dashboard = () => {
       )}
 
       {isFriendsOpen && (
-        <div className="w-4xl bg-white rounded-lg shadow-md mx-auto overflow-y-auto mt-16 p-7 max-h-96">
+        <div className="w-11/12 mb-16 bg-white rounded-lg shadow-md mx-auto overflow-y-auto mt-16 p-7 max-h-96">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">Friends</h2>
           <ul className="space-y-3">
             {user.friends ? (
@@ -282,6 +285,11 @@ const Dashboard = () => {
                   <li
                     key={friend.id}
                     className="flex items-center justify-between bg-gray-100 hover:bg-gray-200 p-2 rounded-md transition"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigate(`/author-profile/${friend.id}`);
+                      console.log(friend.id);
+                    }}
                   >
                     <div className="flex items-center space-x-3">
                       <Avatar src={friend.profilePicture} alt={friend.name} />
@@ -289,20 +297,6 @@ const Dashboard = () => {
                         {friend.name}
                       </span>
                     </div>
-                    <Tooltip title="Follow">
-                      <span>
-                        <IconButton color="primary" size="small">
-                          <PersonAddIcon fontSize="small" />
-                        </IconButton>
-                        <span
-                          className={`ml-2 cursor-pointer font-semibold ${
-                            followed ? "text-green-500" : ""
-                          }`}
-                        >
-                          {followed ? "Following" : "Follow"}
-                        </span>
-                      </span>
-                    </Tooltip>
                   </li>
                 ))
               ) : (

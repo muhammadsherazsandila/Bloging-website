@@ -155,6 +155,10 @@ const BlogCard = ({ post, position }) => {
         if (response.status === 200) {
           setState(!state);
           setLiked(!liked);
+          toast.success(
+            liked ? "Unliked!" : "Liked!",
+            toastConfig("like-success")
+          );
         }
       })
       .catch((error) => {
@@ -218,7 +222,6 @@ const BlogCard = ({ post, position }) => {
 
   useEffect(() => {
     initiateData();
-    console.log(post);
   }, []);
 
   return (

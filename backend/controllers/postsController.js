@@ -65,6 +65,7 @@ export const getPost = async (req, res) => {
         ),
         createdAt: formatDate(post.createdAt),
         updatedAt: formatDate(post.updatedAt),
+        createdDate: post.createdAt,
       }))
     );
 

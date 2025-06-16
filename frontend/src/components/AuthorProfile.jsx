@@ -5,10 +5,11 @@ import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { FaUserPlus } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { toastConfig } from "../utils/toastConfig";
 
 const AuthorProfile = () => {
   const authorId = useParams().id;
-  const { author, setAuthor } = useAuth();
+  const { author, setAuthor, isLoggedIn, user } = useAuth();
   const [followed, setFollowed] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
@@ -23,34 +24,44 @@ const AuthorProfile = () => {
   }, [authorId]);
 
   const handleFollow = () => {
-    if (!author) {
-      navigate("/login");
+    if (!user && !isLoggedIn) {
+      toast.error("Please login to follow", toastConfig("follow-error"));
       return;
     }
     axios
       .put(`https://blogora.up.railway.app/user/follow/${authorId}`, {
-        userId: author.id,
+        userId: user.id,
         followed: !followed,
       })
       .then((response) => {
-        console.log(response.data);
         if (response.data.status === "success") {
           setFollowed(!followed);
-          toast.success(response.data.message, toastConfig("follow-success"));
+          toast.success(
+            followed ? "Unfollowed!" : "Followed!",
+            toastConfig("follow-success")
+          );
         } else {
           toast.error(response.data.message, toastConfig("follow-error"));
         }
       });
   };
 
+  useEffect(() => {
+    if (user && isLoggedIn && author) {
+      if (author.followers.includes(user.id)) {
+        setFollowed(true);
+      }
+    }
+  }, [author, user, isLoggedIn]);
+
   return (
     <div className="px-4">
       {author ? (
         <div className="max-w-4xl mx-auto p-4 border rounded-xl shadow-md bg-white mt-32">
-          <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6 relative">
             <button
               onClick={handleFollow}
-              className="absolute top-2 right-2 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
+              className="absolute top-1 right-1 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
             >
               <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
               <span>{followed ? "Following" : "Follow"}</span>

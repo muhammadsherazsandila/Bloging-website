@@ -8,10 +8,20 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [author, setAuthor] = useState(null);
+  const [userState, setUserState] = useState(false);
 
   return (
     <AuthContext.Provider
-      value={{ isLoggedIn, setIsLoggedIn, user, setUser, author, setAuthor }}
+      value={{
+        isLoggedIn,
+        setIsLoggedIn,
+        user,
+        setUser,
+        author,
+        setAuthor,
+        userState,
+        setUserState,
+      }}
     >
       {children}
     </AuthContext.Provider>

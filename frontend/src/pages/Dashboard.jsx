@@ -87,7 +87,12 @@ const Dashboard = () => {
       .get(`https://blogora.up.railway.app/user/posts/${Cookies.get("token")}`)
       .then((response) => {
         if (response.data.status === "success") {
-          setPosts(response.data.user.posts);
+          const sortedPosts = response.data.user.posts.sort((a, b) => {
+            const dateA = a.createdAt;
+            const dateB = b.createdAt;
+            return dateB - dateA;
+          });
+          setPosts(sortedPosts);
           setLoading(false);
           console.log(response.data.user.posts);
         }
@@ -160,8 +165,8 @@ const Dashboard = () => {
                 onClick={deleteProfile}
               >
                 <DeleteIcon />
-                {loading ? <CircularProgress size={20} /> : ""}
-                {loading ? "Deleting..." : "Delete Profile"}
+                {loading && !isLoggedIn ? <CircularProgress size={20} /> : ""}
+                {loading && !isLoggedIn ? "Deleting..." : "Delete Profile"}
               </button>
 
               <button
@@ -261,10 +266,15 @@ const Dashboard = () => {
       </Modal>
 
       {isPostsOpen && (
-        <div className="flex flex-col gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-2">
-          {posts.map((post, index) => (
-            <BlogCard key={index} post={post} />
-          ))}
+        <div className="flex flex-col gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-2 mb-16">
+          {posts.length > 0 ? (
+            posts.map((post, index) => <BlogCard key={index} post={post} />)
+          ) : (
+            <p className="flex items-center gap-2">
+              <CircularProgress />
+              <span>Loading...</span>
+            </p>
+          )}
         </div>
       )}
 

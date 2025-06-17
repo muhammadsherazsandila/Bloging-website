@@ -2,10 +2,10 @@ import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
 import bcrypt from "bcrypt";
 import { generateToken, verifyToken } from "../utils/token.js";
-import { sendEmail } from "../utils/resetPass.js";
 import sharp from "sharp";
 import { formatDate } from "../utils/formaters.js";
 import cloudinary from "../utils/cloudinary.js";
+import { sendEmail } from "./mailController.js";
 export const login = async (req, res) => {
   console.log(req.body);
   const { email, password } = req.body;
@@ -236,6 +236,7 @@ export const follow = async (req, res) => {
 };
 
 export const forgetPassword = async (req, res) => {
+  console.log(req.body);
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -245,8 +246,10 @@ export const forgetPassword = async (req, res) => {
         status: "error",
       });
     }
+    user.isPermittedToChangePassword = true;
+    await user.save();
     const token = Math.floor(Math.random() * 1000000);
-    sendEmail(user.email, token);
+    sendEmail(email, token);
     res.status(200).json({
       message: "Password reset email sent",
       status: "success",
@@ -254,6 +257,41 @@ export const forgetPassword = async (req, res) => {
   } catch (error) {
     res.status(200).json({
       message: "Error sending password reset email",
+      status: "error",
+      error: error.message,
+    });
+  }
+};
+
+export const resetPassword = async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(200).json({
+        message: "User not found",
+        status: "error",
+      });
+    }
+
+    if (!user.isPermittedToChangePassword) {
+      return res.status(200).json({
+        message: "Password reset not permitted",
+        status: "error",
+      });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    user.password = hashedPassword;
+    await user.save();
+    res.status(200).json({
+      message: "Password reset successfully",
+      status: "success",
+    });
+  } catch (error) {
+    res.status(200).json({
+      message: "Error resetting password",
       status: "error",
       error: error.message,
     });

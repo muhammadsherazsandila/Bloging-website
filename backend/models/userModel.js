@@ -18,9 +18,9 @@ const userSchema = mongoose.Schema(
       required: true,
       minlength: 6,
     },
-    token: {
-      type: String,
-      required: false,
+    isPermittedToChangePassword: {
+      type: Boolean,
+      default: false,
     },
     profilePicture: {
       type: String,

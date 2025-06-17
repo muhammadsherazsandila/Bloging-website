@@ -10,6 +10,7 @@ import {
   dashboard,
   getAllPosts,
   getAuthor,
+  resetPassword,
 } from "../controllers/userController.js";
 import upload from "../utils/upload.js";
 
@@ -28,6 +29,7 @@ userRouter.put(
 );
 userRouter.get("/posts/:id", getAllPosts);
 userRouter.post("/forgot-password", forgetPassword);
+userRouter.post("/reset-password", resetPassword);
 userRouter.delete("/delete-profile", deleteUser);
 userRouter.get("/:id", getAuthor);
 

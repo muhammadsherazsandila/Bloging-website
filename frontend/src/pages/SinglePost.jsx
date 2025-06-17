@@ -24,7 +24,7 @@ import Box from "@mui/material/Box";
 import UploadPostModal from "../components/UploadPostModal";
 import Backdrop from "@mui/material/Backdrop";
 import { CircularProgress } from "@mui/material";
-import { downStyle, upStyle } from "../utils/stylers";
+import { downStyle, upStyle } from "../utils/styles";
 import { motion } from "framer-motion";
 import { fadeIn, fadeOut } from "../utils/animation";
 import { SlOptionsVertical } from "react-icons/sl";

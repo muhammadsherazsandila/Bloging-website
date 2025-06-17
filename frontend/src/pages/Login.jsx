@@ -183,7 +183,7 @@ function Login() {
     }
     try {
       const response = await axios.post(
-        "http://localhost:5000/user/forgot-password",
+        "https://blogora.up.railway.app/user/forgot-password",
         {
           email: email,
         }

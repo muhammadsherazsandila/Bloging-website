@@ -43,7 +43,7 @@ function ResetPass() {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/user/reset-password/" +
+        "https://blogora.up.railway.app/user/reset-password/" +
           encodeURIComponent(token),
         {
           email: email,
@@ -71,7 +71,7 @@ function ResetPass() {
   const verifyToken = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:5000/user/verify-token",
+        "https://blogora.up.railway.app/user/verify-token",
         {
           token: token,
         }

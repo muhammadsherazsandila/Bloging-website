@@ -4,9 +4,9 @@ import bcrypt from "bcrypt";
 import { generateToken, verifyToken } from "../utils/token.js";
 import { sendEmail } from "../utils/resetPass.js";
 import sharp from "sharp";
-import { convertImageToBase64, formatDate } from "../utils/formaters.js";
-
+import { formatDate } from "../utils/formaters.js";
 export const login = async (req, res) => {
+  console.log(req.body);
   const { email, password } = req.body;
   console.log(email, password);
   try {
@@ -24,13 +24,9 @@ export const login = async (req, res) => {
         status: "error",
       });
     }
-    let pngBuffer = null;
-    if (user.profilePicture) {
-      pngBuffer = await sharp(user.profilePicture).png().toBuffer();
-    }
     const updatedUser = {
       name: user.name,
-      profilePicture: pngBuffer?.toString("base64"),
+      profilePicture: user.profilePicture,
       followers: user.followers.length,
       following: user.following.length,
       bio: user.bio || "",
@@ -61,21 +57,10 @@ export const signup = async (req, res) => {
   const newUser = new User({ name, email, password: pass });
   try {
     const user = await newUser.save();
-    let pngBuffer = null;
-    if (user.profilePicture) {
-      pngBuffer = await sharp(user.profilePicture).png().toBuffer();
-    }
-    const updatedUser = {
-      name: user.name,
-      profilePicture: pngBuffer?.toString("base64"),
-      followers: user.followers.length,
-      following: user.following.length,
-      bio: user.bio || "",
-    };
     res.status(200).json({
       message: "User created successfully",
       status: "success",
-      user: updatedUser,
+      user: user,
       token: generateToken(user),
     });
   } catch (error) {
@@ -100,20 +85,13 @@ export const updateUser = async (req, res) => {
         status: "error",
       });
     }
-    let pngBuffer = null;
-    if (user.profilePicture) {
-      pngBuffer = await sharp(user.profilePicture).png().toBuffer();
-    }
     const updatedUser = {
       name: user.name,
-      profilePicture: pngBuffer?.toString("base64"),
+      profilePicture: user.profilePicture,
       followers: user.followers.length,
       following: user.following.length,
       bio: user.bio || "",
     };
-    if (req.body.password) {
-      updatedUser.password = req.body.password;
-    }
     res.status(200).json({
       message: "User updated successfully",
       status: "success",
@@ -145,33 +123,36 @@ export const deleteUser = async (req, res) => {
 };
 
 export const uploadProfilePicture = async (req, res) => {
-  if (req.body) {
+  try {
     const token = verifyToken(req.headers.authorization);
     const user = await User.findOne({ _id: token.id });
+
     if (!user) {
-      return res.json({
-        message: "Unauthorized",
-      });
+      return res.status(401).json({ message: "Unauthorized" });
     }
-    user.profilePicture = req.file.buffer;
-    user.mimeType = req.file.mimetype;
+
+    // req.file.path is the Cloudinary image URL
+    user.profilePicture = req.file.path;
     await user.save();
 
     const updatedUser = {
       name: user.name,
-      profilePicture: convertImageToBase64(user.profilePicture, user.mimeType),
+      profilePicture: user.profilePicture, // now it's a URL
       followers: user.followers.length,
       following: user.following.length,
       bio: user.bio || "",
     };
+
     return res.json({
       message: "uploaded",
       user: updatedUser,
       status: "success",
     });
-  } else {
-    return res.json({
-      message: "no body",
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Upload failed",
+      error: err.message,
     });
   }
 };
@@ -266,9 +247,7 @@ export const dashboard = async (req, res) => {
     const updatedUser = {
       id: user._id,
       name: user.name,
-      profilePicture: user.profilePicture
-        ? convertImageToBase64(user.profilePicture, user.mimeType)
-        : "",
+      profilePicture: user.profilePicture,
       followers: user.followers,
       following: user.following,
       bio: user.bio || "",
@@ -320,76 +299,17 @@ export const getAllPosts = async (req, res) => {
         status: "error",
       });
     }
-    const formattedPosts = await Promise.all(
-      user.posts.map(async (post) => ({
-        ...post._doc,
-        image: convertImageToBase64(post.image, post.mimeType),
-        author: {
-          id: post.author._id,
-          name: post.author.name,
-          profilePicture: post.author.profilePicture
-            ? convertImageToBase64(
-                post.author.profilePicture,
-                post.author.mimeType
-              )
-            : "",
-        },
-        comments: await Promise.all(
-          post.comments.map(async (comment) => ({
-            ...comment._doc,
-            user: comment.user
-              ? {
-                  id: comment.user._id,
-                  name: comment.user.name,
-                  profilePicture: comment.user.profilePicture
-                    ? convertImageToBase64(
-                        comment.user.profilePicture,
-                        comment.user.mimeType
-                      )
-                    : "",
-                }
-              : null,
-            createdAt: formatDate(comment.createdAt),
-            updatedAt: formatDate(comment.updatedAt),
-            replies: await Promise.all(
-              comment.replies.map(async (reply) => ({
-                ...reply._doc,
-                user: reply.user
-                  ? {
-                      id: reply.user._id,
-                      name: reply.user.name,
-                      profilePicture: reply.user.profilePicture
-                        ? convertImageToBase64(
-                            reply.user.profilePicture,
-                            reply.user.mimeType
-                          )
-                        : "",
-                    }
-                  : null,
-                createdAt: formatDate(reply.createdAt),
-                updatedAt: formatDate(reply.updatedAt),
-              }))
-            ),
-          }))
-        ),
-        createdAt: formatDate(post.createdAt),
-        updatedAt: formatDate(post.updatedAt),
-        createdDate: post.createdAt,
-      }))
-    );
 
     const updatedUser = {
       id: user._id,
       name: user.name,
-      profilePicture: user.profilePicture
-        ? convertImageToBase64(user.profilePicture, user.mimeType)
-        : "",
+      profilePicture: user.profilePicture,
       followers: user.followers,
       following: user.following,
       bio: user.bio || "",
       about: user.about,
       friends: await getFriends(user._id),
-      posts: formattedPosts,
+      posts: user.posts,
     };
 
     if (updatedUser) {
@@ -421,9 +341,7 @@ export const getFriends = async (userId) => {
         return {
           id: friend._id,
           name: friend.name,
-          profilePicture: friend.profilePicture
-            ? convertImageToBase64(friend.profilePicture, friend.mimeType)
-            : "",
+          profilePicture: friend.profilePicture,
         };
       })
     );

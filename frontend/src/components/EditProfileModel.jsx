@@ -62,7 +62,7 @@ const EditProfileModal = ({ handleClose }) => {
         await uploadProfilePicture(profilePic);
       }
       const response = await axios.put(
-        "https://blogora.up.railway.app/user/update-profile",
+        "http://localhost:5000/user/update-profile",
         formData,
         {
           headers: {

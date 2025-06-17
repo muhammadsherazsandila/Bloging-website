@@ -8,7 +8,7 @@ const postSchema = new mongoose.Schema(
       trim: true,
     },
     image: {
-      type: Buffer,
+      type: String,
       required: true,
     },
     mimeType: {

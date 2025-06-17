@@ -23,7 +23,8 @@ const userSchema = mongoose.Schema(
       required: false,
     },
     profilePicture: {
-      type: Buffer,
+      type: String,
+      default: "",
       required: false,
     },
     mimeType: {

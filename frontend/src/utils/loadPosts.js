@@ -4,7 +4,8 @@ import { toastConfig } from "./toastConfig";
 
 const loadPosts = async (setPosts) => {
   try {
-    const response = await axios.get("https://blogora.up.railway.app/post");
+    const response = await axios.get("http://localhost:5000/post");
+    console.log(response.data);
     if (response.data.status === "success") {
       setPosts(response.data.posts);
     }

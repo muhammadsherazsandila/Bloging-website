@@ -42,16 +42,21 @@ const Dashboard = () => {
   const openFile = () => fileInputRef.current.click();
 
   const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    const response = await uploadProfilePicture(file);
-    if (response.status === "success") {
-      toast.success(
-        "Picture uploaded successfully!",
-        toastConfig("upload-profile-pic-success")
-      );
-      setUser(response.user);
-    } else {
-      toast.error(response.error, toastConfig("upload-profile-pic-error"));
+    try {
+      const file = e.target.files[0];
+      if (!file) return;
+      const response = await uploadProfilePicture(file);
+      if (response.status === "success") {
+        toast.success(
+          "Picture uploaded successfully!",
+          toastConfig("upload-profile-pic-success")
+        );
+        setUser(response.user);
+      } else {
+        toast.error(response.error, toastConfig("upload-profile-pic-error"));
+      }
+    } catch (error) {
+      console.error("Error uploading profile picture:", error);
     }
   };
 
@@ -87,7 +92,7 @@ const Dashboard = () => {
 
   const fetchPosts = async () => {
     axios
-      .get(`https://blogora.up.railway.app/user/posts/${Cookies.get("token")}`)
+      .get(`http://localhost:5000/user/posts/${Cookies.get("token")}`)
       .then((response) => {
         if (response.data.status === "success") {
           const sortedPosts = [...response.data.user.posts].sort(

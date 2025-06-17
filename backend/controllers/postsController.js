@@ -1,8 +1,7 @@
 import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
 import { verifyToken } from "../utils/token.js";
-import sharp from "sharp"; // Assuming you are using sharp for image processing
-import { convertImageToBase64, formatDate } from "../utils/formaters.js";
+import { formatDate } from "../utils/formaters.js";
 
 export const getPost = async (req, res) => {
   try {
@@ -11,68 +10,10 @@ export const getPost = async (req, res) => {
       .populate("comments.user", "name profilePicture mimeType")
       .populate("comments.replies.user", "name profilePicture mimeType");
 
-    const formattedPosts = await Promise.all(
-      posts.map(async (post) => ({
-        ...post._doc,
-        image: convertImageToBase64(post.image, post.mimeType),
-        author: {
-          id: post.author._id,
-          name: post.author.name,
-          profilePicture: post.author.profilePicture
-            ? convertImageToBase64(
-                post.author.profilePicture,
-                post.author.mimeType
-              )
-            : "",
-        },
-        comments: await Promise.all(
-          post.comments.map(async (comment) => ({
-            ...comment._doc,
-            user: comment.user
-              ? {
-                  id: comment.user._id,
-                  name: comment.user.name,
-                  profilePicture: comment.user.profilePicture
-                    ? convertImageToBase64(
-                        comment.user.profilePicture,
-                        comment.user.mimeType
-                      )
-                    : "",
-                }
-              : null,
-            createdAt: formatDate(comment.createdAt),
-            updatedAt: formatDate(comment.updatedAt),
-            replies: await Promise.all(
-              comment.replies.map(async (reply) => ({
-                ...reply._doc,
-                user: reply.user
-                  ? {
-                      id: reply.user._id,
-                      name: reply.user.name,
-                      profilePicture: reply.user.profilePicture
-                        ? convertImageToBase64(
-                            reply.user.profilePicture,
-                            reply.user.mimeType
-                          )
-                        : "",
-                    }
-                  : null,
-                createdAt: formatDate(reply.createdAt),
-                updatedAt: formatDate(reply.updatedAt),
-              }))
-            ),
-          }))
-        ),
-        createdAt: formatDate(post.createdAt),
-        updatedAt: formatDate(post.updatedAt),
-        createdDate: post.createdAt,
-      }))
-    );
-
     res.status(200).json({
       message: "Posts fetched successfully",
       status: "success",
-      posts: formattedPosts,
+      posts: posts,
     });
   } catch (error) {
     console.error("Error getting posts:", error);
@@ -90,7 +31,7 @@ export const createPost = async (req, res) => {
     if (post) {
       post.caption = caption;
       post.tags = tags;
-      post.image = req.file.buffer;
+      post.image = req.file.path;
       post.save();
       return res.status(200).json({
         message: "Post updated successfully",
@@ -104,46 +45,24 @@ export const createPost = async (req, res) => {
     caption: caption,
     author: author,
     tags: tags,
-    image: req.file.buffer,
+    image: req.file.path,
     mimeType: req.file.mimetype,
   });
 
   newPost
     .save()
     .then(async (createdPost) => {
-      let authorDetails = await User.findById(author);
-      if (!authorDetails) {
-        return res.status(200).json({
-          message: "Author not found",
-          status: "error",
-        });
-      }
-      authorDetails = {
-        id: authorDetails._id,
-        name: authorDetails.name,
-        profilePicture: authorDetails.profilePicture
-          ? convertImageToBase64(
-              authorDetails.profilePicture,
-              authorDetails.mimeType
-            )
-          : "",
-      };
-      const updatedPost = {
-        ...createdPost._doc,
-        image: convertImageToBase64(createdPost.image, createdPost.mimeType),
-        author: authorDetails,
-      };
-      res.json({
+      const user = await User.findById(author);
+      user.posts.push(createdPost._id);
+      await user.save();
+      res.status(200).json({
         message: "Post created successfully",
         status: "success",
-        post: updatedPost,
-      });
-      await User.findByIdAndUpdate(author, {
-        $push: { posts: createdPost._id },
+        post: createdPost,
       });
     })
     .catch((error) => {
-      res.json({
+      res.status(200).json({
         message: "Error creating post",
         status: "error",
         error: error.message,
@@ -432,64 +351,10 @@ export const getSinglePost = async (req, res) => {
         .status(404)
         .json({ message: "Post not found", status: "error" });
     }
-    const updatePost = {
-      ...post._doc,
-      image: convertImageToBase64(post.image, post.mimeType),
-      author: {
-        id: post.author._id,
-        name: post.author.name,
-        profilePicture: post.author.profilePicture
-          ? convertImageToBase64(
-              post.author.profilePicture,
-              post.author.mimeType
-            )
-          : "",
-      },
-      comments: await Promise.all(
-        post.comments.map(async (comment) => ({
-          ...comment._doc,
-          user: comment.user
-            ? {
-                id: comment.user._id,
-                name: comment.user.name,
-                profilePicture: comment.user.profilePicture
-                  ? convertImageToBase64(
-                      comment.user.profilePicture,
-                      comment.user.mimeType
-                    )
-                  : "",
-              }
-            : null,
-          createdAt: formatDate(comment.createdAt),
-          updatedAt: formatDate(comment.updatedAt),
-          replies: await Promise.all(
-            comment.replies.map(async (reply) => ({
-              ...reply._doc,
-              user: reply.user
-                ? {
-                    id: reply.user._id,
-                    name: reply.user.name,
-                    profilePicture: reply.user.profilePicture
-                      ? convertImageToBase64(
-                          reply.user.profilePicture,
-                          reply.user.mimeType
-                        )
-                      : "",
-                  }
-                : null,
-              createdAt: formatDate(reply.createdAt),
-              updatedAt: formatDate(reply.updatedAt),
-            }))
-          ),
-        }))
-      ),
-      createdAt: formatDate(post.createdAt),
-      updatedAt: formatDate(post.updatedAt),
-    };
     res.status(200).json({
       message: "Post retrieved successfully",
       status: "success",
-      post: updatePost,
+      post: post,
     });
   } catch (error) {
     console.log("Error getting post:", error.message);
@@ -502,4 +367,4 @@ export const getSinglePost = async (req, res) => {
 };
 
 // Optionally export helpers if needed elsewhere
-export { convertImageToBase64, formatDate };
+export { formatDate };

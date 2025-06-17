@@ -24,6 +24,7 @@ import UploadPostModal from "../components/UploadPostModal";
 import Backdrop from "@mui/material/Backdrop";
 
 const BlogCard = ({ post, position }) => {
+  console.log(post);
   const navigate = useNavigate();
 
   const handleNavigateToPost = () => {

@@ -67,7 +67,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/user/signup",
+        "http://localhost:5000/user/signup",
         formData,
         {
           headers: {
@@ -123,7 +123,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/user/login",
+        "http://localhost:5000/user/login",
         formData,
         {
           headers: {

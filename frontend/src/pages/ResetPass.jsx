@@ -41,7 +41,9 @@ function ResetPass() {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/user/reset-password",
+        `https://blogora.up.railway.app/user/reset-password/${
+          useParams().token
+        }`,
         {
           email: email,
           password: password,

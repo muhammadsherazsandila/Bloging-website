@@ -20,7 +20,7 @@ const AuthorProfile = () => {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(https://blogora.up.railway.app/user/posts/${authorId}`)
+      .get(`https://blogora.up.railway.app/user/${authorId}`)
       .then((response) => {
         console.log(response.data);
         if (response.data.status === "success") {
@@ -35,7 +35,7 @@ const AuthorProfile = () => {
       return;
     }
     axios
-      .put(https://blogora.up.railway.app/user/follow/${authorId}`, {
+      .put(`https://blogora.up.railway.app/user/follow/${authorId}`, {
         userId: user.id,
         followed: !followed,
       })

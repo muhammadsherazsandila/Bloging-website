@@ -20,7 +20,6 @@ function AuthorPosts() {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
-    console.log(author);
     setPosts(author !== null ? author.posts : []);
   }, [author]);
 

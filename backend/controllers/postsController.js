@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import Post from "../models/postModel.js";
 import { verifyToken } from "../utils/token.js";
 import { formatDate } from "../utils/formaters.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const getPost = async (req, res) => {
   try {
@@ -13,61 +14,104 @@ export const getPost = async (req, res) => {
     res.status(200).json({
       message: "Posts fetched successfully",
       status: "success",
-      posts: posts,
+      posts: posts.map((post) => ({
+        ...post._doc,
+        createdAt: formatDate(post.createdAt),
+        updatedAt: formatDate(post.updatedAt),
+        comments: post.comments.map((comment) => ({
+          ...comment._doc,
+          createdAt: formatDate(comment.createdAt),
+          updatedAt: formatDate(comment.updatedAt),
+          replies: comment.replies.map((reply) => ({
+            ...reply._doc,
+            createdAt: formatDate(reply.createdAt),
+            updatedAt: formatDate(reply.updatedAt),
+          })),
+        })),
+        createdDate: post.createdAt,
+      })),
     });
   } catch (error) {
     console.error("Error getting posts:", error);
     res.status(200).json({ message: "Server error" });
   }
 };
-
 export const createPost = async (req, res) => {
-  const { id, caption } = req.body;
-  const author = verifyToken(req.headers.authorization).id;
-  const hashTags = caption.match(/#\w+/g) || [];
-  const tags = hashTags.map((tag) => tag.slice(1));
-  if (id !== "") {
-    const post = await Post.findById(id);
-    if (post) {
-      post.caption = caption;
-      post.tags = tags;
-      post.image = req.file.path;
-      post.save();
+  try {
+    const { id, caption } = req.body;
+
+    const author = verifyToken(req.headers.authorization).id;
+    const hashTags = caption.match(/#\w+/g) || [];
+    const tags = hashTags.map((tag) => tag.slice(1));
+
+    // If updating existing post
+    if (id && id.trim() !== "") {
+      const existingPost = await Post.findById(id);
+      if (!existingPost) {
+        return res.status(404).json({
+          message: "Post not found",
+          status: "error",
+        });
+      }
+
+      if (req.file !== undefined) {
+        if (existingPost.imgPublicId) {
+          await cloudinary.uploader.destroy(existingPost.imgPublicId);
+        }
+        existingPost.caption = caption;
+        existingPost.tags = tags;
+        existingPost.image = req.file.path;
+        existingPost.imgPublicId = req.file.filename;
+        existingPost.mimeType = req.file.mimetype;
+      } else {
+        existingPost.caption = caption;
+        existingPost.tags = tags;
+      }
+
+      await existingPost.save();
+
       return res.status(200).json({
         message: "Post updated successfully",
         status: "success",
-        post: post,
+        post: existingPost,
       });
     }
-  }
 
-  const newPost = new Post({
-    caption: caption,
-    author: author,
-    tags: tags,
-    image: req.file.path,
-    mimeType: req.file.mimetype,
-  });
-
-  newPost
-    .save()
-    .then(async (createdPost) => {
-      const user = await User.findById(author);
-      user.posts.push(createdPost._id);
-      await user.save();
-      res.status(200).json({
-        message: "Post created successfully",
-        status: "success",
-        post: createdPost,
-      });
-    })
-    .catch((error) => {
-      res.status(200).json({
-        message: "Error creating post",
-        status: "error",
-        error: error.message,
-      });
+    // Creating new post
+    const newPost = new Post({
+      caption,
+      author,
+      tags,
+      image: req.file.path, // This is the Cloudinary URL
+      imgPublicId: req.file.filename,
+      mimeType: req.file.mimetype,
     });
+
+    const createdPost = await newPost.save();
+
+    const user = await User.findById(author);
+    if (!user) {
+      return res.status(404).json({
+        message: "Author not found",
+        status: "error",
+      });
+    }
+
+    user.posts.push(createdPost._id);
+    await user.save();
+
+    res.status(201).json({
+      message: "Post created successfully",
+      status: "success",
+    });
+  } catch (error) {
+    console.error("Error creating post:", error.message);
+    res.status(500).json({
+      message: "Error creating post",
+      status: "error",
+      error: error.message,
+    });
+  }
 };
 
 export const updatePost = (req, res) => {
@@ -96,34 +140,57 @@ export const updatePost = (req, res) => {
     });
 };
 
-export const deletePost = (req, res) => {
+export const deletePost = async (req, res) => {
   const PostId = req.params.id;
-  Post.findByIdAndDelete(PostId)
-    .then((deletedPost) => {
-      if (!deletedPost) {
-        return res.status(200).json({
-          message: "Post not found",
-          status: "error",
-        });
-      }
-      res.status(200).json({
-        message: "Post deleted successfully",
-        status: "success",
-      });
-    })
-    .catch((error) => {
-      res.status(200).json({
-        message: "Error deleting post",
+
+  try {
+    const post = await Post.findById(PostId);
+
+    if (!post) {
+      return res.status(404).json({
+        message: "Post not found",
         status: "error",
-        error: error.message,
       });
+    }
+
+    // If image exists in Cloudinary, delete it
+    if (post.imgPublicId) {
+      try {
+        await cloudinary.uploader.destroy(post.imgPublicId);
+      } catch (err) {
+        console.error("Cloudinary deletion error:", err);
+      }
+    }
+
+    // Now delete the post from DB
+    await Post.findByIdAndDelete(PostId);
+
+    const user = await User.findById(post.author);
+    if (user) {
+      const postIndex = user.posts.indexOf(PostId);
+      if (postIndex !== -1) {
+        user.posts.splice(postIndex, 1);
+        await user.save();
+      }
+    }
+
+    return res.status(200).json({
+      message: "Post and image deleted successfully",
+      status: "success",
     });
+  } catch (error) {
+    console.error("Error deleting post:", error.message);
+    res.status(500).json({
+      message: "Error deleting post",
+      status: "error",
+      error: error.message,
+    });
+  }
 };
 
 export const addComment = (req, res) => {
   const PostId = req.params.id;
   const { user, content, type } = req.body;
-  console.log(req.body);
 
   if (!user || !content || !type) {
     return res.status(200).json({
@@ -354,10 +421,23 @@ export const getSinglePost = async (req, res) => {
     res.status(200).json({
       message: "Post retrieved successfully",
       status: "success",
-      post: post,
+      post: {
+        ...post._doc,
+        createdAt: formatDate(post.createdAt),
+        updatedAt: formatDate(post.updatedAt),
+        comments: post.comments.map((comment) => ({
+          ...comment._doc,
+          createdAt: formatDate(comment.createdAt),
+          updatedAt: formatDate(comment.updatedAt),
+          replies: comment.replies.map((reply) => ({
+            ...reply._doc,
+            createdAt: formatDate(reply.createdAt),
+            updatedAt: formatDate(reply.updatedAt),
+          })),
+        })),
+      },
     });
   } catch (error) {
-    console.log("Error getting post:", error.message);
     res.status(500).json({
       message: "Error getting post",
       status: "error",

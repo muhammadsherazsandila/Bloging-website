@@ -9,6 +9,7 @@ import {
   forgetPassword,
   dashboard,
   getAllPosts,
+  getAuthor,
 } from "../controllers/userController.js";
 import upload from "../utils/upload.js";
 
@@ -28,5 +29,6 @@ userRouter.put(
 userRouter.get("/posts/:id", getAllPosts);
 userRouter.post("/forgot-password", forgetPassword);
 userRouter.delete("/delete-profile", deleteUser);
+userRouter.get("/:id", getAuthor);
 
 export { userRouter };

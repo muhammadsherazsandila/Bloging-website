@@ -27,6 +27,11 @@ const userSchema = mongoose.Schema(
       default: "",
       required: false,
     },
+    profilePicturePublicId: {
+      type: String,
+      default: "",
+      required: false,
+    },
     mimeType: {
       type: String,
       required: false,

@@ -114,9 +114,9 @@ const EditProfileModal = ({ handleClose }) => {
             position: "absolute",
             top: 0,
             right: 0,
-            bgcolor: "black",
+            bgcolor: "#1c398e",
             color: "white",
-            "&:hover": { bgcolor: "black" },
+            "&:hover": { bgcolor: "#1c398e" },
             ":hover": { rotate: "180deg", scale: "1.1" },
             transition: "all 0.3s ease",
           }}
@@ -133,7 +133,11 @@ const EditProfileModal = ({ handleClose }) => {
         {/* Profile Picture Upload */}
         <Box sx={{ position: "relative" }}>
           <Avatar
-            src={previewUrl}
+            src={
+              previewUrl ||
+              user.profilePicture ||
+              "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            }
             sx={{
               width: 120,
               height: 120,

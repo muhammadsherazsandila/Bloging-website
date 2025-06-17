@@ -8,6 +8,9 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../utils/toastConfig";
 import { usePost } from "../contexts/PostContext";
 import { CircularProgress } from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
+import { translation } from "../utils/animation";
+import { downStyle, upStyle } from "../utils/styles";
 
 function Login() {
   const [name, setName] = useState("");
@@ -155,188 +158,211 @@ function Login() {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 mt-10">
+    <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      <div dangerouslySetInnerHTML={{ __html: upStyle() }} />
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h1 className=" text-2xl font-bold text-center">Blogora</h1>
+        <h1 className=" text-2xl font-bold text-center mt-16">Blogora</h1>
         <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           Sign in to your account
         </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        {mode === "login" ? (
-          <div>
-            {" "}
-            <form className="space-y-6">
+        <AnimatePresence mode="wait">
+          {mode === "login" ? (
+            <motion.div
+              key="login"
+              variants={translation("x", "positive", 80)}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
               <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={email}
-                    onChange={handleOnChange}
-                    required
-                    autoComplete="email"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm/6 font-medium text-gray-900"
-                  >
-                    Password
-                  </label>
-                  <div className="text-sm">
-                    <a
-                      href="#"
-                      className="font-semibold text-blue-900 hover:text-blue-900"
+                {" "}
+                <form className="space-y-6">
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm/6 font-medium text-gray-900"
                     >
-                      Forgot password?
-                    </a>
+                      Email address
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={email}
+                        onChange={handleOnChange}
+                        required
+                        autoComplete="email"
+                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
+                      />
+                    </div>
                   </div>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={password}
-                    onChange={handleOnChange}
-                    required
-                    autoComplete="current-password"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
-                  />
-                </div>
-              </div>
 
-              <div>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    Login();
-                  }}
-                  className="flex w-full justify-center rounded-md bg-blue-900 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-900"
-                >
-                  {loading && <CircularProgress size={20} color="inherit" />}
-                  {loading ? "Signing in..." : "Sign in"}
-                </button>
-              </div>
-            </form>
-            <p className="mt-10 text-center text-sm/6 text-gray-500">
-              Not have account?{" "}
-              <button
-                onClick={() => handleModeChange("signup")}
-                type="button"
-                className="font-semibold text-blue-900 hover:text-blue-900 cursor-pointer"
-              >
-                Signup
-              </button>
-            </p>
-          </div>
-        ) : (
-          <div>
-            <form className="space-y-6">
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Full Name
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    value={name}
-                    onChange={handleOnChange}
-                    required
-                    autoComplete="name"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
-                  />
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm/6 font-medium text-gray-900"
-                >
-                  Email address
-                </label>
-                <div className="mt-2">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={email}
-                    onChange={handleOnChange}
-                    required
-                    autoComplete="email"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
-                  />
-                </div>
-              </div>
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <label
+                        htmlFor="password"
+                        className="block text-sm/6 font-medium text-gray-900"
+                      >
+                        Password
+                      </label>
+                      <div className="text-sm">
+                        <a
+                          href="#"
+                          className="font-semibold text-blue-900 hover:text-blue-800"
+                        >
+                          Forgot password?
+                        </a>
+                      </div>
+                    </div>
+                    <div className="mt-2">
+                      <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        value={password}
+                        onChange={handleOnChange}
+                        required
+                        autoComplete="current-password"
+                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
+                      />
+                    </div>
+                  </div>
 
-              <div>
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm/6 font-medium text-gray-900"
+                  <div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        Login();
+                      }}
+                      className="flex w-full justify-center rounded-md bg-blue-900 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-900"
+                    >
+                      {loading && (
+                        <CircularProgress size={20} color="inherit" />
+                      )}
+                      {loading ? "Signing in..." : "Sign in"}
+                    </button>
+                  </div>
+                </form>
+                <p className="mt-10 text-center text-sm/6 text-gray-500">
+                  Not have account?{" "}
+                  <button
+                    onClick={() => handleModeChange("signup")}
+                    type="button"
+                    className="font-semibold text-blue-900 hover:text-blue-800 cursor-pointer"
                   >
-                    Password
-                  </label>
-                </div>
-                <div className="mt-2">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={password}
-                    onChange={handleOnChange}
-                    required
-                    autoComplete="current-password"
-                    className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
-                  />
-                </div>
+                    Signup
+                  </button>
+                </p>
               </div>
-
+            </motion.div>
+          ) : (
+            <motion.div
+              key="signup"
+              variants={translation("x", "negative", 80)}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
               <div>
-                <button
-                  onClick={(e) => {
-                    e.preventDefault();
-                    signup();
-                  }}
-                  className="flex w-full justify-center rounded-md bg-blue-900 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-blue-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-900"
-                >
-                  {loading && <CircularProgress size={20} />}
-                  {loading ? "Signing up..." : "Sign up"}
-                </button>
+                <form className="space-y-6">
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
+                      Full Name
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        value={name}
+                        onChange={handleOnChange}
+                        required
+                        autoComplete="name"
+                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm/6 font-medium text-gray-900"
+                    >
+                      Email address
+                    </label>
+                    <div className="mt-2">
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={email}
+                        onChange={handleOnChange}
+                        required
+                        autoComplete="email"
+                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <label
+                        htmlFor="password"
+                        className="block text-sm/6 font-medium text-gray-900"
+                      >
+                        Password
+                      </label>
+                    </div>
+                    <div className="mt-2">
+                      <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        value={password}
+                        onChange={handleOnChange}
+                        required
+                        autoComplete="current-password"
+                        className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        signup();
+                      }}
+                      className="flex w-full justify-center rounded-md bg-blue-900 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-blue-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-900"
+                    >
+                      {loading && <CircularProgress size={20} />}
+                      {loading ? "Signing up..." : "Sign up"}
+                    </button>
+                  </div>
+                </form>
+                <p className="mt-10 text-center text-sm/6 text-gray-500">
+                  Have account?{" "}
+                  <button
+                    onClick={() => handleModeChange("login")}
+                    type="button"
+                    className="font-semibold text-blue-900 hover:text-blue-800 cursor-pointer"
+                  >
+                    Login
+                  </button>
+                </p>
               </div>
-            </form>
-            <p className="mt-10 text-center text-sm/6 text-gray-500">
-              Have account?{" "}
-              <button
-                onClick={() => handleModeChange("login")}
-                type="button"
-                className="font-semibold text-blue-900 hover:text-blue-900 cursor-pointer"
-              >
-                Login
-              </button>
-            </p>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
+
+      <div dangerouslySetInnerHTML={{ __html: downStyle() }} />
     </div>
   );
 }

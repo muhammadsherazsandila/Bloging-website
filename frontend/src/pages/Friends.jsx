@@ -5,6 +5,8 @@ import axios from "axios";
 import { usePost } from "../contexts/PostContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { translate } from "../utils/animation";
 
 const Friends = () => {
   const { state, setState } = usePost();
@@ -18,7 +20,13 @@ const Friends = () => {
         {author.friends ? (
           author.friends.length > 0 ? (
             author.friends.map((friend) => (
-              <li
+              <motion.li
+                initial={translate(
+                  "x",
+                  `${index % 2 === 0 ? "negative" : "positive"}`,
+                  100
+                )}
+                animate={translate("x", "positive", 0)}
                 key={friend.id}
                 className="flex items-center justify-between bg-gray-100 hover:bg-gray-200 p-2 rounded-md transition"
                 onClick={() => {
@@ -31,7 +39,7 @@ const Friends = () => {
                     {friend.name}
                   </span>
                 </div>
-              </li>
+              </motion.li>
             ))
           ) : (
             <span> No friends found.</span>

@@ -11,12 +11,20 @@ import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
 import { MdOpenWith } from "react-icons/md";
+import { IconButton, Avatar } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { usePost } from "../contexts/PostContext";
+import { downStyle, upStyle } from "../utils/styles";
 
 const AuthorProfile = () => {
   const authorId = useParams().id;
   const { author, setAuthor, isLoggedIn, user } = useAuth();
+  const { state } = usePost();
   const [followed, setFollowed] = useState(false);
   const [openProfilePicture, setOpenProfilePicture] = useState(false);
+  const [isPostsOpen, setIsPostsOpen] = useState(true);
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+  const [isFriendsOpen, setIsFriendsOpen] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     axios
@@ -24,10 +32,10 @@ const AuthorProfile = () => {
       .then((response) => {
         console.log(response.data);
         if (response.data.status === "success") {
-          setAuthor(response.data.user);
+          setAuthor(response.data.author);
         }
       });
-  }, [authorId]);
+  }, [authorId, state]);
 
   const handleFollow = () => {
     if (!user && !isLoggedIn) {
@@ -60,29 +68,66 @@ const AuthorProfile = () => {
     }
   }, [author, user, isLoggedIn]);
 
+  const navigators = [
+    {
+      name: "Posts",
+      onClick: () => {
+        setIsPostsOpen(true);
+        setIsAboutOpen(false);
+        setIsFriendsOpen(false);
+        navigate(`/author-profile/${authorId}`);
+      },
+      isOpen: isPostsOpen,
+    },
+    {
+      name: "About",
+      onClick: () => {
+        setIsPostsOpen(false);
+        setIsAboutOpen(true);
+        setIsFriendsOpen(false);
+        navigate(`/author-profile/${authorId}/about`);
+      },
+      isOpen: isAboutOpen,
+    },
+    {
+      name: "Friends",
+      onClick: () => {
+        setIsPostsOpen(false);
+        setIsAboutOpen(false);
+        setIsFriendsOpen(true);
+        navigate(`/author-profile/${authorId}/friends`);
+      },
+      isOpen: isFriendsOpen,
+    },
+  ];
+
+  const handleNavigators = (navigator) => {
+    navigator.onClick();
+  };
+
   return (
     <div className="px-4">
+      <div dangerouslySetInnerHTML={{ __html: upStyle() }} />
       {author ? (
         <div className="max-w-4xl mx-auto p-4 border rounded-xl shadow-md bg-white mt-32">
           <div className="flex flex-col sm:flex-row items-center sm:items-start justify-between gap-6 relative">
             <button
               onClick={handleFollow}
-              className="absolute top-1 right-1 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
+              className="absolute top-1 right-1 flex items-center gap-1 text-sm md:text-base font-medium px-3 py-1 rounded-full bg-blue-50 text-blue-900 hover:bg-blue-100 transition-colors shadow-sm cursor-pointer"
             >
-              <FaUserPlus className={followed ? "text-blue-700" : ""} />{" "}
+              <FaUserPlus className={followed ? "text-blue-900" : ""} />{" "}
               <span>{followed ? "Following" : "Follow"}</span>
             </button>
             {/* Profile Picture */}
             <div className="relative w-24 h-24 group cursor-pointer">
               <MdOpenWith
-                className="absolute top-0 right-0 text-black bg-white rounded-full h-6 w-6 cursor-pointer hover:bg-gray-200 hover:scale-110 transition-all duration-200 z-10"
+                className="absolute top-0 right-0 text-blue-900 bg-white rounded-full h-6 w-6 cursor-pointer hover:bg-gray-200 hover:scale-110 transition-all duration-200 z-10"
                 onClick={() => setOpenProfilePicture(true)}
               />
               <img
                 src={
-                  author.profilePicture
-                    ? author.profilePicture
-                    : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                  author?.profilePicture ||
+                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                 }
                 alt="Profile"
                 className="w-full h-full rounded-full object-cover border-2 border-gray-300"
@@ -109,24 +154,18 @@ const AuthorProfile = () => {
           {/* Tabs */}
           <div className="mt-6 border-t pt-4 overflow-x-auto">
             <div className="flex gap-6 text-gray-700 font-medium whitespace-nowrap">
-              <button
-                className="hover:text-blue-600 focus:outline-none"
-                onClick={() => navigate(`/author-profile/${authorId}`)}
-              >
-                Posts
-              </button>
-              <button
-                className="hover:text-blue-600 focus:outline-none"
-                onClick={() => navigate(`/author-profile/${authorId}/about`)}
-              >
-                About
-              </button>
-              <button
-                className="hover:text-blue-600 focus:outline-none"
-                onClick={() => navigate(`/author-profile/${authorId}/friends`)}
-              >
-                Friends
-              </button>
+              {navigators.map((navigator, index) => (
+                <button
+                  className={` font-semibold ${
+                    navigators[index].isOpen
+                      ? "text-blue-900"
+                      : "hover:text-blue-900 focus:outline-none"
+                  }`}
+                  onClick={() => handleNavigators(navigator)}
+                >
+                  {navigator.name}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -161,9 +200,9 @@ const AuthorProfile = () => {
                     position: "absolute",
                     top: 0,
                     right: 0,
-                    bgcolor: "black",
+                    bgcolor: "#1c398e",
                     color: "white",
-                    "&:hover": { bgcolor: "black" },
+                    "&:hover": { bgcolor: "#1c398e" },
                     ":hover": { rotate: "180deg", scale: "1.1" },
                     transition: "all 0.3s ease",
                   }}
@@ -171,7 +210,10 @@ const AuthorProfile = () => {
                   <CloseIcon fontSize="small" />
                 </IconButton>
                 <Avatar
-                  src={user.profilePicture}
+                  src={
+                    user?.profilePicture ||
+                    "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                  }
                   sx={{ width: 250, height: 250 }}
                 />
               </span>
@@ -179,6 +221,8 @@ const AuthorProfile = () => {
           </Box>
         </Fade>
       </Modal>
+
+      <div dangerouslySetInnerHTML={{ __html: downStyle() }} />
     </div>
   );
 };

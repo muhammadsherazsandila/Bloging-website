@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
-:root{
-    --deep-blue: ##07275f;
+*{
+    font-family: 'Poppins', sans-serif;
+    scroll-behavior: smooth;
 }

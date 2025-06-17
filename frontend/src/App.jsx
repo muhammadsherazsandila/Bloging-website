@@ -19,6 +19,8 @@ import Friends from "./pages/Friends";
 import About from "./pages/About";
 import SinglePost from "./pages/SinglePost";
 import AuthorProfile from "./components/AuthorProfile";
+import AllPosts from "./pages/AllPosts";
+import SearchedPosts from "./pages/SearchedPosts";
 
 function App() {
   return (
@@ -50,7 +52,9 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/top" element={<Top />} />
+        <Route path="/all" element={<AllPosts />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/searchPosts" element={<SearchedPosts />} />
         <Route
           path="/dashboard"
           element={isLoggedIn ? <Dashboard /> : <Login />}

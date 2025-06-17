@@ -30,31 +30,10 @@ const UploadPostModal = ({
   const [caption, setCaption] = useState(
     post.caption !== "" ? post.caption : ""
   );
-  const [image, setImage] = useState(
-    post.image
-      ? base64ToFile(
-          post.image.slice(post.image.indexOf("/9j/")),
-          "image.png",
-          `${post.mimeType}`
-        )
-      : null
-  );
+  const [image, setImage] = useState(new File([], ""));
   const { user } = useAuth();
   const { state, setState } = usePost();
   const [isLoading, setIsLoading] = useState(false);
-  function base64ToFile(base64String, filename, mimeType = `${post.mimeType}`) {
-    const byteCharacters = atob(base64String);
-    const byteNumbers = new Array(byteCharacters.length);
-
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-
-    const byteArray = new Uint8Array(byteNumbers);
-
-    const file = new File([byteArray], filename, { type: mimeType });
-    return file;
-  }
   const handlePost = async (e) => {
     e.preventDefault();
 
@@ -66,7 +45,6 @@ const UploadPostModal = ({
       toast.error("Please upload an image", toastConfig("post-upload-error"));
       return;
     }
-
     if (image.size > 4000000) {
       toast.error(
         "Image size should be less than 4MB",
@@ -79,9 +57,8 @@ const UploadPostModal = ({
     const data = new FormData();
     data.append("caption", caption);
     data.append("image", image);
-    data.append("id", post._id);
+    data.append("id", post?._id || ""); // prevent undefined
 
-    console.log(post);
     try {
       const response = await axios.post(
         "https://blogora.up.railway.app/post/upload-post",
@@ -93,21 +70,31 @@ const UploadPostModal = ({
           },
         }
       );
-      console.log(response.data);
 
-      if (response.data.status === "success") {
+      console.log(response.data);
+      const { status, message } = response.data;
+
+      if (status === "success") {
         toast.success("Posted!", toastConfig("post-upload-success"));
         handleClose();
         setState(!state);
-        setTitle("");
         setCaption("");
         setImage(null);
       } else {
-        toast.error("Error while posting!", toastConfig("post-upload-error"));
-        setIsLoading(false);
+        toast.error(
+          message || "Error while posting",
+          toastConfig("post-upload-error1")
+        );
       }
     } catch (error) {
-      toast.error("Error while upload post!", toastConfig("post-upload-error"));
+      console.error("Error uploading post:", error.message);
+
+      // Only show toast if no toast shown already
+      toast.error(
+        "Server error while uploading post",
+        toastConfig("post-upload-error2")
+      );
+    } finally {
       setIsLoading(false);
     }
   };
@@ -124,9 +111,9 @@ const UploadPostModal = ({
           position: "absolute",
           top: 3,
           right: 3,
-          bgcolor: "black",
+          bgcolor: "#1c398e",
           color: "white",
-          "&:hover": { bgcolor: "black" },
+          "&:hover": { bgcolor: "#1c398e" },
           ":hover": { rotate: "180deg", scale: "1.1" },
           transition: "all 0.3s ease",
         }}
@@ -135,7 +122,13 @@ const UploadPostModal = ({
       </IconButton>
 
       <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ mt: 3 }}>
-        <Avatar sx={{ width: 48, height: 48 }} src={user.profilePicture} />
+        <Avatar
+          sx={{ width: 48, height: 48 }}
+          src={
+            user.profilePicture ||
+            "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+          }
+        />
 
         <Stack direction="column" spacing={1}>
           <ReactQuill
@@ -154,7 +147,7 @@ const UploadPostModal = ({
       {image && (
         <Box mt={2} position="relative">
           <Chip
-            label={` ${image.name || "image.png"}`}
+            label={` ${image.name || "Please upload an image"}`}
             onDelete={handleRemoveImage}
             deleteIcon={<CloseIcon />}
             variant="outlined"

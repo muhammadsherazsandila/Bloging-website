@@ -9,7 +9,7 @@ import Backdrop from "@mui/material/Backdrop";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
-import { MdOpenWith } from "react-icons/md";
+import { MdAccountCircle, MdOpenWith } from "react-icons/md";
 import { Avatar, IconButton, Tooltip } from "@mui/material";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -23,6 +23,9 @@ import { usePost } from "../contexts/PostContext";
 import BlogCard from "../components/BlogCard";
 import { useNavigate } from "react-router-dom";
 import CloseIcon from "@mui/icons-material/Close";
+import { motion } from "framer-motion";
+import { translate } from "../utils/animation";
+import { downStyle, upStyle } from "../utils/styles";
 
 const Dashboard = () => {
   const { user, isLoggedIn, setIsLoggedIn, setUser } = useAuth();
@@ -85,8 +88,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     const toastId = "welcome-toast";
-    if (!toast.isActive(toastId)) {
-      toast.success(`Welcome ${user.name}`, toastConfig(toastId));
+    if (user?._id) {
+      if (!toast.isActive(toastId)) {
+        toast.success(`Welcome ${user.name}`, toastConfig(toastId));
+      }
     }
   }, []);
 
@@ -100,7 +105,6 @@ const Dashboard = () => {
           );
           setPosts(sortedPosts);
           setLoading(false);
-          console.log(response.data.user.posts);
         }
       });
   };
@@ -111,6 +115,7 @@ const Dashboard = () => {
 
   return (
     <div className="px-4">
+      <div dangerouslySetInnerHTML={{ __html: upStyle() }} />
       {user ? (
         <div className="max-w-4xl mx-auto p-4 border rounded-xl shadow-md bg-white mt-32">
           {/* Top Section */}
@@ -119,7 +124,7 @@ const Dashboard = () => {
 
             <div className="relative w-24 h-24 group cursor-pointer">
               <MdOpenWith
-                className="absolute top-0 right-0 text-black bg-white rounded-full h-6 w-6 cursor-pointer hover:bg-gray-200 hover:scale-110 transition-all duration-200 z-10"
+                className="absolute top-0 right-0 text-blue-900 bg-white rounded-full h-6 w-6 cursor-pointer hover:bg-gray-200 hover:scale-110 transition-all duration-200 z-10"
                 onClick={() => setOpenProfilePicture(true)}
               />
               <div
@@ -167,14 +172,14 @@ const Dashboard = () => {
             {/* Buttons */}
             <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <button
-                className="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center justify-center gap-2 w-full sm:w-auto"
+                className="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-900 flex items-center justify-center gap-2 w-full sm:w-auto"
                 onClick={() => setOpenEditProfile(true)}
               >
                 <AiOutlineEdit />
                 Edit Profile
               </button>
               <button
-                className="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center justify-center gap-2 w-full sm:w-auto"
+                className="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-900 flex items-center justify-center gap-2 w-full sm:w-auto"
                 onClick={deleteProfile}
               >
                 <DeleteIcon />
@@ -183,7 +188,7 @@ const Dashboard = () => {
               </button>
 
               <button
-                className="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center justify-center gap-2 w-full sm:w-auto"
+                className="bg-blue-900 text-white px-4 py-2 rounded-md hover:bg-blue-900 flex items-center justify-center gap-2 w-full sm:w-auto"
                 onClick={() => setOpenUploadPost(true)}
               >
                 <AiOutlinePlus />
@@ -196,7 +201,11 @@ const Dashboard = () => {
           <div className="mt-6 border-t pt-4 overflow-x-auto">
             <div className="flex gap-6 text-gray-700 font-medium whitespace-nowrap">
               <button
-                className="hover:text-blue-600 focus:outline-none"
+                className={` font-semibold ${
+                  isPostsOpen
+                    ? "text-blue-600"
+                    : "hover:text-blue-600 focus:outline-none"
+                }`}
                 onClick={() => {
                   setIsPostsOpen(true);
                   setIsAboutOpen(false);
@@ -206,7 +215,11 @@ const Dashboard = () => {
                 Posts
               </button>
               <button
-                className="hover:text-blue-600 focus:outline-none"
+                className={` font-semibold ${
+                  isAboutOpen
+                    ? "text-blue-600"
+                    : "hover:text-blue-600 focus:outline-none"
+                }`}
                 onClick={() => {
                   setIsPostsOpen(false);
                   setIsAboutOpen(true);
@@ -216,7 +229,11 @@ const Dashboard = () => {
                 About
               </button>
               <button
-                className="hover:text-blue-600 focus:outline-none"
+                className={` font-semibold ${
+                  isFriendsOpen
+                    ? "text-blue-600"
+                    : "hover:text-blue-600 focus:outline-none"
+                }`}
                 onClick={() => {
                   setIsPostsOpen(false);
                   setIsAboutOpen(false);
@@ -304,9 +321,9 @@ const Dashboard = () => {
                     position: "absolute",
                     top: 0,
                     right: 0,
-                    bgcolor: "black",
+                    bgcolor: "#1c398e",
                     color: "white",
-                    "&:hover": { bgcolor: "black" },
+                    "&:hover": { bgcolor: "#1c398e" },
                     ":hover": { rotate: "180deg", scale: "1.1" },
                     transition: "all 0.3s ease",
                   }}
@@ -314,7 +331,10 @@ const Dashboard = () => {
                   <CloseIcon fontSize="small" />
                 </IconButton>
                 <Avatar
-                  src={user.profilePicture}
+                  src={
+                    user?.profilePicture ||
+                    `${(<MdAccountCircle className="h-6 w-6" />)}`
+                  }
                   sx={{ width: 250, height: 250 }}
                 />
               </span>
@@ -349,8 +369,14 @@ const Dashboard = () => {
           <ul className="space-y-3">
             {user.friends ? (
               user.friends.length > 0 ? (
-                user.friends.map((friend) => (
-                  <li
+                user.friends.map((friend, index) => (
+                  <motion.li
+                    initial={translate(
+                      "x",
+                      `${index % 2 === 0 ? "negative" : "positive"}`,
+                      100
+                    )}
+                    animate={translate("x", "positive", 0)}
                     key={friend.id}
                     className="flex items-center justify-between bg-gray-100 hover:bg-gray-200 p-2 rounded-md transition"
                     onClick={(e) => {
@@ -365,7 +391,7 @@ const Dashboard = () => {
                         {friend.name}
                       </span>
                     </div>
-                  </li>
+                  </motion.li>
                 ))
               ) : (
                 <span> No friends found.</span>
@@ -379,6 +405,8 @@ const Dashboard = () => {
           </ul>
         </div>
       )}
+
+      <div dangerouslySetInnerHTML={{ __html: downStyle() }} />
     </div>
   );
 };

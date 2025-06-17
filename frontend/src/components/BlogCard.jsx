@@ -22,9 +22,10 @@ import Fade from "@mui/material/Fade";
 import Box from "@mui/material/Box";
 import UploadPostModal from "../components/UploadPostModal";
 import Backdrop from "@mui/material/Backdrop";
+import { CircularProgress } from "@mui/material";
+import { SlOptionsVertical } from "react-icons/sl";
 
 const BlogCard = ({ post, position }) => {
-  console.log(post);
   const navigate = useNavigate();
 
   const handleNavigateToPost = () => {
@@ -36,6 +37,10 @@ const BlogCard = ({ post, position }) => {
   const [liked, setLiked] = useState(false);
   const [comment, setComment] = useState("");
   const [showComments, setShowComments] = useState(false);
+  const [isCommenting, setIsCommenting] = useState(false);
+  const [isReplying, setIsReplying] = useState(false);
+  const [isCommentDeleting, setIsCommentDeleting] = useState(false);
+  const [isOptionsOpen, setIsOptionsOpen] = useState(false);
   const [commentLikes, setCommentLikes] = useState(
     post.comments.map(() => false)
   );
@@ -55,6 +60,7 @@ const BlogCard = ({ post, position }) => {
   const [replyText, setReplyText] = useState("");
   const handleReplySubmit = (index, e) => {
     e.preventDefault();
+    setIsReplying(true);
     if (!replyText || !user) {
       toast.error("Please login to reply", toastConfig("reply-error"));
       return;
@@ -70,6 +76,7 @@ const BlogCard = ({ post, position }) => {
         if (response.status === 200) {
           setState(!state);
           setReplyText("");
+          setIsReplying(false);
           toast.success("Reply added!", toastConfig("reply-success"));
         }
       })
@@ -107,6 +114,7 @@ const BlogCard = ({ post, position }) => {
 
   const handleCommentSubmit = (e) => {
     e.preventDefault();
+    setIsCommenting(true);
     if (!comment || !user) {
       toast.error("Please login to comment", toastConfig("comment-error"));
       setComment("");
@@ -121,17 +129,20 @@ const BlogCard = ({ post, position }) => {
       .then((response) => {
         if (response.status === 200) {
           setState(!state);
+          setIsCommenting(false);
           toast.success("Comment added!", toastConfig("comment-success"));
         }
       })
       .catch((error) => {
         console.error("Error adding comment:", error);
+        setIsCommenting(false);
       });
 
     setComment("");
   };
 
   const handleDeleteComment = (commentId) => {
+    setIsCommentDeleting(true);
     axios
       .delete(
         `https://blogora.up.railway.app/post/delete-comment/${post._id}`,
@@ -142,6 +153,7 @@ const BlogCard = ({ post, position }) => {
       .then((response) => {
         if (response.status === 200) {
           setState(!state);
+          setIsCommentDeleting(false);
           toast.success(
             "Comment deleted!",
             toastConfig("comment-delete-success")
@@ -228,7 +240,7 @@ const BlogCard = ({ post, position }) => {
 
   const initiateData = () => {
     setLiked(post.likes.includes(user?.id) ? true : false);
-    setFollowed(user?.following?.includes(post.author.id) ? true : false);
+    setFollowed(user?.following?.includes(post.author._id) ? true : false);
     setCommentLikes(
       post.comments.map((comment) =>
         comment.likes.includes(user?.id) ? true : false
@@ -247,18 +259,40 @@ const BlogCard = ({ post, position }) => {
       >
         {/* Action buttons */}
         {user && post ? (
-          user.id === post.author.id ? (
-            <div className="absolute -top-3 right-4 flex items-center gap-3 bg-white rounded-full shadow-md px-3 py-2">
-              <FiEdit
-                className="cursor-pointer text-xl text-blue-900 hover:text-blue-900 transition-colors"
-                onClick={handleOpenUploadPost}
-                title="Edit post"
-              />
-              <MdDelete
-                className="cursor-pointer text-xl text-red-600 hover:text-red-800 transition-colors"
-                onClick={handleDeletePost}
-                title="Delete post"
-              />
+          user.id === post.author._id ? (
+            <div className="relative">
+              {/* Toggle Button */}
+              <button
+                onClick={() => setIsOptionsOpen(!isOptionsOpen)}
+                className="p-1 rounded-full transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 absolute -top-4 -right-4 cursor-pointer"
+                aria-label="Post options"
+                aria-haspopup="true"
+                aria-expanded={isOptionsOpen}
+              >
+                <SlOptionsVertical className="text-gray-500 hover:text-gray-700 text-lg" />
+              </button>
+
+              {/* Dropdown Menu */}
+              {isOptionsOpen && (
+                <div className="absolute right-6 -top-4  mt-2 w-40 origin-top-left rounded-md bg-white shadow-md border border-gray-200 ring-offset-gray-300 ring-opacity-5 focus:outline-none z-50 animate-fade-in">
+                  <div className="py-1">
+                    <button
+                      onClick={handleOpenUploadPost}
+                      className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-150"
+                    >
+                      <span className="mr-2">✏️</span>
+                      Edit
+                    </button>
+                    <button
+                      onClick={handleDeletePost}
+                      className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 transition-colors duration-150"
+                    >
+                      <span className="mr-2">🗑️</span>
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <button
@@ -287,11 +321,11 @@ const BlogCard = ({ post, position }) => {
               <img
                 src={
                   post.author.profilePicture ||
-                  "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+                  "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                 }
                 alt={post.author.name}
                 className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md cursor-pointer"
-                onClick={() => navigate(`/author-profile/${post.author.id}`)}
+                onClick={() => navigate(`/author-profile/${post.author._id}`)}
               />
               <div>
                 <p className="font-semibold text-gray-900">
@@ -334,7 +368,7 @@ const BlogCard = ({ post, position }) => {
         </div>
 
         {/* Bottom icons and counts */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-blue-900">
           <div className="flex items-center gap-4 md:gap-6">
             {/* Like button */}
             <button
@@ -367,15 +401,18 @@ const BlogCard = ({ post, position }) => {
 
           {/* Share */}
           <button
-            className="text-gray-600 hover:text-green-600 transition-colors group"
+            className="text-blue-900 hover:text-blue-600 transition-colors group"
             aria-label="Share post"
             onClick={() => {
               navigator.clipboard.writeText(window.location.href);
-              toast.success("Copied to clipboard", toastConfig("copy-success"));
+              toast.success(
+                "Link copied to clipboard",
+                toastConfig("share-success")
+              );
             }}
           >
-            <div className="p-2 rounded-full group-hover:bg-green-50 transition-colors">
-              <FaShareAlt className="group-hover:text-green-600" />
+            <div className="p-2 rounded-full group-hover:bg-blue-900 cursor-pointer transition-colors">
+              <FaShareAlt className="group-hover:text-white" />
             </div>
           </button>
         </div>
@@ -395,18 +432,22 @@ const BlogCard = ({ post, position }) => {
                     className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                     required
                   />
-                  <button
-                    type="submit"
-                    onClick={handleCommentSubmit}
-                    disabled={!comment}
-                    className={`p-3 rounded-full ${
-                      comment
-                        ? "bg-blue-900 text-white hover:bg-blue-900"
-                        : "bg-gray-200 text-gray-400"
-                    } transition-colors`}
-                  >
-                    <FaArrowRight />
-                  </button>
+                  {isCommenting ? (
+                    <CircularProgress />
+                  ) : (
+                    <button
+                      type="submit"
+                      onClick={handleCommentSubmit}
+                      disabled={!comment}
+                      className={`p-3 rounded-full ${
+                        comment
+                          ? "bg-blue-900 text-white hover:bg-blue-900"
+                          : "bg-gray-200 text-gray-400"
+                      } transition-colors`}
+                    >
+                      <FaArrowRight />
+                    </button>
+                  )}
                 </form>
               </div>
 
@@ -439,14 +480,20 @@ const BlogCard = ({ post, position }) => {
                         </div>
                       </div>
 
-                      {user?.id === comment.user.id && (
-                        <button
-                          onClick={() => handleDeleteComment(comment._id)}
-                          className="text-gray-400 hover:text-red-600 transition-colors"
-                          title="Delete comment"
-                        >
-                          <MdDelete className="text-lg" />
-                        </button>
+                      {user?.id === comment.user._id && (
+                        <span>
+                          {isCommentDeleting ? (
+                            <CircularProgress size={18} />
+                          ) : (
+                            <button
+                              onClick={() => handleDeleteComment(comment._id)}
+                              className="text-gray-400 hover:text-red-600 transition-colors"
+                              title="Delete comment"
+                            >
+                              <MdDelete className="text-lg" />
+                            </button>
+                          )}
+                        </span>
                       )}
                     </div>
 
@@ -487,17 +534,21 @@ const BlogCard = ({ post, position }) => {
                           className="flex-1 p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-900"
                           required
                         />
-                        <button
-                          type="submit"
-                          onClick={(e) => handleReplySubmit(i, e)}
-                          className={`p-3 rounded-full ${
-                            replyText
-                              ? "bg-blue-900 text-white hover:bg-blue-900"
-                              : "bg-gray-200 text-gray-400"
-                          } transition-colors`}
-                        >
-                          <FaArrowRight />
-                        </button>
+                        {isReplying ? (
+                          <CircularProgress size={18} />
+                        ) : (
+                          <button
+                            type="submit"
+                            onClick={(e) => handleReplySubmit(i, e)}
+                            className={`p-3 rounded-full ${
+                              replyText
+                                ? "bg-blue-900 text-white hover:bg-blue-900"
+                                : "bg-gray-200 text-gray-400"
+                            } transition-colors`}
+                          >
+                            <FaArrowRight />
+                          </button>
+                        )}
                       </form>
                     )}
 

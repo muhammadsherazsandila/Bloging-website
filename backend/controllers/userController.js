@@ -5,6 +5,7 @@ import { generateToken, verifyToken } from "../utils/token.js";
 import { sendEmail } from "../utils/resetPass.js";
 import sharp from "sharp";
 import { formatDate } from "../utils/formaters.js";
+import cloudinary from "../utils/cloudinary.js";
 export const login = async (req, res) => {
   console.log(req.body);
   const { email, password } = req.body;
@@ -108,13 +109,43 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    await User.findByIdAndDelete(verifyToken(req.headers.authorization).id);
+    const userId = verifyToken(req.headers.authorization).id;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found!",
+        status: "error",
+      });
+    }
+
+    // Delete profile picture from Cloudinary if it exists
+    if (user.profilePicturePublicId) {
+      await cloudinary.uploader.destroy(user.profilePicturePublicId);
+    }
+
+    // Optionally: delete user's posts, comments, etc.
+
+    //delete post of user
+    await Post.deleteMany({ author: userId });
+    // decrement followers and following count
+    await User.updateMany(
+      { following: userId },
+      { $pull: { following: userId } }
+    );
+    await User.updateMany(
+      { followers: userId },
+      { $pull: { followers: userId } }
+    );
+
+    await User.findByIdAndDelete(userId);
+
     res.status(200).json({
       message: "User deleted successfully",
       status: "success",
     });
   } catch (error) {
-    res.status(200).json({
+    res.status(500).json({
       message: "Error deleting user",
       status: "error",
       error: error.message,
@@ -133,6 +164,7 @@ export const uploadProfilePicture = async (req, res) => {
 
     // req.file.path is the Cloudinary image URL
     user.profilePicture = req.file.path;
+    user.profilePicturePublicId = req.file.filename;
     await user.save();
 
     const updatedUser = {
@@ -309,7 +341,22 @@ export const getAllPosts = async (req, res) => {
       bio: user.bio || "",
       about: user.about,
       friends: await getFriends(user._id),
-      posts: user.posts,
+      posts: user.posts.map((post) => ({
+        ...post._doc,
+        createdAt: formatDate(post.createdAt),
+        updatedAt: formatDate(post.updatedAt),
+        comments: post.comments.map((comment) => ({
+          ...comment._doc,
+          createdAt: formatDate(comment.createdAt),
+          updatedAt: formatDate(comment.updatedAt),
+          replies: comment.replies.map((reply) => ({
+            ...reply._doc,
+            createdAt: formatDate(reply.createdAt),
+            updatedAt: formatDate(reply.updatedAt),
+          })),
+        })),
+        createdDate: post.createdAt,
+      })),
     };
 
     if (updatedUser) {
@@ -350,3 +397,40 @@ export const getFriends = async (userId) => {
     console.error("Error fetching friends:", error);
   }
 };
+
+export const getAuthor = async (req, res) => {
+  try {
+    const authorId = req.params.id;
+    const author = await User.findById(authorId).populate("posts");
+    const updatedAuthor = {
+      id: author._id,
+      name: author.name,
+      profilePicture: author.profilePicture,
+      followers: author.followers,
+      following: author.following,
+      bio: author.bio || "",
+      about: author.about,
+      friends: await getFriends(author._id),
+      posts: author.posts.map((post) => ({
+        ...post._doc,
+        createdAt: formatDate(post.createdAt),
+        updatedAt: formatDate(post.updatedAt),
+      })),
+    };
+    res.json({
+      author: updatedAuthor,
+      status: "success",
+    });
+  } catch (error) {
+    console.error("Error fetching author:", error);
+    res.status(200).json({
+      message: "Internal Server Error",
+      status: "error",
+    });
+  }
+};
+
+// javac --module-path "D:/javafx/lib" --add-modules javafx.controls -d ./bin src\Main.java
+// javac --module-path "D:/javafx/lib" --add-modules javafx.controls -d ./bin src\Employee.java
+
+// java --module-path "D:/javafx/lib" --add-modules javafx.controls -cp bin Main

@@ -11,6 +11,7 @@ import {
   getAllPosts,
   getAuthor,
   resetPassword,
+  verifyPassToken,
 } from "../controllers/userController.js";
 import upload from "../utils/upload.js";
 
@@ -30,6 +31,7 @@ userRouter.put(
 userRouter.get("/posts/:id", getAllPosts);
 userRouter.post("/forgot-password", forgetPassword);
 userRouter.post("/reset-password", resetPassword);
+userRouter.post("/verify-token", verifyPassToken);
 userRouter.delete("/delete-profile", deleteUser);
 userRouter.get("/:id", getAuthor);
 

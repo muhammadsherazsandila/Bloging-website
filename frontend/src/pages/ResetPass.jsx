@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
 import Cookie from "js-cookie";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { toastConfig } from "../utils/toastConfig";
@@ -64,6 +64,36 @@ function ResetPass() {
       setLoading(false);
     }
   };
+
+  const verifyToken = async () => {
+    const token = useParams().token;
+    try {
+      const response = await axios.post(
+        "https://blogora.up.railway.app/user/verify-token",
+        {
+          token: token,
+        }
+      );
+      if (response) {
+        if (response.data.status === "success") {
+          toast.success(response.data.message, toastConfig("Login-Msg-1"));
+        } else {
+          toast.error(response.data.message, toastConfig("Login-Msg-1"));
+          navigate("/login");
+        }
+      } else {
+        toast.error("Server Error", toastConfig("Login-Msg-2"));
+        navigate("/login");
+      }
+    } catch (error) {
+      toast.error("Server Error", toastConfig("Login-Msg-3"));
+      navigate("/login");
+    }
+  };
+
+  useEffect(() => {
+    verifyToken();
+  }, []);
 
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

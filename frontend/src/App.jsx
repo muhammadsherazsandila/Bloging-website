@@ -55,7 +55,7 @@ const AppRoutes = () => {
         <Route path="/top" element={<Top />} />
         <Route path="/all" element={<AllPosts />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/resetPassword" element={<ResetPass />} />
+        <Route path="/resetPassword/:token" element={<ResetPass />} />
         <Route path="/searchPosts" element={<SearchedPosts />} />
         <Route
           path="/dashboard"

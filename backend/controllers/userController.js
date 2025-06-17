@@ -236,7 +236,6 @@ export const follow = async (req, res) => {
 };
 
 export const forgetPassword = async (req, res) => {
-  console.log(req.body);
   const { email } = req.body;
   try {
     const user = await User.findOne({ email });
@@ -246,10 +245,11 @@ export const forgetPassword = async (req, res) => {
         status: "error",
       });
     }
-    user.isPermittedToChangePassword = true;
+    const token = bcrypt.hashSync(email, 10);
+    user.token = token;
     await user.save();
-    const token = Math.floor(Math.random() * 1000000);
-    sendEmail(email, token);
+    const resetLink = "https://blogorablogs.vercel.app/resetPassword/" + token;
+    sendEmail(email, resetLink);
     res.status(200).json({
       message: "Password reset email sent",
       status: "success",
@@ -274,12 +274,15 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    if (!user.isPermittedToChangePassword) {
+    if (user.token !== req.params.token) {
       return res.status(200).json({
-        message: "Password reset not permitted",
+        message: "Invalid token",
         status: "error",
       });
     }
+
+    user.token = null;
+    await user.save();
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -296,6 +299,21 @@ export const resetPassword = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+export const verifyPassToken = async (req, res) => {
+  const { token } = req.body;
+  const user = await User.findOne({ token: token });
+  if (!user) {
+    return res.status(200).json({
+      message: "User not found",
+      status: "error",
+    });
+  }
+  res.status(200).json({
+    message: "User found",
+    status: "success",
+  });
 };
 
 export const dashboard = async (req, res) => {

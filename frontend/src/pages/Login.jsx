@@ -11,11 +11,14 @@ import { CircularProgress } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 import { translation } from "../utils/animation";
 import { downStyle, upStyle } from "../utils/styles";
+import { IoEyeSharp } from "react-icons/io5";
+import { IoEyeOffSharp } from "react-icons/io5";
 
 function Login() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -60,6 +63,14 @@ function Login() {
     }
     if (!password) {
       toast.error("Please enter password", toastConfig("Signup-Msg-1"));
+      return;
+    }
+
+    if (password.length < 8) {
+      toast.error(
+        "Password must be at least 8 characters",
+        toastConfig("Signup-Msg-1")
+      );
       return;
     }
     setLoading(true);
@@ -119,6 +130,14 @@ function Login() {
       return;
     }
 
+    if (password.length < 8) {
+      toast.error(
+        "Password must be at least 8 characters",
+        toastConfig("Login-Msg-1")
+      );
+      return;
+    }
+
     setLoading(true);
 
     const formData = new FormData();
@@ -143,6 +162,35 @@ function Login() {
           Cookie.set("token", response.data.token);
           setUser(response.data.user);
           setState(!state);
+        } else {
+          toast.error(response.data.message, toastConfig("Login-Msg-1"));
+          setLoading(false);
+        }
+      } else {
+        toast.error("Server Error", toastConfig("Login-Msg-2"));
+        setLoading(false);
+      }
+    } catch (error) {
+      toast.error("Server Error", toastConfig("Login-Msg-3"));
+      setLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      toast.error("Please enter email", toastConfig("Login-Msg-1"));
+      return;
+    }
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/user/forgot-password",
+        {
+          email: email,
+        }
+      );
+      if (response) {
+        if (response.data.status === "success") {
+          toast.success(response.data.message, toastConfig("Login-Msg-1"));
         } else {
           toast.error(response.data.message, toastConfig("Login-Msg-1"));
           setLoading(false);
@@ -210,25 +258,42 @@ function Login() {
                         Password
                       </label>
                       <div className="text-sm">
-                        <a
-                          href="#"
-                          className="font-semibold text-blue-900 hover:text-blue-800"
+                        <span
+                          onClick={handleForgotPassword}
+                          className="font-semibold text-blue-900 hover:text-blue-800 cursor-pointer"
                         >
                           Forgot password?
-                        </a>
+                        </span>
                       </div>
                     </div>
-                    <div className="mt-2">
+                    <div className="mt-2 relative">
                       <input
                         id="password"
                         name="password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={handleOnChange}
+                        minLength={8}
                         required
                         autoComplete="current-password"
                         className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
                       />
+                      {showPassword && (
+                        <span
+                          className="absolute right-2 top-2 cursor-pointer"
+                          onClick={() => setShowPassword(false)}
+                        >
+                          <IoEyeOffSharp className="text-2xl" />
+                        </span>
+                      )}
+                      {!showPassword && (
+                        <span
+                          className="absolute right-2 top-2 cursor-pointer"
+                          onClick={() => setShowPassword(true)}
+                        >
+                          <IoEyeSharp className="text-2xl" />
+                        </span>
+                      )}
                     </div>
                   </div>
 
@@ -319,17 +384,34 @@ function Login() {
                         Password
                       </label>
                     </div>
-                    <div className="mt-2">
+                    <div className="mt-2 relative">
                       <input
                         id="password"
                         name="password"
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={handleOnChange}
+                        minLength={8}
                         required
                         autoComplete="current-password"
                         className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-blue-900 sm:text-sm/6"
                       />
+                      {showPassword && (
+                        <span
+                          className="absolute right-2 top-2 cursor-pointer"
+                          onClick={() => setShowPassword(false)}
+                        >
+                          <IoEyeOffSharp className="text-2xl" />
+                        </span>
+                      )}
+                      {!showPassword && (
+                        <span
+                          className="absolute right-2 top-2 cursor-pointer"
+                          onClick={() => setShowPassword(true)}
+                        >
+                          <IoEyeSharp className="text-2xl" />
+                        </span>
+                      )}
                     </div>
                   </div>
 

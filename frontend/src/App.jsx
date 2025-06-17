@@ -21,6 +21,7 @@ import SinglePost from "./pages/SinglePost";
 import AuthorProfile from "./components/AuthorProfile";
 import AllPosts from "./pages/AllPosts";
 import SearchedPosts from "./pages/SearchedPosts";
+import ResetPass from "./pages/ResetPass";
 
 function App() {
   return (
@@ -54,6 +55,7 @@ const AppRoutes = () => {
         <Route path="/top" element={<Top />} />
         <Route path="/all" element={<AllPosts />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/resetPassword" element={<ResetPass />} />
         <Route path="/searchPosts" element={<SearchedPosts />} />
         <Route
           path="/dashboard"

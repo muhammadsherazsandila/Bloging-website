@@ -8,13 +8,16 @@ export const loadUser = async (setUser, setIsLoggedIn) => {
   try {
     const token = Cookie.get("token");
     if (token) {
-      const response = await fetch("http://localhost:5000/user/dashboard", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://blogora.up.railway.app/user/dashboard",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `${token}`,
+          },
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to load user data");

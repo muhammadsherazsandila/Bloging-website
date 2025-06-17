@@ -92,7 +92,7 @@ const Dashboard = () => {
 
   const fetchPosts = async () => {
     axios
-      .get(`http://localhost:5000/user/posts/${Cookies.get("token")}`)
+      .get(`https://blogora.up.railway.app/user/posts/${Cookies.get("token")}`)
       .then((response) => {
         if (response.data.status === "success") {
           const sortedPosts = [...response.data.user.posts].sort(

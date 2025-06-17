@@ -248,7 +248,9 @@ export const forgetPassword = async (req, res) => {
     const token = bcrypt.hashSync(email, 10);
     user.token = token;
     await user.save();
-    const resetLink = "https://blogorablogs.vercel.app/resetPassword/" + token;
+    const resetLink =
+      "https://blogorablogs.vercel.app/resetPassword/" +
+      encodeURIComponent(token);
     sendEmail(email, resetLink);
     res.status(200).json({
       message: "Password reset email sent",
@@ -265,6 +267,7 @@ export const forgetPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   const { email, password } = req.body;
+  const token = decodeURIComponent(req.params.token);
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -274,7 +277,7 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    if (user.token !== req.params.token) {
+    if (user.token !== token) {
       return res.status(200).json({
         message: "Invalid token",
         status: "error",
@@ -306,12 +309,12 @@ export const verifyPassToken = async (req, res) => {
   const user = await User.findOne({ token: token });
   if (!user) {
     return res.status(200).json({
-      message: "User not found",
+      message: "Unauthorized!",
       status: "error",
     });
   }
   res.status(200).json({
-    message: "User found",
+    message: "Authorized!",
     status: "success",
   });
 };
@@ -347,7 +350,6 @@ export const dashboard = async (req, res) => {
       status: "success",
     });
   } catch (error) {
-    console.error("Dashboard Error:", error);
     res.status(200).json({
       message: "Internal Server Error",
       status: "error",

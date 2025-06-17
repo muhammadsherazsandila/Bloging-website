@@ -20,6 +20,7 @@ function ResetPass() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [token, setToken] = useState(useParams().token);
 
   const handlePasswordReset = async () => {
     if (!email) {
@@ -39,11 +40,11 @@ function ResetPass() {
       return;
     }
     setLoading(true);
+
     try {
       const response = await axios.post(
-        `https://blogora.up.railway.app/user/reset-password/${
-          useParams().token
-        }`,
+        "http://localhost:5000/user/reset-password/" +
+          encodeURIComponent(token),
         {
           email: email,
           password: password,
@@ -68,10 +69,9 @@ function ResetPass() {
   };
 
   const verifyToken = async () => {
-    const token = useParams().token;
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/user/verify-token",
+        "http://localhost:5000/user/verify-token",
         {
           token: token,
         }

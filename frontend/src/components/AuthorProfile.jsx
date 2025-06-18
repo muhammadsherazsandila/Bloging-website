@@ -210,7 +210,7 @@ const AuthorProfile = () => {
                 </IconButton>
                 <Avatar
                   src={
-                    user?.profilePicture ||
+                    author?.profilePicture ||
                     "https://cdn-icons-png.flaticon.com/512/149/149071.png"
                   }
                   sx={{ width: 250, height: 250 }}

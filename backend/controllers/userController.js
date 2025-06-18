@@ -6,10 +6,10 @@ import sharp from "sharp";
 import { formatDate } from "../utils/formaters.js";
 import cloudinary from "../utils/cloudinary.js";
 import { sendEmail } from "./mailController.js";
+import resetPassModel from "../models/resetPassModel.js";
+import crypto from "crypto";
 export const login = async (req, res) => {
-  console.log(req.body);
   const { email, password } = req.body;
-  console.log(email, password);
   try {
     const user = await User.findOne({ email });
     if (!user) {
@@ -245,11 +245,11 @@ export const forgetPassword = async (req, res) => {
         status: "error",
       });
     }
-    const token = bcrypt.hashSync(email, 10);
-    user.token = token;
-    await user.save();
+    const token = crypto.randomBytes(20).toString("hex");
+    const resetPass = new resetPassModel({ email: email, token: token });
+    await resetPass.save();
     const resetLink =
-      "https://blogorablogs.vercel.app/resetPassword/" +
+      "https://blogora.up.railway.app/resetPassword/" +
       encodeURIComponent(token);
     sendEmail(email, resetLink);
     res.status(200).json({
@@ -277,16 +277,15 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    if (user.token !== token) {
+    const resetPass = await resetPassModel.findOne({ token: token });
+    if (!resetPass) {
       return res.status(200).json({
-        message: "Invalid token",
+        message: "Invalid or expired token",
         status: "error",
       });
     }
 
-    user.token = null;
-    await user.save();
-
+    await resetPassModel.findOneAndDelete({ token: token });
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
     user.password = hashedPassword;
@@ -306,15 +305,15 @@ export const resetPassword = async (req, res) => {
 
 export const verifyPassToken = async (req, res) => {
   const { token } = req.body;
-  const user = await User.findOne({ token: token });
-  if (!user) {
+  const resetPass = await resetPassModel.findOne({ token: token });
+  if (!resetPass) {
     return res.status(200).json({
       message: "Unauthorized!",
       status: "error",
     });
   }
   res.status(200).json({
-    message: "Authorized!",
+    message: "Authorized! Token will be expired after 60 seconds!",
     status: "success",
   });
 };

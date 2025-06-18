@@ -18,11 +18,6 @@ const userSchema = mongoose.Schema(
       required: true,
       minlength: 6,
     },
-    token: {
-      type: String,
-      required: false,
-      trim: true,
-    },
     profilePicture: {
       type: String,
       default: "",

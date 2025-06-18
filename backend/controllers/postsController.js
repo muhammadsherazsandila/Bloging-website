@@ -42,7 +42,7 @@ export const createPost = async (req, res) => {
 
     const author = verifyToken(req.headers.authorization).id;
     const hashTags = caption.match(/#\w+/g) || [];
-    const tags = hashTags.map((tag) => tag.slice(1));
+    const tags = hashTags.map((tag) => tag.slice(1).toLowerCase());
 
     // If updating existing post
     if (id && id.trim() !== "") {

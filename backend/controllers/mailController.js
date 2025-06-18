@@ -10,5 +10,8 @@ export const sendEmail = async (email, url) => {
 
   try {
     const info = await transporter.sendMail(mailOptions);
-  } catch (error) {}
+    console.log(info);
+  } catch (error) {
+    console.log(error);
+  }
 };

@@ -249,7 +249,7 @@ export const forgetPassword = async (req, res) => {
     const resetPass = new resetPassModel({ email: email, token: token });
     await resetPass.save();
     const resetLink =
-      "https://blogora.up.railway.app/resetPassword/" +
+      "http://blogorablogs.vercel.app/resetPassword/" +
       encodeURIComponent(token);
     sendEmail(email, resetLink);
     res.status(200).json({

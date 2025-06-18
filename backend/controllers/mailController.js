@@ -13,7 +13,7 @@ export const sendEmail = async (email, url) => {
     <a href="${url}" style="display: inline-block; padding: 10px 20px; background-color: #1c398e; color: #fff; text-decoration: none; border-radius: 4px;">Reset Password</a>
     <p style="margin-top: 20px;">If you didn’t request a password reset, you can safely ignore this email.</p>
     <p>Thanks,<br>The Blogora Team</p>
-    <a href="https://blogora.vercel.app/" style="color: #1c398e; text-decoration: none;">Please visit our website</a>
+    <a href="https://blogorablogs.vercel.app/" style="color: #1c398e; text-decoration: none;">Please visit our website</a>
   </div>
 `,
   };

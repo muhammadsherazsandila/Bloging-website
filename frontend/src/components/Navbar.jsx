@@ -140,7 +140,7 @@ function Navbar() {
       </header>
 
       {/* Mobile Bottom Navigation */}
-      <div className="lg:hidden fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 flex justify-around items-center py-2 shadow-md z-50">
+      <div className="lg:hidden w-full max-w-screen fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 flex justify-around items-center py-2 shadow-md z-50">
         <button
           onClick={() => navigate("/")}
           className="flex flex-col items-center text-gray-700 hover:text-blue-800"

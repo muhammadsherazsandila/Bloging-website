@@ -255,7 +255,7 @@ const BlogCard = ({ post, position }) => {
   return (
     <>
       <div
-        className={`w-full max-w-3xl bg-white text-black shadow-xl rounded-2xl px-0 sm:px-4 mb-6 md:p-6 lg:p-8 xl:p-10 mt-8 md:mt-12 relative transition-all duration-300 hover:shadow-2xl ${position}`}
+        className={`w-full max-w-screen sm:max-w-3xl bg-white text-black shadow-xl rounded-2xl px-0 sm:px-4 mb-6 md:p-6 lg:p-8 xl:p-10 mt-8 md:mt-12 relative transition-all duration-300 hover:shadow-2xl ${position}`}
       >
         {/* Action buttons */}
         {user && post ? (
@@ -314,7 +314,7 @@ const BlogCard = ({ post, position }) => {
         )}
 
         {/* Top section */}
-        <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4">
+        <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4 p-3">
           {/* Left: author info */}
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-4">

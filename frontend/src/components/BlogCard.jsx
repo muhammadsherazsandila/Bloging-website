@@ -221,6 +221,8 @@ const BlogCard = ({ post, position }) => {
   };
 
   const handleDeletePost = () => {
+    let result = window.confirm("Are you sure you want to delete this post?");
+    if (!result) return;
     axios
       .delete(`https://blogora.up.railway.app/post/delete-post/${post._id}`)
       .then((response) => {

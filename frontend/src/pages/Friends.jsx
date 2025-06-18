@@ -17,9 +17,9 @@ const Friends = () => {
     <div className="w-11/12 mb-16 bg-white rounded-lg shadow-md mx-auto overflow-y-auto mt-16 p-7 max-h-96">
       <h2 className="text-2xl font-semibold text-gray-800 mb-4">Friends</h2>
       <ul className="space-y-3">
-        {author.friends ? (
-          author.friends.length > 0 ? (
-            author.friends.map((friend) => (
+        {author?.friends ? (
+          author?.friends.length > 0 ? (
+            author?.friends.map((friend, index) => (
               <motion.li
                 initial={translate(
                   "x",

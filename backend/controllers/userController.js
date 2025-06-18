@@ -458,7 +458,25 @@ export const getFriends = async (userId) => {
 export const getAuthor = async (req, res) => {
   try {
     const authorId = req.params.id;
-    const author = await User.findById(authorId).populate("posts");
+    const author = await User.findById(authorId)
+      .populate("posts")
+      .populate({
+        path: "posts",
+        populate: [
+          {
+            path: "author",
+            select: "name profilePicture mimeType",
+          },
+          {
+            path: "comments.user",
+            select: "name profilePicture mimeType",
+          },
+          {
+            path: "comments.replies.user",
+            select: "name profilePicture mimeType",
+          },
+        ],
+      });
     const updatedAuthor = {
       id: author._id,
       name: author.name,

@@ -40,7 +40,7 @@ function AuthorPosts() {
         posts.map((post, index) => (
           <motion.div
             key={index}
-            className="flex flex-col relative"
+            className="flex flex-col relative gap-6 items-center md:p-4 lg:p-8 xl:p-12 p-2 mb-16"
             variants={scale()}
             initial="initial"
             whileInView="animate"

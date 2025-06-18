@@ -27,12 +27,14 @@ const AuthorProfile = () => {
   const [isFriendsOpen, setIsFriendsOpen] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
-    axios.get(`http://localhost:5000/user/${authorId}`).then((response) => {
-      console.log(response.data);
-      if (response.data.status === "success") {
-        setAuthor(response.data.author);
-      }
-    });
+    axios
+      .get(`https://blogora.up.railway.app/user/${authorId}`)
+      .then((response) => {
+        console.log(response.data);
+        if (response.data.status === "success") {
+          setAuthor(response.data.author);
+        }
+      });
   }, [authorId, state]);
 
   const handleFollow = () => {

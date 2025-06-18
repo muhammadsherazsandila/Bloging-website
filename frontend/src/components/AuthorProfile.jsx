@@ -30,7 +30,6 @@ const AuthorProfile = () => {
     axios
       .get(`https://blogora.up.railway.app/user/${authorId}`)
       .then((response) => {
-        console.log(response.data);
         if (response.data.status === "success") {
           setAuthor(response.data.author);
         }

@@ -5,7 +5,7 @@ export const sendEmail = async (email, url) => {
     from: '"Blogora" <noreplyBlogora@gmail.com>',
     to: email,
     subject: "Your Reset Password Link",
-    text: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+    html: `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
     <h2 style="color: #07275f;">Reset Your Password</h2>
     <p>Hello,</p>
     <p>We received a request to reset your password for your <strong>Blogora</strong> account.</p>

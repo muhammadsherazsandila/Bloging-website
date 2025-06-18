@@ -65,6 +65,11 @@ const Dashboard = () => {
 
   const deleteProfile = async () => {
     setLoading(true);
+    let result = window.confirm(
+      "Are you sure you want to delete your profile?"
+    );
+    console.log(result);
+    if (!result) return;
     const response = await axios.delete(
       "https://blogora.up.railway.app/user/delete-profile",
       {

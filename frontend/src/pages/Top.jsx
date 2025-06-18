@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { usePost } from "../contexts/PostContext";
 import BlogCard from "../components/BlogCard";
-import { Box, Button, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { motion } from "framer-motion";
 import { scale } from "../utils/animation";
 import { downStyle, upStyle } from "../utils/styles";

@@ -255,7 +255,7 @@ const BlogCard = ({ post, position }) => {
   return (
     <>
       <div
-        className={`w-full max-w-screen sm:max-w-3xl bg-white text-black shadow-xl rounded-2xl px-0 sm:px-4 mb-6 md:p-6 lg:p-8 xl:p-10 mt-8 md:mt-12 relative transition-all duration-300 hover:shadow-2xl ${position}`}
+        className={`w-full max-w-11/12 sm:max-w-3xl bg-white text-black shadow-xl rounded-2xl px-0 sm:px-4 mb-6 md:p-6 lg:p-8 xl:p-10 mt-8 md:mt-12 relative transition-all duration-300 hover:shadow-2xl ${position}`}
       >
         {/* Action buttons */}
         {user && post ? (
@@ -264,7 +264,7 @@ const BlogCard = ({ post, position }) => {
               {/* Toggle Button */}
               <button
                 onClick={() => setIsOptionsOpen(!isOptionsOpen)}
-                className="p-1 rounded-full transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 absolute -top-4 -right-4 cursor-pointer"
+                className="p-1 rounded-full transition-all hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 absolute top-2 right-2 sm:-top-4 sm:-right-4 cursor-pointer"
                 aria-label="Post options"
                 aria-haspopup="true"
                 aria-expanded={isOptionsOpen}
@@ -274,7 +274,7 @@ const BlogCard = ({ post, position }) => {
 
               {/* Dropdown Menu */}
               {isOptionsOpen && (
-                <div className="absolute right-6 -top-4  mt-2 w-40 origin-top-left rounded-md bg-white shadow-md border border-gray-200 ring-offset-gray-300 ring-opacity-5 focus:outline-none z-50 animate-fade-in">
+                <div className="absolute right-10 top-0 sm:right-6 sm:-top-4 mt-2 w-40 origin-top-left rounded-md bg-white shadow-md border border-gray-200 ring-offset-gray-300 ring-opacity-5 focus:outline-none z-50 animate-fade-in">
                   <div className="py-1">
                     <button
                       onClick={handleOpenUploadPost}
@@ -314,9 +314,9 @@ const BlogCard = ({ post, position }) => {
         )}
 
         {/* Top section */}
-        <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-4 p-3">
+        <div className="w-full max-w-screen sm:w-auto flex flex-col md:flex-row justify-between items-start gap-4 mb-4 p-3">
           {/* Left: author info */}
-          <div className="flex-1">
+          <div className="w-full max-w-screen sm:w-auto">
             <div className="flex items-center gap-3 mb-4">
               <img
                 src={

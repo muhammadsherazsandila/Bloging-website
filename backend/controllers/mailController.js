@@ -1,6 +1,7 @@
 import { transporter } from "../config/mailConfig.js";
 
 export const sendEmail = async (email, url) => {
+  console.log(url);
   const mailOptions = {
     from: '"Blogora" <noreplyBlogora@gmail.com>',
     to: email,

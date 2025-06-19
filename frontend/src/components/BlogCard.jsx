@@ -252,7 +252,7 @@ const BlogCard = ({ post, position }) => {
 
   useEffect(() => {
     initiateData();
-  }, []);
+  }, [post, user]);
 
   return (
     <>

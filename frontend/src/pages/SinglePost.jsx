@@ -260,7 +260,7 @@ const SinglePost = () => {
   const initiateData = () => {
     if (post && user) {
       setLiked(post.likes.includes(user.id));
-      setFollowed(user.following?.includes(post.author.id));
+      setFollowed(user.following?.includes(post.author._id));
       setCommentLikes(
         post.comments.map((comment) => comment.likes.includes(user.id))
       );
@@ -273,7 +273,7 @@ const SinglePost = () => {
     if (post) {
       initiateData();
     }
-  }, [post]);
+  }, [post, user]);
 
   return (
     <>

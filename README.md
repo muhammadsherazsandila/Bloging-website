@@ -8,89 +8,79 @@
 
 🌐 [Visit Blogora](https://blogorablogs.vercel.app/)
 
-## 🛠️ Tech Stack
+## Features
 
-- **Frontend:** React.js, Tailwind CSS, Material UI, React Icons, Framer Motion
-- **Backend:** Express.js, Node.js
-- **Database:** MongoDB
-- **Image Storage:** Cloudinary
-- **Deployment:** Vercel (Frontend), Railway (Backend)
-- **Authentication:** JWT + Cookies
-- **Email Services:** Gmail (via Nodemailer)
-- **Rich Text Editor:** React Quill
+- 📝 **Create, Edit, and Delete Blogs:** Manage your posts easily with an intuitive interface.
+- 👤 **User Authentication:** Secure registration and login system (if implemented).
+- 📱 **Responsive Design:** Optimized for desktops, tablets, and mobile devices.
+- 🔍 **Search and Filter:** Find posts quickly using keyword search and category filters.
+- 💬 **Comment System:** Engage with readers through comments (if included).
+- 🌙 **Dark/Light Mode:** Switch between light and dark themes for comfortable reading.
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (if backend/server is included)
+- [bun](https://www.npmjs.com/bun) (for managing dependencies)
+
+### Installation
+
+1. **Clone the Repository**
+    ```bash
+    git clone https://github.com/muhammadsherazsandila/Bloging-website.git
+    cd Bloging-website
+    ```
+
+2. **Install Dependencies**
+    ```bash
+    bun install
+    ```
+
+3. **Run the Application**
+    ```bash
+    bun start
+    ```
+    The site will be available at `http://localhost:3000` (or as configured).
+
+## Project Structure
+
+```
+Bloging-website/
+├── public/           # Static assets (images, favicon, etc.)
+├── src/              # Source code (JS files, components, styles)
+│   ├── components/   # Reusable components (if applicable)
+│   ├── pages/        # Page-level components/routes
+│   └── ...           # Other directories
+├── package.json      # Project metadata and scripts
+└── README.md
+```
+
+## Customization
+
+- Update styles and layouts in the `/src` directory to match your branding.
+- Modify components and routes to add new features or change existing ones.
+
+## Deployment
+
+You can deploy this app to platforms such as:
+
+- [Vercel](https://vercel.com/)
+- [Netlify](https://www.netlify.com/)
+- [Heroku](https://www.heroku.com/)
+- [GitHub Pages](https://pages.github.com/) (if static)
+
+## Contributing
+
+Contributions are welcome! Please fork the repo, create a new branch, and submit a pull request for any improvements or bug fixes.
+
+## License
+
+This project is licensed under the MIT License.
 
 ---
 
-## 🔥 Features
-
-- ✅ User Authentication (Signup/Login/Reset Password via Email)
-- ✅ Post Creation with Rich Text Editor
-- ✅ Like, Comment, and Reply to Posts
-- ✅ Like Comments and Replies
-- ✅ Follow Authors and View Followers/Following
-- ✅ Real-Time Updates (New posts/comments update instantly)
-- ✅ Search by Tags
-- ✅ Mobile Responsive UI
-- ✅ Profile Page with Bio, Profile Picture, and User Stats
-- ✅ About Section
-- ✅ Dark Mode (Coming soon...)
-
----
-
-## ✨ Intern Project
-
-This project was created as part of my **internship at Certura**. It showcases the practical use of full-stack development, real-world features, and user-focused UI.
-
----
-
-## 📁 Folder Structure
-frontend/ --> React Frontend
-backend/ --> Express Backend
-README.md --> You're here
-
-
----
-
-## ⚙️ Installation (Development Setup)
-
-1. **Clone the repo**
-```bash
-git clone https://github.com/muhammadsherazsandila/Bloging-website.git
-cd blogora
-
-# For frontend
-cd frontend
-bun install
-
-# For backend
-cd ../backend
-bun install
-
-
-Create .env file in backend folder:
-db=your_mongo_connection
-JWT_SECRET=your_jwt_secret
-EMAIL=your_email@gmail.com
-EMAIL_PASSWORD=your_app_password
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-
-# In backend/
-bun run start
-
-# In frontend/
-bun run dev
-
-👨‍💻 Author
-Muhammad Sheraz
-
-🔗 Portfolio Website : https://sherazportfolio.vercel.app/
-
-💼 LinkedIn : https://www.linkedin.com/in/muhammad-sheraz-800948347/
-
-💻 GitHub : https://github.com/muhammadsherazsandila
+**Developed by [Muhammad Sheraz Sandila](https://github.com/muhammadsherazsandila)**
 
 
 

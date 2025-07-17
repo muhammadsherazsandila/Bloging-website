@@ -8,10 +8,11 @@ dotenv.config();
 import cors from "cors";
 
 const app = express();
+
 const allowedOrigins = [
-  "http://localhost:5173", // Vite dev server
-  "http://localhost:3000", // Create React App
-  "https://blogorablogs.vercel.app",
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://blogorabblogs.vercel.app",
 ];
 
 app.use(
@@ -34,7 +35,8 @@ app.use("/api", mainRouter);
 app.use("/user", userRouter);
 app.use("/post", postsRouter);
 
+// 🔧 Corrected port usage for Render
 const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 
-app.listen( PORT, () => console.log("Server is running on port 5000"));
 export default app;

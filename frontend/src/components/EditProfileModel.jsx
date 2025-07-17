@@ -63,7 +63,7 @@ const EditProfileModal = ({ handleClose }) => {
         await uploadProfilePicture(profilePic);
       }
       const response = await axios.put(
-        "${backendServer}/user/update-profile",
+        `${backendServer}/user/update-profile`,
         formData,
         {
           headers: {

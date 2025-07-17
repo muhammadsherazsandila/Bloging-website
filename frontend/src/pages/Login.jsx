@@ -82,7 +82,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "${backendServer}/user/signup",
+        `${backendServer}/user/signup`,
         formData,
         {
           headers: {
@@ -145,7 +145,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "${backendServer}/user/login",
+        `${backendServer}/user/login`,
         formData,
         {
           headers: {
@@ -183,7 +183,7 @@ function Login() {
     }
     try {
       const response = await axios.post(
-        "${backendServer}/user/forgot-password",
+        `${backendServer}/user/forgot-password`,
         {
           email: email,
         }

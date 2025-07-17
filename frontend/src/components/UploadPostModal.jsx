@@ -62,7 +62,7 @@ const UploadPostModal = ({
 
     try {
       const response = await axios.post(
-        "${backendServer}/post/upload-post",
+        `${backendServer}/post/upload-post`,
         data,
         {
           headers: {

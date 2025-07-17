@@ -10,7 +10,7 @@ export const loadUser = async (setUser, setIsLoggedIn) => {
     const token = Cookie.get("token");
     if (token) {
       const response = await fetch(
-        "${backendServer}/user/dashboard",
+        `${backendServer}/user/dashboard`,
         {
           method: "GET",
           headers: {

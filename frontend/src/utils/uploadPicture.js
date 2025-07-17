@@ -5,7 +5,7 @@ export const uploadProfilePicture = async (file) => {
   const formData = new FormData();
   formData.append("profilePicture", file);
   const response = await axios.put(
-    "${backendServer}/user/upload-profile-picture",
+    `${backendServer}/user/upload-profile-picture`,
     formData,
     {
       headers: {

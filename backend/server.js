@@ -35,7 +35,7 @@ app.use("/api", mainRouter);
 app.use("/user", userRouter);
 app.use("/post", postsRouter);
 
-// 🔧 Corrected port usage for Render
+// 🔧 Corrected port usage for 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 

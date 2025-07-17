@@ -26,6 +26,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { motion } from "framer-motion";
 import { translate } from "../utils/animation";
 import { downStyle, upStyle } from "../utils/styles";
+import { backendServer } from "../utils/backendServer";
 
 const Dashboard = () => {
   const { user, isLoggedIn, setIsLoggedIn, setUser } = useAuth();
@@ -71,7 +72,7 @@ const Dashboard = () => {
     console.log(result);
     if (!result) return;
     const response = await axios.delete(
-      "https://blogora.up.railway.app/user/delete-profile",
+      `${backendServer}/user/delete-profile`,
       {
         headers: {
           Authorization: `${Cookies.get("token")}`,
@@ -102,7 +103,7 @@ const Dashboard = () => {
 
   const fetchPosts = async () => {
     axios
-      .get(`https://blogora.up.railway.app/user/posts/${Cookies.get("token")}`)
+      .get(`${backendServer}/user/posts/${Cookies.get("token")}`)
       .then((response) => {
         if (response.data.status === "success") {
           const sortedPosts = [...response.data.user.posts].sort(

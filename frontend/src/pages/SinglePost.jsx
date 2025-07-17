@@ -28,6 +28,7 @@ import { downStyle, upStyle } from "../utils/styles";
 import { motion } from "framer-motion";
 import { fadeIn, fadeOut } from "../utils/animation";
 import { SlOptionsVertical } from "react-icons/sl";
+import { backendServer } from "../utils/backendServer";
 
 const SinglePost = () => {
   const { state, setState } = usePost();
@@ -38,7 +39,7 @@ const SinglePost = () => {
 
   const getPost = () => {
     axios
-      .get(`https://blogora.up.railway.app/post/get-post/${postId}`)
+      .get(`${backendServer}/post/get-post/${postId}`)
       .then((response) => {
         console.log(response.data);
         if (response.data.status === "success") {
@@ -85,7 +86,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .post(`https://blogora.up.railway.app/post/add-comment/${post._id}`, {
+      .post(`${backendServer}/post/add-comment/${post._id}`, {
         content: replyText,
         user: user.id,
         type: "reply",
@@ -112,7 +113,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .put(`https://blogora.up.railway.app/post/follow/${post._id}`, {
+      .put(`${backendServer}/post/follow/${post._id}`, {
         userId: user.id,
         followed: !followed,
       })
@@ -141,7 +142,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .post(`https://blogora.up.railway.app/post/add-comment/${post._id}`, {
+      .post(`${backendServer}/post/add-comment/${post._id}`, {
         content: comment,
         user: user.id,
         type: "comment",
@@ -163,7 +164,7 @@ const SinglePost = () => {
     setIsCommentDeleting(true);
     axios
       .delete(
-        `https://blogora.up.railway.app/post/delete-comment/${post._id}`,
+        `${backendServer}/post/delete-comment/${post._id}`,
         {
           data: { commentId },
         }
@@ -189,7 +190,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .post(`https://blogora.up.railway.app/post/like/${postId}`, {
+      .post(`${backendServer}/post/like/${postId}`, {
         userId: user.id,
         liked: !liked,
       })
@@ -214,7 +215,7 @@ const SinglePost = () => {
       return;
     }
     axios
-      .put(`https://blogora.up.railway.app/post/like-comment/${post._id}`, {
+      .put(`${backendServer}/post/like-comment/${post._id}`, {
         commentId: commentId,
         userId: user.id,
         liked: commentLikes[index],
@@ -240,7 +241,7 @@ const SinglePost = () => {
 
   const handleDeletePost = () => {
     axios
-      .delete(`https://blogora.up.railway.app/post/delete-post/${post._id}`)
+      .delete(`${backendServer}/post/delete-post/${post._id}`)
       .then((response) => {
         if (response.status === 200) {
           setState(!state);

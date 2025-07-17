@@ -18,6 +18,7 @@ import { toastConfig } from "../utils/toastConfig";
 import { useAuth } from "../contexts/AuthContext";
 import { uploadProfilePicture } from "../utils/uploadPicture";
 import { usePost } from "../contexts/PostContext";
+import { backendServer } from "../utils/backendServer";
 
 const EditProfileModal = ({ handleClose }) => {
   const { setUser, user } = useAuth();
@@ -62,7 +63,7 @@ const EditProfileModal = ({ handleClose }) => {
         await uploadProfilePicture(profilePic);
       }
       const response = await axios.put(
-        "https://blogora.up.railway.app/user/update-profile",
+        "${backendServer}/user/update-profile",
         formData,
         {
           headers: {

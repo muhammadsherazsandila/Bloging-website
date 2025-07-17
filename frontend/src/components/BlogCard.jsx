@@ -24,6 +24,7 @@ import UploadPostModal from "../components/UploadPostModal";
 import Backdrop from "@mui/material/Backdrop";
 import { CircularProgress } from "@mui/material";
 import { SlOptionsVertical } from "react-icons/sl";
+import { backendServer } from "../utils/backendServer";
 
 const BlogCard = ({ post, position }) => {
   const navigate = useNavigate();
@@ -66,7 +67,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`https://blogora.up.railway.app/post/add-comment/${post._id}`, {
+      .post(`${backendServer}/post/add-comment/${post._id}`, {
         content: replyText,
         user: user.id,
         type: "reply",
@@ -91,7 +92,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .put(`https://blogora.up.railway.app/post/follow/${post._id}`, {
+      .put(`${backendServer}/post/follow/${post._id}`, {
         userId: user.id,
         followed: !followed,
       })
@@ -121,7 +122,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`https://blogora.up.railway.app/post/add-comment/${post._id}`, {
+      .post(`${backendServer}/post/add-comment/${post._id}`, {
         content: comment,
         user: user.id,
         type: "comment",
@@ -145,7 +146,7 @@ const BlogCard = ({ post, position }) => {
     setIsCommentDeleting(true);
     axios
       .delete(
-        `https://blogora.up.railway.app/post/delete-comment/${post._id}`,
+        `${backendServer}/post/delete-comment/${post._id}`,
         {
           data: { commentId },
         }
@@ -171,7 +172,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .post(`https://blogora.up.railway.app/post/like/${postId}`, {
+      .post(`${backendServer}/post/like/${postId}`, {
         userId: user.id,
         liked: !liked,
       })
@@ -196,7 +197,7 @@ const BlogCard = ({ post, position }) => {
       return;
     }
     axios
-      .put(`https://blogora.up.railway.app/post/like-comment/${post._id}`, {
+      .put(`${backendServer}/post/like-comment/${post._id}`, {
         commentId: commentId,
         userId: user.id,
         liked: commentLikes[index],
@@ -224,7 +225,7 @@ const BlogCard = ({ post, position }) => {
     let result = window.confirm("Are you sure you want to delete this post?");
     if (!result) return;
     axios
-      .delete(`https://blogora.up.railway.app/post/delete-post/${post._id}`)
+      .delete(`${backendServer}/post/delete-post/${post._id}`)
       .then((response) => {
         if (response.status === 200) {
           setState(!state);

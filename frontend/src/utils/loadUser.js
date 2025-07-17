@@ -1,4 +1,5 @@
 import Cookie from "js-cookie";
+import { backendServer } from "./backendServer";
 /**
  * Function to load user data from the server and update the state.
  * @param {Function} setUser - Function to set the user state.
@@ -9,7 +10,7 @@ export const loadUser = async (setUser, setIsLoggedIn) => {
     const token = Cookie.get("token");
     if (token) {
       const response = await fetch(
-        "https://blogora.up.railway.app/user/dashboard",
+        "${backendServer}/user/dashboard",
         {
           method: "GET",
           headers: {

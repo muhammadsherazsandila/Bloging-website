@@ -13,6 +13,7 @@ import { translation } from "../utils/animation";
 import { downStyle, upStyle } from "../utils/styles";
 import { IoEyeSharp } from "react-icons/io5";
 import { IoEyeOffSharp } from "react-icons/io5";
+import { backendServer } from "../utils/backendServer";
 
 function ResetPass() {
   const [email, setEmail] = useState("");
@@ -43,7 +44,7 @@ function ResetPass() {
 
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/user/reset-password/" +
+        "${backendServer}/user/reset-password/" +
           encodeURIComponent(token),
         {
           email: email,
@@ -71,7 +72,7 @@ function ResetPass() {
   const verifyToken = async () => {
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/user/verify-token",
+        "${backendServer}/user/verify-token",
         {
           token: token,
         }

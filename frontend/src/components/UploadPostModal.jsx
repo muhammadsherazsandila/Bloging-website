@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import { toastConfig } from "../utils/toastConfig";
 import Cookies from "js-cookie";
 import { usePost } from "../contexts/PostContext";
+import { backendServer } from "../utils/backendServer";
 
 const UploadPostModal = ({
   handleClose,
@@ -61,7 +62,7 @@ const UploadPostModal = ({
 
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/post/upload-post",
+        "${backendServer}/post/upload-post",
         data,
         {
           headers: {

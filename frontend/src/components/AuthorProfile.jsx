@@ -15,6 +15,7 @@ import { IconButton, Avatar } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { usePost } from "../contexts/PostContext";
 import { downStyle, upStyle } from "../utils/styles";
+import { backendServer } from "../utils/backendServer";
 
 const AuthorProfile = () => {
   const authorId = useParams().id;
@@ -28,7 +29,7 @@ const AuthorProfile = () => {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`https://blogora.up.railway.app/user/${authorId}`)
+      .get(`${backendServer}/user/${authorId}`)
       .then((response) => {
         if (response.data.status === "success") {
           setAuthor(response.data.author);
@@ -42,7 +43,7 @@ const AuthorProfile = () => {
       return;
     }
     axios
-      .put(`https://blogora.up.railway.app/user/follow/${authorId}`, {
+      .put(`${backendServer}/user/follow/${authorId}`, {
         userId: user.id,
         followed: !followed,
       })

@@ -13,6 +13,7 @@ import { translation } from "../utils/animation";
 import { downStyle, upStyle } from "../utils/styles";
 import { IoEyeSharp } from "react-icons/io5";
 import { IoEyeOffSharp } from "react-icons/io5";
+import { backendServer } from "../utils/backendServer";
 
 function Login() {
   const [name, setName] = useState("");
@@ -81,7 +82,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/user/signup",
+        "${backendServer}/user/signup",
         formData,
         {
           headers: {
@@ -144,7 +145,7 @@ function Login() {
     formData.append("password", password);
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/user/login",
+        "${backendServer}/user/login",
         formData,
         {
           headers: {
@@ -182,7 +183,7 @@ function Login() {
     }
     try {
       const response = await axios.post(
-        "https://blogora.up.railway.app/user/forgot-password",
+        "${backendServer}/user/forgot-password",
         {
           email: email,
         }

@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "engines": {
-    "node": "18.x"},
+    "node": "18.x"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -27,6 +28,7 @@
     "button": "^1.1.1",
     "card": "^2.5.4",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.2.0",
     "framer-motion": "^12.18.1",
     "init": "^0.1.2",
     "js-cookie": "^3.0.5",

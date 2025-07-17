@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import { toastConfig } from "./toastConfig";
+import { backendServer } from "./backendServer";
 export const handleFollow = (
   postId,
   user,
@@ -15,7 +16,7 @@ export const handleFollow = (
     return;
   }
   axios
-    .put(`https://blogora.up.railway.app/post/follow/${postId}`, {
+    .put(`${backendServer}/post/follow/${postId}`, {
       userId: user.id,
       followed: !followed,
     })
